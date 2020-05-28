@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.mpi.dao.auto.PersonInoutMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.mpi.model.PersonInout" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="community_name" property="communityName" jdbcType="VARCHAR" />
+    <result column="capture_time" property="captureTime" jdbcType="TIMESTAMP" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="device_name" property="deviceName" jdbcType="VARCHAR" />
+    <result column="device_type" property="deviceType" jdbcType="VARCHAR" />
+    <result column="device_type_name" property="deviceTypeName" jdbcType="VARCHAR" />
+    <result column="device_location" property="deviceLocation" jdbcType="VARCHAR" />
+    <result column="person_code" property="personCode" jdbcType="VARCHAR" />
+    <result column="person_name" property="personName" jdbcType="VARCHAR" />
+    <result column="open_result" property="openResult" jdbcType="SMALLINT" />
+    <result column="open_result_name" property="openResultName" jdbcType="VARCHAR" />
+    <result column="open_type" property="openType" jdbcType="SMALLINT" />
+    <result column="open_type_name" property="openTypeName" jdbcType="VARCHAR" />
+    <result column="channel_name" property="channelName" jdbcType="VARCHAR" />
+    <result column="channel_seq" property="channelSeq" jdbcType="SMALLINT" />
+    <result column="cap_image" property="capImage" jdbcType="VARCHAR" />
+    <result column="cap_video" property="capVideo" jdbcType="VARCHAR" />
+    <result column="cap_type" property="capType" jdbcType="VARCHAR" />
+    <result column="cap_type_name" property="capTypeName" jdbcType="VARCHAR" />
+    <result column="access" property="access" jdbcType="SMALLINT" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, community_code, community_name, capture_time, device_code, device_name, device_type, 
+    device_type_name, device_location, person_code, person_name, open_result, open_result_name, 
+    open_type, open_type_name, channel_name, channel_seq, cap_image, cap_video, cap_type, 
+    cap_type_name, access
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.windaka.suizhi.mpi.model.PersonInoutExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from person_inout
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from person_inout
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from person_inout
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.windaka.suizhi.mpi.model.PersonInoutExample" >
+    delete from person_inout
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.windaka.suizhi.mpi.model.PersonInout" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into person_inout (community_code, community_name, capture_time, 
+      device_code, device_name, device_type, 
+      device_type_name, device_location, person_code, 
+      person_name, open_result, open_result_name, 
+      open_type, open_type_name, channel_name, 
+      channel_seq, cap_image, cap_video, 
+      cap_type, cap_type_name, access
+      )
+    values (#{communityCode,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR}, #{captureTime,jdbcType=TIMESTAMP}, 
+      #{deviceCode,jdbcType=VARCHAR}, #{deviceName,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR}, 
+      #{deviceTypeName,jdbcType=VARCHAR}, #{deviceLocation,jdbcType=VARCHAR}, #{personCode,jdbcType=VARCHAR}, 
+      #{personName,jdbcType=VARCHAR}, #{openResult,jdbcType=SMALLINT}, #{openResultName,jdbcType=VARCHAR}, 
+      #{openType,jdbcType=SMALLINT}, #{openTypeName,jdbcType=VARCHAR}, #{channelName,jdbcType=VARCHAR}, 
+      #{channelSeq,jdbcType=SMALLINT}, #{capImage,jdbcType=VARCHAR}, #{capVideo,jdbcType=VARCHAR}, 
+      #{capType,jdbcType=VARCHAR}, #{capTypeName,jdbcType=VARCHAR}, #{access,jdbcType=SMALLINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.windaka.suizhi.mpi.model.PersonInout" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into person_inout
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="communityCode != null" >
+        community_code,
+      </if>
+      <if test="communityName != null" >
+        community_name,
+      </if>
+      <if test="captureTime != null" >
+        capture_time,
+      </if>
+      <if test="deviceCode != null" >
+        device_code,
+      </if>
+      <if test="deviceName != null" >
+        device_name,
+      </if>
+      <if test="deviceType != null" >
+        device_type,
+      </if>
+      <if test="deviceTypeName != null" >
+        device_type_name,
+      </if>
+      <if test="deviceLocation != null" >
+        device_location,
+      </if>
+      <if test="personCode != null" >
+        person_code,
+      </if>
+      <if test="personName != null" >
+        person_name,
+      </if>
+      <if test="openResult != null" >
+        open_result,
+      </if>
+      <if test="openResultName != null" >
+        open_result_name,
+      </if>
+      <if test="openType != null" >
+        open_type,
+      </if>
+      <if test="openTypeName != null" >
+        open_type_name,
+      </if>
+      <if test="channelName != null" >
+        channel_name,
+      </if>
+      <if test="channelSeq != null" >
+        channel_seq,
+      </if>
+      <if test="capImage != null" >
+        cap_image,
+      </if>
+      <if test="capVideo != null" >
+        cap_video,
+      </if>
+      <if test="capType != null" >
+        cap_type,
+      </if>
+      <if test="capTypeName != null" >
+        cap_type_name,
+      </if>
+      <if test="access != null" >
+        access,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="communityCode != null" >
+        #{communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="communityName != null" >
+        #{communityName,jdbcType=VARCHAR},
+      </if>
+      <if test="captureTime != null" >
+        #{captureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceCode != null" >
+        #{deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null" >
+        #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null" >
+        #{deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceTypeName != null" >
+        #{deviceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceLocation != null" >
+        #{deviceLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="personCode != null" >
+        #{personCode,jdbcType=VARCHAR},
+      </if>
+      <if test="personName != null" >
+        #{personName,jdbcType=VARCHAR},
+      </if>
+      <if test="openResult != null" >
+        #{openResult,jdbcType=SMALLINT},
+      </if>
+      <if test="openResultName != null" >
+        #{openResultName,jdbcType=VARCHAR},
+      </if>
+      <if test="openType != null" >
+        #{openType,jdbcType=SMALLINT},
+      </if>
+      <if test="openTypeName != null" >
+        #{openTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="channelName != null" >
+        #{channelName,jdbcType=VARCHAR},
+      </if>
+      <if test="channelSeq != null" >
+        #{channelSeq,jdbcType=SMALLINT},
+      </if>
+      <if test="capImage != null" >
+        #{capImage,jdbcType=VARCHAR},
+      </if>
+      <if test="capVideo != null" >
+        #{capVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="capType != null" >
+        #{capType,jdbcType=VARCHAR},
+      </if>
+      <if test="capTypeName != null" >
+        #{capTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="access != null" >
+        #{access,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.windaka.suizhi.mpi.model.PersonInoutExample" resultType="java.lang.Integer" >
+    select count(*) from person_inout
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update person_inout
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.communityCode != null" >
+        community_code = #{record.communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.communityName != null" >
+        community_name = #{record.communityName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.captureTime != null" >
+        capture_time = #{record.captureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.deviceCode != null" >
+        device_code = #{record.deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceName != null" >
+        device_name = #{record.deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceType != null" >
+        device_type = #{record.deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceTypeName != null" >
+        device_type_name = #{record.deviceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceLocation != null" >
+        device_location = #{record.deviceLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="record.personCode != null" >
+        person_code = #{record.personCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.personName != null" >
+        person_name = #{record.personName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.openResult != null" >
+        open_result = #{record.openResult,jdbcType=SMALLINT},
+      </if>
+      <if test="record.openResultName != null" >
+        open_result_name = #{record.openResultName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.openType != null" >
+        open_type = #{record.openType,jdbcType=SMALLINT},
+      </if>
+      <if test="record.openTypeName != null" >
+        open_type_name = #{record.openTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelName != null" >
+        channel_name = #{record.channelName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channelSeq != null" >
+        channel_seq = #{record.channelSeq,jdbcType=SMALLINT},
+      </if>
+      <if test="record.capImage != null" >
+        cap_image = #{record.capImage,jdbcType=VARCHAR},
+      </if>
+      <if test="record.capVideo != null" >
+        cap_video = #{record.capVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.capType != null" >
+        cap_type = #{record.capType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.capTypeName != null" >
+        cap_type_name = #{record.capTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.access != null" >
+        access = #{record.access,jdbcType=SMALLINT},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update person_inout
+    set id = #{record.id,jdbcType=INTEGER},
+      community_code = #{record.communityCode,jdbcType=VARCHAR},
+      community_name = #{record.communityName,jdbcType=VARCHAR},
+      capture_time = #{record.captureTime,jdbcType=TIMESTAMP},
+      device_code = #{record.deviceCode,jdbcType=VARCHAR},
+      device_name = #{record.deviceName,jdbcType=VARCHAR},
+      device_type = #{record.deviceType,jdbcType=VARCHAR},
+      device_type_name = #{record.deviceTypeName,jdbcType=VARCHAR},
+      device_location = #{record.deviceLocation,jdbcType=VARCHAR},
+      person_code = #{record.personCode,jdbcType=VARCHAR},
+      person_name = #{record.personName,jdbcType=VARCHAR},
+      open_result = #{record.openResult,jdbcType=SMALLINT},
+      open_result_name = #{record.openResultName,jdbcType=VARCHAR},
+      open_type = #{record.openType,jdbcType=SMALLINT},
+      open_type_name = #{record.openTypeName,jdbcType=VARCHAR},
+      channel_name = #{record.channelName,jdbcType=VARCHAR},
+      channel_seq = #{record.channelSeq,jdbcType=SMALLINT},
+      cap_image = #{record.capImage,jdbcType=VARCHAR},
+      cap_video = #{record.capVideo,jdbcType=VARCHAR},
+      cap_type = #{record.capType,jdbcType=VARCHAR},
+      cap_type_name = #{record.capTypeName,jdbcType=VARCHAR},
+      access = #{record.access,jdbcType=SMALLINT}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.windaka.suizhi.mpi.model.PersonInout" >
+    update person_inout
+    <set >
+      <if test="communityCode != null" >
+        community_code = #{communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="communityName != null" >
+        community_name = #{communityName,jdbcType=VARCHAR},
+      </if>
+      <if test="captureTime != null" >
+        capture_time = #{captureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceCode != null" >
+        device_code = #{deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null" >
+        device_name = #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null" >
+        device_type = #{deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceTypeName != null" >
+        device_type_name = #{deviceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceLocation != null" >
+        device_location = #{deviceLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="personCode != null" >
+        person_code = #{personCode,jdbcType=VARCHAR},
+      </if>
+      <if test="personName != null" >
+        person_name = #{personName,jdbcType=VARCHAR},
+      </if>
+      <if test="openResult != null" >
+        open_result = #{openResult,jdbcType=SMALLINT},
+      </if>
+      <if test="openResultName != null" >
+        open_result_name = #{openResultName,jdbcType=VARCHAR},
+      </if>
+      <if test="openType != null" >
+        open_type = #{openType,jdbcType=SMALLINT},
+      </if>
+      <if test="openTypeName != null" >
+        open_type_name = #{openTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="channelName != null" >
+        channel_name = #{channelName,jdbcType=VARCHAR},
+      </if>
+      <if test="channelSeq != null" >
+        channel_seq = #{channelSeq,jdbcType=SMALLINT},
+      </if>
+      <if test="capImage != null" >
+        cap_image = #{capImage,jdbcType=VARCHAR},
+      </if>
+      <if test="capVideo != null" >
+        cap_video = #{capVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="capType != null" >
+        cap_type = #{capType,jdbcType=VARCHAR},
+      </if>
+      <if test="capTypeName != null" >
+        cap_type_name = #{capTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="access != null" >
+        access = #{access,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.windaka.suizhi.mpi.model.PersonInout" >
+    update person_inout
+    set community_code = #{communityCode,jdbcType=VARCHAR},
+      community_name = #{communityName,jdbcType=VARCHAR},
+      capture_time = #{captureTime,jdbcType=TIMESTAMP},
+      device_code = #{deviceCode,jdbcType=VARCHAR},
+      device_name = #{deviceName,jdbcType=VARCHAR},
+      device_type = #{deviceType,jdbcType=VARCHAR},
+      device_type_name = #{deviceTypeName,jdbcType=VARCHAR},
+      device_location = #{deviceLocation,jdbcType=VARCHAR},
+      person_code = #{personCode,jdbcType=VARCHAR},
+      person_name = #{personName,jdbcType=VARCHAR},
+      open_result = #{openResult,jdbcType=SMALLINT},
+      open_result_name = #{openResultName,jdbcType=VARCHAR},
+      open_type = #{openType,jdbcType=SMALLINT},
+      open_type_name = #{openTypeName,jdbcType=VARCHAR},
+      channel_name = #{channelName,jdbcType=VARCHAR},
+      channel_seq = #{channelSeq,jdbcType=SMALLINT},
+      cap_image = #{capImage,jdbcType=VARCHAR},
+      cap_video = #{capVideo,jdbcType=VARCHAR},
+      cap_type = #{capType,jdbcType=VARCHAR},
+      cap_type_name = #{capTypeName,jdbcType=VARCHAR},
+      access = #{access,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

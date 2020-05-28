@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.ext.ExtFaceAttentionMapper">
+    <resultMap id="BaseResultMap" type="com.windaka.suizhi.webapi.model.ext.ExtFaceAttentionDetail">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="person_code" property="personCode" jdbcType="VARCHAR"/>
+        <result column="person_name" property="personName" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="id_no" property="idNo" jdbcType="VARCHAR"/>
+        <result column="attention_code" property="attentionCode" jdbcType="VARCHAR"/>
+        <result column="attention_name" property="attentionName" jdbcType="VARCHAR"/>
+        <result column="withdraw_time" property="withdrawTime" jdbcType="TIMESTAMP"/>
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="capture_time" property="captureTime" jdbcType="TIMESTAMP"/>
+        <result column="level" property="level" jdbcType="VARCHAR"/>
+        <result column="level_name" property="levelName" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="BIT"/>
+        <result column="reason" property="reason" jdbcType="VARCHAR"/>
+        <result column="img_url" property="imgUrl" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="create_user" property="createUser" jdbcType="VARCHAR"/>
+        <result column="create_user_id" property="createUserId" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="update_user" property="updateUser" jdbcType="VARCHAR"/>
+        <result column="update_user_id" property="updateUserId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, person_code, person_name, phone, id_no, attention_code, attention_name, withdraw_time,
+    start_time, end_time, capture_time, level, level_name, status, reason, img_url, create_time,
+    create_user, create_user_id, update_time, update_user, update_user_id
+  </sql>
+    <select id="selectPersonList" resultType="com.windaka.suizhi.webapi.model.ext.ExtFaceAttentionDetail" parameterType="com.windaka.suizhi.webapi.model.ext.ExtFaceAttentionDetail">
+        select
+        id, person_code, person_name, phone, id_no, attention_code, attention_name, withdraw_time,
+    start_time, end_time, capture_time, level, level_name, status, reason,
+        (case when img_url is null or img_url ='' then '' else CONCAT_WS('',#{imgUrl}, img_url ) end )
+        img_url,
+        create_time,
+        create_user, create_user_id, update_time, update_user, update_user_id,
+        CONCAT_WS('-',date_format(start_time,'%Y/%m/%d'),date_format(end_time,'%Y/%m/%d')) controlPeriods,
+        date_format(create_time,'%Y/%m/%d') comeInTimeStr,
+        date_format(start_time,'%Y-%m-%d %H:%i:%s') startTimeStr,
+        date_format(end_time,'%Y-%m-%d %H:%i:%s') endTimeStr
+        from face_attention_detail
+        where 1=1
+        <!-- 根据搜索主键查询条件 -->
+        <if test="startTime != null ">
+            AND end_time <![CDATA[>]]> #{startTime}
+        </if>
+        <if test="endTime != null ">
+            AND start_time <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="comeInStart != null ">
+            AND create_time <![CDATA[>=]]> #{comeInStart}
+        </if>
+        <if test="comeInEnd != null ">
+            AND create_time <![CDATA[<=]]> #{comeInEnd}
+        </if>
+        <if test="level != null and level !='' ">
+            AND level = #{level}
+        </if>
+        <if test="status != null  ">
+            AND status = #{status}
+        </if>
+        <if test="attentionCode != null and attentionCode !='' ">
+            AND attention_code = #{attentionCode}
+        </if>
+        <if test="createUserId != null and createUserId !=''">
+            AND create_user_id = #{createUserId}
+        </if>
+        <if test="userList!=null ">
+            and create_user_id in
+            <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                #{item.userId}
+            </foreach>
+        </if>
+        <if test="likeStr != null and likeStr !='' ">
+            AND (person_name LIKE concat("%",#{likeStr},"%") or phone LIKE concat("%",#{likeStr},"%") or id_no LIKE
+            concat("%",#{likeStr},"%"))
+        </if>
+        order by create_time desc
+    </select>
+
+<!--    根据code 获取重点人员-->
+    <select id="selectListByCode" parameterType="Map" resultType="Map">
+        select * from face_attention_detail
+        where 1=1
+        <if test="personId!=null and personId!=''">
+            and person_code=#{personId}
+        </if>
+        <if test="communityCode!=null and communityCode!=''">
+            and community_code in (${communityCode})
+        </if>
+        group by attention_code
+    </select>
+</mapper>

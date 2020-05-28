@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.CaptureAnimalMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.CaptureAnimal" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="capture_time" property="captureTime" jdbcType="TIMESTAMP" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="device_name" property="deviceName" jdbcType="VARCHAR" />
+    <result column="device_type" property="deviceType" jdbcType="VARCHAR" />
+    <result column="device_type_name" property="deviceTypeName" jdbcType="VARCHAR" />
+    <result column="device_location" property="deviceLocation" jdbcType="VARCHAR" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="community_name" property="communityName" jdbcType="VARCHAR" />
+    <result column="cap_breed" property="capBreed" jdbcType="SMALLINT" />
+    <result column="cap_breed_name" property="capBreedName" jdbcType="VARCHAR" />
+    <result column="cap_color" property="capColor" jdbcType="SMALLINT" />
+    <result column="cap_color_name" property="capColorName" jdbcType="VARCHAR" />
+    <result column="cap_rope" property="capRope" jdbcType="TINYINT" />
+    <result column="cap_image" property="capImage" jdbcType="VARCHAR" />
+    <result column="cap_video" property="capVideo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, capture_time, device_code, device_name, device_type, device_type_name, device_location, 
+    community_code, community_name, cap_breed, cap_breed_name, cap_color, cap_color_name, 
+    cap_rope, cap_image, cap_video
+  </sql>
+
+<!--  宠物抓拍 插入 ygy-->
+  <insert id="insertCapturePets" parameterType="com.windaka.suizhi.manageport.model.CaptureAnimal" >
+    insert into capture_animal (id, capture_time, device_code,
+      device_name, device_type, device_type_name,
+      device_location, community_code, community_name,
+      cap_breed, cap_breed_name, cap_color,
+      cap_color_name, cap_rope, cap_image,
+      cap_video)
+    values (#{id,jdbcType=INTEGER}, #{captureTime,jdbcType=TIMESTAMP}, #{deviceCode,jdbcType=VARCHAR},
+      #{deviceName,jdbcType=VARCHAR}, #{deviceType}, #{deviceTypeName,jdbcType=VARCHAR},
+      #{deviceLocation,jdbcType=VARCHAR}, #{communityCode,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR},
+      #{capBreed,jdbcType=SMALLINT}, #{capBreedName,jdbcType=VARCHAR}, #{capColor,jdbcType=SMALLINT},
+      #{capColorName,jdbcType=VARCHAR}, #{capRope,jdbcType=TINYINT}, #{capImage,jdbcType=VARCHAR},
+      #{capVideo,jdbcType=VARCHAR})
+  </insert>
+
+<!--宠物删除 ygy-->
+  <delete id="deleteById" parameterType="String" >
+    delete from capture_animal
+    where id= #{id}
+  </delete>
+
+<!--  宠物查询列表 ygy-->
+  <select id="selectCapturePetList" resultMap="BaseResultMap" parameterType="Map" >
+    select
+    <include refid="Base_Column_List" />
+    from capture_animal
+    where 1=1
+    <if test="deviceCode!=null and deviceCode!=''">
+        and device_code=#{deviceCode}
+    </if>
+    <if test="communityCode!=null and communityCode!=''">
+      and community_code=#{communityCode}
+    </if>
+    <if test="capBreed!=null and capBreed!=''">
+      and cap_breed=#{capBreed}
+    </if>
+    <if test="personCode!=null and personCode!=''">
+      and personCode=#{personCode}
+    </if>
+  </select>
+
+
+</mapper>

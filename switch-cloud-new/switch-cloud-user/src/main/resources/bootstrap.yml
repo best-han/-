@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: sjwl-user
+
+logging:
+  level:
+    root: info
+    com.windaka.suizhi: debug
+  file: logs/${spring.application.name}.log
+mybatis:
+  type-aliases-package: com.windaka.suizhi.user.model
+  mapper-locations: classpath:/mybatis-mappers/*
+  configuration:
+    mapUnderscoreToCamelCase: true
+    call-setters-on-nulls: true
+security:
+  oauth2:
+    resource:
+      #user-info-uri: http://10.10.6.54:9000/sjwl/oauth/user-me  #测试地址
+      user-info-uri: http://172.16.1.150:9000/sjwl/oauth/user-me  #公安测试地址
+      #user-info-uri: http://localhost:9000/sjwl/oauth/user-me
+      prefer-token-info: false
+server:
+  port: 8090

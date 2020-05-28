@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.CarGroupMapper" >
+    <!-- 查询人员布控库信息 by lxh -->
+    <select id="selectList" parameterType="com.windaka.suizhi.webapi.model.CarGroup"
+            resultType="com.windaka.suizhi.webapi.model.ext.ExtCarGroup">
+        SELECT
+        g.id id,
+        g.code code,
+        g.type_name typeName,
+        g.name 'name',
+        g.remarks remarks,
+        g.op_user opUser,
+        g.op_time opTime,
+        date_format(g.op_time,'%Y/%m/%d') opTimeStr,
+        CASE
+        WHEN d.num IS NULL THEN
+        0
+        ELSE
+        d.num
+        END as num
+        FROM
+        car_group g
+        LEFT JOIN (
+        SELECT
+        group_code,
+        COUNT(*) AS num
+        FROM
+        car_group_detail
+        where status = 0
+        <if test="userList!=null ">
+            and create_user_id in
+            <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                #{item.userId}
+            </foreach>
+        </if>
+        GROUP BY
+        group_code
+        ) d ON g.`code` = d.group_code
+        where 1=1
+        <if test="opUserId!=null and opUserId!=''">
+            and g.op_user_id=#{opUserId}
+        </if>
+        <if test="name!=null and name!=''">
+            and g.name LIKE concat("%",#{name},"%")
+        </if>
+        <if test="userList!=null ">
+            and g.op_user_id in
+            <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                #{item.userId}
+            </foreach>
+        </if>
+        order by op_time desc
+    </select>
+    <!-- 根据code获取车辆库 -->
+    <select id="getRecordByCode" parameterType="java.lang.String"
+            resultType="com.windaka.suizhi.webapi.model.ext.ExtCarGroup">
+        SELECT
+        id id,
+        type_name typeName,
+        name,
+        remarks remarks
+        from  car_group
+        where
+        code = #{code}
+    </select>
+    <!-- 根据车辆库名称获取车辆库 -->
+    <select id="getRecordByName" parameterType="java.lang.String"
+            resultType="com.windaka.suizhi.webapi.model.ext.ExtCarGroup">
+        SELECT
+        id id,
+        code,
+        type_name typeName,
+        name,
+        remarks remarks
+        from  car_group
+        where
+        name = #{name}
+    </select>
+    <!-- 根据车辆库名称获取车辆库 -->
+    <select id="getRecordById" parameterType="java.lang.Integer"
+            resultType="com.windaka.suizhi.webapi.model.ext.ExtCarGroup">
+        SELECT
+        id id,
+        code code,
+        type_name typeName,
+        name,
+        remarks remarks
+        from  car_group
+        where
+        id = #{id}
+    </select>
+    <!-- 添加车辆布控库 -->
+    <insert id="insertRecord" parameterType="com.windaka.suizhi.webapi.model.CarGroup">
+    insert into car_group
+    (code,
+     type,
+     type_name,
+     name,
+      remarks,
+      level,
+      level_name,
+      op_time,
+      op_user,
+      op_user_id
+      )
+    values
+     (#{code},
+     #{type},
+      #{typeName},
+      #{name},
+      #{remarks},
+      #{level},
+      #{levelName},
+      #{opTime},
+      #{opUser},
+      #{opUserId}
+      )
+  </insert>
+    <!-- 根据ID删除人员布控库 by lxh -->
+    <delete id="deleteGroupById" parameterType="java.lang.Integer">
+    delete from car_group
+    where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <!-- 根据ID更新人员布控库 -->
+    <update id="updateRecordById" parameterType="com.windaka.suizhi.webapi.model.CarGroup">
+        update car_group
+        <set>
+            <if test="type!= null">
+                type = #{type},
+            </if>
+            <if test="typeName != null">
+                type_name = #{typeName},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

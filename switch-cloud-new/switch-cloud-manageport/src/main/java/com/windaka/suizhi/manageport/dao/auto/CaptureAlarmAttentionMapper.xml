@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.auto.CaptureAlarmAttentionMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.CaptureAlarmAttention" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="attention_id" property="attentionId" jdbcType="INTEGER" />
+    <result column="duration" property="duration" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="level_name" property="levelName" jdbcType="VARCHAR" />
+    <result column="alarm_time" property="alarmTime" jdbcType="TIMESTAMP" />
+    <result column="last_capture_time" property="lastCaptureTime" jdbcType="TIMESTAMP" />
+    <result column="capture_location_code" property="captureLocationCode" jdbcType="VARCHAR" />
+    <result column="capture_location" property="captureLocation" jdbcType="VARCHAR" />
+    <result column="capture_device" property="captureDevice" jdbcType="VARCHAR" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="id_no" property="idNo" jdbcType="VARCHAR" />
+    <result column="pic_url" property="picUrl" jdbcType="VARCHAR" />
+    <result column="attention_code" property="attentionCode" jdbcType="VARCHAR" />
+    <result column="attention_name" property="attentionName" jdbcType="VARCHAR" />
+    <result column="handel_status" property="handelStatus" jdbcType="BIT" />
+    <result column="handel_user" property="handelUser" jdbcType="VARCHAR" />
+    <result column="handel_user_id" property="handelUserId" jdbcType="VARCHAR" />
+    <result column="handel_time" property="handelTime" jdbcType="TIMESTAMP" />
+    <result column="handel_conn" property="handelConn" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="create_user_id" property="createUserId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, attention_id, duration, level, level_name, alarm_time, last_capture_time, capture_location_code, 
+    capture_location, capture_device, reason, name, phone, id_no, pic_url, attention_code, 
+    attention_name, handel_status, handel_user, handel_user_id, handel_time, handel_conn, 
+    create_time, create_user, create_user_id
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.windaka.suizhi.manageport.model.CaptureAlarmAttentionExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from capture_alarm_attention
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from capture_alarm_attention
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from capture_alarm_attention
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.windaka.suizhi.manageport.model.CaptureAlarmAttentionExample" >
+    delete from capture_alarm_attention
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.windaka.suizhi.manageport.model.CaptureAlarmAttention" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into capture_alarm_attention (attention_id, duration, level, 
+      level_name, alarm_time, last_capture_time, 
+      capture_location_code, capture_location, capture_device, 
+      reason, name, phone, 
+      id_no, pic_url, attention_code, 
+      attention_name, handel_status, handel_user, 
+      handel_user_id, handel_time, handel_conn, 
+      create_time, create_user, create_user_id
+      )
+    values (#{attentionId,jdbcType=INTEGER}, #{duration,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, 
+      #{levelName,jdbcType=VARCHAR}, #{alarmTime,jdbcType=TIMESTAMP}, #{lastCaptureTime,jdbcType=TIMESTAMP}, 
+      #{captureLocationCode,jdbcType=VARCHAR}, #{captureLocation,jdbcType=VARCHAR}, #{captureDevice,jdbcType=VARCHAR}, 
+      #{reason,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{idNo,jdbcType=VARCHAR}, #{picUrl,jdbcType=VARCHAR}, #{attentionCode,jdbcType=VARCHAR}, 
+      #{attentionName,jdbcType=VARCHAR}, #{handelStatus,jdbcType=BIT}, #{handelUser,jdbcType=VARCHAR}, 
+      #{handelUserId,jdbcType=VARCHAR}, #{handelTime,jdbcType=TIMESTAMP}, #{handelConn,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{createUserId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.windaka.suizhi.manageport.model.CaptureAlarmAttention" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into capture_alarm_attention
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="attentionId != null" >
+        attention_id,
+      </if>
+      <if test="duration != null" >
+        duration,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="levelName != null" >
+        level_name,
+      </if>
+      <if test="alarmTime != null" >
+        alarm_time,
+      </if>
+      <if test="lastCaptureTime != null" >
+        last_capture_time,
+      </if>
+      <if test="captureLocationCode != null" >
+        capture_location_code,
+      </if>
+      <if test="captureLocation != null" >
+        capture_location,
+      </if>
+      <if test="captureDevice != null" >
+        capture_device,
+      </if>
+      <if test="reason != null" >
+        reason,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="idNo != null" >
+        id_no,
+      </if>
+      <if test="picUrl != null" >
+        pic_url,
+      </if>
+      <if test="attentionCode != null" >
+        attention_code,
+      </if>
+      <if test="attentionName != null" >
+        attention_name,
+      </if>
+      <if test="handelStatus != null" >
+        handel_status,
+      </if>
+      <if test="handelUser != null" >
+        handel_user,
+      </if>
+      <if test="handelUserId != null" >
+        handel_user_id,
+      </if>
+      <if test="handelTime != null" >
+        handel_time,
+      </if>
+      <if test="handelConn != null" >
+        handel_conn,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="createUserId != null" >
+        create_user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="attentionId != null" >
+        #{attentionId,jdbcType=INTEGER},
+      </if>
+      <if test="duration != null" >
+        #{duration,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="levelName != null" >
+        #{levelName,jdbcType=VARCHAR},
+      </if>
+      <if test="alarmTime != null" >
+        #{alarmTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastCaptureTime != null" >
+        #{lastCaptureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="captureLocationCode != null" >
+        #{captureLocationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="captureLocation != null" >
+        #{captureLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="captureDevice != null" >
+        #{captureDevice,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="idNo != null" >
+        #{idNo,jdbcType=VARCHAR},
+      </if>
+      <if test="picUrl != null" >
+        #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="attentionCode != null" >
+        #{attentionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="attentionName != null" >
+        #{attentionName,jdbcType=VARCHAR},
+      </if>
+      <if test="handelStatus != null" >
+        #{handelStatus,jdbcType=BIT},
+      </if>
+      <if test="handelUser != null" >
+        #{handelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="handelUserId != null" >
+        #{handelUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="handelTime != null" >
+        #{handelTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handelConn != null" >
+        #{handelConn,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.windaka.suizhi.manageport.model.CaptureAlarmAttentionExample" resultType="java.lang.Integer" >
+    select count(*) from capture_alarm_attention
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update capture_alarm_attention
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.attentionId != null" >
+        attention_id = #{record.attentionId,jdbcType=INTEGER},
+      </if>
+      <if test="record.duration != null" >
+        duration = #{record.duration,jdbcType=VARCHAR},
+      </if>
+      <if test="record.level != null" >
+        level = #{record.level,jdbcType=INTEGER},
+      </if>
+      <if test="record.levelName != null" >
+        level_name = #{record.levelName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.alarmTime != null" >
+        alarm_time = #{record.alarmTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.lastCaptureTime != null" >
+        last_capture_time = #{record.lastCaptureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.captureLocationCode != null" >
+        capture_location_code = #{record.captureLocationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.captureLocation != null" >
+        capture_location = #{record.captureLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="record.captureDevice != null" >
+        capture_device = #{record.captureDevice,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reason != null" >
+        reason = #{record.reason,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone != null" >
+        phone = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.idNo != null" >
+        id_no = #{record.idNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.picUrl != null" >
+        pic_url = #{record.picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.attentionCode != null" >
+        attention_code = #{record.attentionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.attentionName != null" >
+        attention_name = #{record.attentionName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handelStatus != null" >
+        handel_status = #{record.handelStatus,jdbcType=BIT},
+      </if>
+      <if test="record.handelUser != null" >
+        handel_user = #{record.handelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handelUserId != null" >
+        handel_user_id = #{record.handelUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handelTime != null" >
+        handel_time = #{record.handelTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.handelConn != null" >
+        handel_conn = #{record.handelConn,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createUser != null" >
+        create_user = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUserId != null" >
+        create_user_id = #{record.createUserId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update capture_alarm_attention
+    set id = #{record.id,jdbcType=INTEGER},
+      attention_id = #{record.attentionId,jdbcType=INTEGER},
+      duration = #{record.duration,jdbcType=VARCHAR},
+      level = #{record.level,jdbcType=INTEGER},
+      level_name = #{record.levelName,jdbcType=VARCHAR},
+      alarm_time = #{record.alarmTime,jdbcType=TIMESTAMP},
+      last_capture_time = #{record.lastCaptureTime,jdbcType=TIMESTAMP},
+      capture_location_code = #{record.captureLocationCode,jdbcType=VARCHAR},
+      capture_location = #{record.captureLocation,jdbcType=VARCHAR},
+      capture_device = #{record.captureDevice,jdbcType=VARCHAR},
+      reason = #{record.reason,jdbcType=VARCHAR},
+      name = #{record.name,jdbcType=VARCHAR},
+      phone = #{record.phone,jdbcType=VARCHAR},
+      id_no = #{record.idNo,jdbcType=VARCHAR},
+      pic_url = #{record.picUrl,jdbcType=VARCHAR},
+      attention_code = #{record.attentionCode,jdbcType=VARCHAR},
+      attention_name = #{record.attentionName,jdbcType=VARCHAR},
+      handel_status = #{record.handelStatus,jdbcType=BIT},
+      handel_user = #{record.handelUser,jdbcType=VARCHAR},
+      handel_user_id = #{record.handelUserId,jdbcType=VARCHAR},
+      handel_time = #{record.handelTime,jdbcType=TIMESTAMP},
+      handel_conn = #{record.handelConn,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      create_user = #{record.createUser,jdbcType=VARCHAR},
+      create_user_id = #{record.createUserId,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.windaka.suizhi.manageport.model.CaptureAlarmAttention" >
+    update capture_alarm_attention
+    <set >
+      <if test="attentionId != null" >
+        attention_id = #{attentionId,jdbcType=INTEGER},
+      </if>
+      <if test="duration != null" >
+        duration = #{duration,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="levelName != null" >
+        level_name = #{levelName,jdbcType=VARCHAR},
+      </if>
+      <if test="alarmTime != null" >
+        alarm_time = #{alarmTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastCaptureTime != null" >
+        last_capture_time = #{lastCaptureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="captureLocationCode != null" >
+        capture_location_code = #{captureLocationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="captureLocation != null" >
+        capture_location = #{captureLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="captureDevice != null" >
+        capture_device = #{captureDevice,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null" >
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="idNo != null" >
+        id_no = #{idNo,jdbcType=VARCHAR},
+      </if>
+      <if test="picUrl != null" >
+        pic_url = #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="attentionCode != null" >
+        attention_code = #{attentionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="attentionName != null" >
+        attention_name = #{attentionName,jdbcType=VARCHAR},
+      </if>
+      <if test="handelStatus != null" >
+        handel_status = #{handelStatus,jdbcType=BIT},
+      </if>
+      <if test="handelUser != null" >
+        handel_user = #{handelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="handelUserId != null" >
+        handel_user_id = #{handelUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="handelTime != null" >
+        handel_time = #{handelTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handelConn != null" >
+        handel_conn = #{handelConn,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        create_user_id = #{createUserId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.windaka.suizhi.manageport.model.CaptureAlarmAttention" >
+    update capture_alarm_attention
+    set attention_id = #{attentionId,jdbcType=INTEGER},
+      duration = #{duration,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER},
+      level_name = #{levelName,jdbcType=VARCHAR},
+      alarm_time = #{alarmTime,jdbcType=TIMESTAMP},
+      last_capture_time = #{lastCaptureTime,jdbcType=TIMESTAMP},
+      capture_location_code = #{captureLocationCode,jdbcType=VARCHAR},
+      capture_location = #{captureLocation,jdbcType=VARCHAR},
+      capture_device = #{captureDevice,jdbcType=VARCHAR},
+      reason = #{reason,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      id_no = #{idNo,jdbcType=VARCHAR},
+      pic_url = #{picUrl,jdbcType=VARCHAR},
+      attention_code = #{attentionCode,jdbcType=VARCHAR},
+      attention_name = #{attentionName,jdbcType=VARCHAR},
+      handel_status = #{handelStatus,jdbcType=BIT},
+      handel_user = #{handelUser,jdbcType=VARCHAR},
+      handel_user_id = #{handelUserId,jdbcType=VARCHAR},
+      handel_time = #{handelTime,jdbcType=TIMESTAMP},
+      handel_conn = #{handelConn,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_user_id = #{createUserId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

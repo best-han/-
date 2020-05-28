@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.BaseParkingMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.BaseParking" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="num" property="num" jdbcType="VARCHAR" />
+    <result column="person_code" property="personCode" jdbcType="VARCHAR" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="community_name" property="communityName" jdbcType="VARCHAR" />
+    <result column="op_time" property="opTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <insert id="insertBaseParking" parameterType="com.windaka.suizhi.manageport.model.BaseParking">
+    insert into base_parking (code,num,person_code,community_code,community_name,op_time)
+    values (#{code},#{num},#{personCode},#{communityCode},#{communityName},now())
+  </insert>
+
+  <update id="updateBaseParking" parameterType="com.windaka.suizhi.manageport.model.BaseParking">
+    update base_parking
+    set
+        num=#{num},
+        person_code=#{personCode},
+        community_code=#{communityCode},
+        community_name=#{communityName},
+        op_time=now()
+    where code=#{code}
+  </update>
+
+  <delete id="deleteBaseParking" parameterType="String">
+    delete from base_parking
+    where code=#{code}
+  </delete>
+
+  <select id="selectBaseParkingList" parameterType="Map" resultMap="BaseResultMap">
+    select *
+    from base_parking
+    where 1=1
+    <if test="id!=null">
+      and id=#{id}
+    </if>
+    <if test="code!=null">
+      and code=#{code}
+    </if>
+    <if test="num!=null">
+      and num=#{num}
+    </if>
+    <if test="personCode!=null">
+      and person_code=#{personCode}
+    </if>
+    <if test="communityCode!=null">
+      and community_code=#{communityCode}
+    </if>
+    <if test="communityName!=null">
+      and community_name=#{communityName}
+    </if>
+    <if test="opTime!=null">
+      and op_time=#{opTime}
+    </if>
+  </select>
+</mapper>

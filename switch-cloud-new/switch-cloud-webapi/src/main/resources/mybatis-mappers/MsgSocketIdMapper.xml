@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.MsgSocketIdMapper" >
+
+<!--    根据记录表查找 上一次查询的最大id-->
+    <select id="queryLastIdByRecordName" resultType="Integer" parameterType="String">
+        select max_id from msg_socket_id
+        where record_name=#{recordName}
+    </select>
+
+<!--    更新id记录表-->
+    <update id="updateLastIdByRecordName" parameterType="Map">
+        update msg_socket_id set max_id=#{maxId}
+        where record_name=#{recordName}
+    </update>
+</mapper>

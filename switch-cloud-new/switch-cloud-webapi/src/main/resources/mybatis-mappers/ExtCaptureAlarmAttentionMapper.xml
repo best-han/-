@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.ext.ExtCaptureAlarmAttentionMapper" >
+    <resultMap id="BaseResultMap" type="com.windaka.suizhi.webapi.model.CaptureAlarmAttention" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="attention_id" property="attentionId" jdbcType="INTEGER" />
+        <result column="duration" property="duration" jdbcType="VARCHAR" />
+        <result column="level" property="level" jdbcType="INTEGER" />
+        <result column="level_name" property="levelName" jdbcType="VARCHAR" />
+        <result column="alarm_time" property="alarmTime" jdbcType="TIMESTAMP" />
+        <result column="last_capture_time" property="lastCaptureTime" jdbcType="TIMESTAMP" />
+        <result column="capture_location" property="captureLocation" jdbcType="VARCHAR" />
+        <result column="capture_device" property="captureDevice" jdbcType="VARCHAR" />
+        <result column="reason" property="reason" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+        <result column="id_no" property="idNo" jdbcType="VARCHAR" />
+        <result column="pic_url" property="picUrl" jdbcType="VARCHAR" />
+        <result column="attention_code" property="attentionCode" jdbcType="VARCHAR" />
+        <result column="attention_name" property="attentionName" jdbcType="VARCHAR" />
+        <result column="handel_status" property="handelStatus" jdbcType="BIT" />
+        <result column="handel_user" property="handelUser" jdbcType="VARCHAR" />
+        <result column="handel_user_id" property="handelUserId" jdbcType="VARCHAR" />
+        <result column="handel_time" property="handelTime" jdbcType="TIMESTAMP" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+    id, attention_id, duration, level, level_name, alarm_time, last_capture_time, capture_location,
+    capture_device, reason, name, phone, id_no, pic_url, attention_code, attention_name,
+    handel_status, handel_user, handel_user_id, handel_time, create_time
+  </sql>
+    <select id="selectAttentionList" resultType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAlarmAttention"
+            parameterType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAlarmAttention" >
+        select
+        id, attention_id,
+        CASE
+        WHEN duration IS NULL THEN
+        ''
+        ELSE
+        CONCAT_WS('',duration,'小时')
+        END as duration
+         , level, level_name, alarm_time, last_capture_time, capture_location,
+        capture_device, reason, name, phone, id_no,  CONCAT_WS('',#{picUrl},pic_url)  picUrl, attention_code, attention_name,
+        handel_status, handel_user, handel_user_id, handel_time, handel_conn,create_time,create_user,create_user_id,
+        date_format(alarm_time,'%Y-%m-%d %H:%i:%s') alarmTimeStr,
+        date_format(last_capture_time,'%Y-%m-%d %H:%i:%s') lastCaptureTimeStr,
+        date_format(handel_time,'%Y年%m月%d日') handelTimeStr
+        from capture_alarm_attention
+        where 1=1
+        <!-- 根据搜索主键查询条件 -->
+        <if test="level != null and level !='' ">
+            AND level = #{level}
+        </if>
+        <if test="attentionCode != null and attentionCode !='' ">
+            AND attention_code = #{attentionCode}
+        </if>
+        <if test="handelStatus != null ">
+            AND handel_status = #{handelStatus}
+        </if>
+        <if test="handelUserId != null  and handelUserId !='' ">
+            AND handel_user_id = #{handelUserId}
+        </if>
+        <if test="userList!=null ">
+            and create_user_id in
+            <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                #{item.userId}
+            </foreach>
+        </if>
+        <if test="likeStr != null and likeStr!=''">
+            AND (name LIKE concat("%",#{likeStr},"%") or phone LIKE concat("%",#{likeStr},"%") or id_no LIKE
+            concat("%",#{likeStr},"%"))
+        </if>
+        order  by alarm_time desc
+    </select>
+    <!-- 获取重点关注预警总数 -->
+    <select id="countAttentionList" resultType="java.lang.Integer"
+            parameterType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAlarmAttention" >
+        select
+        count(*)
+        from capture_alarm_attention
+        where 1=1
+        <!-- 根据搜索主键查询条件 -->
+        <if test="level != null and level !='' ">
+            AND level = #{level}
+        </if>
+        <if test="attentionCode != null and attentionCode !='' ">
+            AND attention_code = #{attentionCode}
+        </if>
+        <if test="handelStatus != null ">
+            AND handel_status = #{handelStatus}
+        </if>
+        <if test="handelUserId != null  and handelUserId !='' ">
+            AND handel_user_id = #{handelUserId}
+        </if>
+        <if test="userList!=null ">
+            and create_user_id in
+            <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                #{item.userId}
+            </foreach>
+        </if>
+    </select>
+    <!-- 警务通 获取重点关注预警集合 -->
+    <select id="selectAPPAttentionList" resultType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAlarmAttention"
+            parameterType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAlarmAttention" >
+        select
+        c.id, c.attention_id,
+        CASE
+        WHEN c.duration IS NULL THEN
+        ''
+        ELSE
+        CONCAT_WS('',duration,'小时')
+        END as duration
+        ,
+        c.level,
+        c.level_name,
+        c.alarm_time,
+        c.last_capture_time,
+        c.capture_location,
+        c.capture_device,
+        c.reason, c.name,
+         c.phone,
+         c.id_no,
+         CONCAT_WS('',#{picUrl},c.pic_url)  picUrl,
+         c.attention_code,
+        CONCAT_WS('',c.attention_name,'未感知') attention_name,
+        c.handel_status,
+        c.handel_user,
+        c.handel_user_id,
+        c.handel_time,
+        c.handel_conn,
+        c.create_time,
+        c.create_user,
+        c.create_user_id,
+        b.community_name xqName,
+        date_format(c.alarm_time,'%Y-%m-%d %H:%i:%s') alarmTimeStr,
+        date_format(c.last_capture_time,'%Y-%m-%d %H:%i:%s') lastCaptureTimeStr,
+        date_format(c.handel_time,'%Y年%m月%d日') handelTimeStr
+        from capture_alarm_attention c
+        left join base_person b on c.person_code=b.code
+        where 1=1
+        <!-- 根据搜索主键查询条件 -->
+        <if test="level != null and level !='' ">
+            AND level = #{level}
+        </if>
+        <if test="attentionCode != null and attentionCode !='' ">
+            AND attention_code = #{attentionCode}
+        </if>
+        <if test="handelStatus != null ">
+            AND handel_status = #{handelStatus}
+        </if>
+        <if test="handelUserId != null  and handelUserId !='' ">
+            AND handel_user_id = #{handelUserId}
+        </if>
+        <if test="userList!=null ">
+            and c.create_user_id in
+            <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                #{item.userId}
+            </foreach>
+        </if>
+        <if test="likeStr != null and likeStr!=''">
+            AND (c.name LIKE concat("%",#{likeStr},"%") or c.phone LIKE concat("%",#{likeStr},"%") or b.community_name LIKE
+            concat("%",#{likeStr},"%") or c.id_no LIKE
+            concat("%",#{likeStr},"%"))
+        </if>
+        <if test=" orderByClause != null and orderByClause!=''">
+            order  by ${orderByClause}
+        </if>
+    </select>
+    <!-- 获取（人，车，重点关注）操作人员集合 -->
+    <select id="getUserListByType" resultType="com.windaka.suizhi.webapi.model.HtUser"
+            parameterType="com.windaka.suizhi.webapi.model.ext.ExtAlarmModel" >
+        select
+        handel_user username,
+        handel_user_id userId
+        from ${tableName}
+        where 1=1
+        and handel_user_id is not  null
+        and handel_user_id != ''
+        <!-- 根据搜索主键查询条件 -->
+        <if test="userList!=null ">
+            and create_user_id in
+            <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                #{item.userId}
+            </foreach>
+        </if>
+        GROUP BY handel_user_id
+    </select>
+    <!-- 获取（异常行为）操作人员集合 -->
+    <select id="getUserListByXq" resultType="com.windaka.suizhi.webapi.model.HtUser"
+            parameterType="com.windaka.suizhi.webapi.model.ext.ExtAlarmModel" >
+        select
+        handel_user username,
+        handel_user_id userId
+        from capture_abnormal
+        where 1=1
+        and handel_user_id is not  null
+        and handel_user_id != ''
+        <!-- 根据搜索主键查询条件 -->
+        <if test="xqList!=null ">
+            and community_code in
+            <foreach collection="xqList" item="item" close=")" open="(" separator=",">
+                #{item.xqCode}
+            </foreach>
+        </if>
+        GROUP BY handel_user_id
+    </select>
+    <update id="updateAttentionById" parameterType="com.windaka.suizhi.webapi.model.CaptureAlarmAttention" >
+        update capture_alarm_attention
+        <set >
+            <if test="handelStatus != null" >
+                handel_status = #{handelStatus},
+            </if>
+            <if test="handelTime != null" >
+                handel_time = #{handelTime},
+            </if>
+            <if test="handelUser != null and handelUser != ''" >
+                handel_user = #{handelUser},
+            </if>
+            <if test="handelUserId != null and handelUserId != ''" >
+                handel_user_id = #{handelUserId},
+            </if>
+            <if test="handelConn != null  and handelConn != ''" >
+                handel_conn = #{handelConn},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

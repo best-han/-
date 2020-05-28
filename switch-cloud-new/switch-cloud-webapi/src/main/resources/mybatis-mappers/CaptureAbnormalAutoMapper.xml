@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.auto.CaptureAbnormalAutoMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.webapi.model.CaptureAbnormal" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="capture_time" property="captureTime" jdbcType="TIMESTAMP" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="device_name" property="deviceName" jdbcType="VARCHAR" />
+    <result column="device_type" property="deviceType" jdbcType="VARCHAR" />
+    <result column="device_type_name" property="deviceTypeName" jdbcType="VARCHAR" />
+    <result column="device_location" property="deviceLocation" jdbcType="VARCHAR" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="community_name" property="communityName" jdbcType="VARCHAR" />
+    <result column="event" property="event" jdbcType="SMALLINT" />
+    <result column="event_name" property="eventName" jdbcType="VARCHAR" />
+    <result column="begin_time" property="beginTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="cap_image" property="capImage" jdbcType="VARCHAR" />
+    <result column="cap_video" property="capVideo" jdbcType="VARCHAR" />
+    <result column="handel_status" property="handelStatus" jdbcType="TINYINT" />
+    <result column="handel_time" property="handelTime" jdbcType="TIMESTAMP" />
+    <result column="handel_user" property="handelUser" jdbcType="VARCHAR" />
+    <result column="handel_user_id" property="handelUserId" jdbcType="VARCHAR" />
+    <result column="handel_conn" property="handelConn" jdbcType="VARCHAR" />
+    <result column="handel_advise" property="handelAdvise" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, capture_time, device_code, device_name, device_type, device_type_name, device_location, 
+    community_code, community_name, event, event_name, begin_time, end_time, cap_image, 
+    cap_video, handel_status, handel_time, handel_user, handel_user_id, handel_conn, 
+    handel_advise, code
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.windaka.suizhi.webapi.model.CaptureAbnormalExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from capture_abnormal
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from capture_abnormal
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from capture_abnormal
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.windaka.suizhi.webapi.model.CaptureAbnormalExample" >
+    delete from capture_abnormal
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.windaka.suizhi.webapi.model.CaptureAbnormal" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into capture_abnormal (capture_time, device_code, device_name, 
+      device_type, device_type_name, device_location, 
+      community_code, community_name, event, 
+      event_name, begin_time, end_time, 
+      cap_image, cap_video, handel_status, 
+      handel_time, handel_user, handel_user_id, 
+      handel_conn, handel_advise, code
+      )
+    values (#{captureTime,jdbcType=TIMESTAMP}, #{deviceCode,jdbcType=VARCHAR}, #{deviceName,jdbcType=VARCHAR}, 
+      #{deviceType,jdbcType=VARCHAR}, #{deviceTypeName,jdbcType=VARCHAR}, #{deviceLocation,jdbcType=VARCHAR}, 
+      #{communityCode,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR}, #{event,jdbcType=SMALLINT}, 
+      #{eventName,jdbcType=VARCHAR}, #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{capImage,jdbcType=VARCHAR}, #{capVideo,jdbcType=VARCHAR}, #{handelStatus,jdbcType=TINYINT}, 
+      #{handelTime,jdbcType=TIMESTAMP}, #{handelUser,jdbcType=VARCHAR}, #{handelUserId,jdbcType=VARCHAR}, 
+      #{handelConn,jdbcType=VARCHAR}, #{handelAdvise,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.windaka.suizhi.webapi.model.CaptureAbnormal" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into capture_abnormal
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="captureTime != null" >
+        capture_time,
+      </if>
+      <if test="deviceCode != null" >
+        device_code,
+      </if>
+      <if test="deviceName != null" >
+        device_name,
+      </if>
+      <if test="deviceType != null" >
+        device_type,
+      </if>
+      <if test="deviceTypeName != null" >
+        device_type_name,
+      </if>
+      <if test="deviceLocation != null" >
+        device_location,
+      </if>
+      <if test="communityCode != null" >
+        community_code,
+      </if>
+      <if test="communityName != null" >
+        community_name,
+      </if>
+      <if test="event != null" >
+        event,
+      </if>
+      <if test="eventName != null" >
+        event_name,
+      </if>
+      <if test="beginTime != null" >
+        begin_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="capImage != null" >
+        cap_image,
+      </if>
+      <if test="capVideo != null" >
+        cap_video,
+      </if>
+      <if test="handelStatus != null" >
+        handel_status,
+      </if>
+      <if test="handelTime != null" >
+        handel_time,
+      </if>
+      <if test="handelUser != null" >
+        handel_user,
+      </if>
+      <if test="handelUserId != null" >
+        handel_user_id,
+      </if>
+      <if test="handelConn != null" >
+        handel_conn,
+      </if>
+      <if test="handelAdvise != null" >
+        handel_advise,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="captureTime != null" >
+        #{captureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceCode != null" >
+        #{deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null" >
+        #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null" >
+        #{deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceTypeName != null" >
+        #{deviceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceLocation != null" >
+        #{deviceLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="communityCode != null" >
+        #{communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="communityName != null" >
+        #{communityName,jdbcType=VARCHAR},
+      </if>
+      <if test="event != null" >
+        #{event,jdbcType=SMALLINT},
+      </if>
+      <if test="eventName != null" >
+        #{eventName,jdbcType=VARCHAR},
+      </if>
+      <if test="beginTime != null" >
+        #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="capImage != null" >
+        #{capImage,jdbcType=VARCHAR},
+      </if>
+      <if test="capVideo != null" >
+        #{capVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="handelStatus != null" >
+        #{handelStatus,jdbcType=TINYINT},
+      </if>
+      <if test="handelTime != null" >
+        #{handelTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handelUser != null" >
+        #{handelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="handelUserId != null" >
+        #{handelUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="handelConn != null" >
+        #{handelConn,jdbcType=VARCHAR},
+      </if>
+      <if test="handelAdvise != null" >
+        #{handelAdvise,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.windaka.suizhi.webapi.model.CaptureAbnormalExample" resultType="java.lang.Integer" >
+    select count(*) from capture_abnormal
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update capture_abnormal
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.captureTime != null" >
+        capture_time = #{record.captureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.deviceCode != null" >
+        device_code = #{record.deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceName != null" >
+        device_name = #{record.deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceType != null" >
+        device_type = #{record.deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceTypeName != null" >
+        device_type_name = #{record.deviceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceLocation != null" >
+        device_location = #{record.deviceLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="record.communityCode != null" >
+        community_code = #{record.communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.communityName != null" >
+        community_name = #{record.communityName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.event != null" >
+        event = #{record.event,jdbcType=SMALLINT},
+      </if>
+      <if test="record.eventName != null" >
+        event_name = #{record.eventName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.beginTime != null" >
+        begin_time = #{record.beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.endTime != null" >
+        end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.capImage != null" >
+        cap_image = #{record.capImage,jdbcType=VARCHAR},
+      </if>
+      <if test="record.capVideo != null" >
+        cap_video = #{record.capVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handelStatus != null" >
+        handel_status = #{record.handelStatus,jdbcType=TINYINT},
+      </if>
+      <if test="record.handelTime != null" >
+        handel_time = #{record.handelTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.handelUser != null" >
+        handel_user = #{record.handelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handelUserId != null" >
+        handel_user_id = #{record.handelUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handelConn != null" >
+        handel_conn = #{record.handelConn,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handelAdvise != null" >
+        handel_advise = #{record.handelAdvise,jdbcType=VARCHAR},
+      </if>
+      <if test="record.code != null" >
+        code = #{record.code,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update capture_abnormal
+    set id = #{record.id,jdbcType=INTEGER},
+      capture_time = #{record.captureTime,jdbcType=TIMESTAMP},
+      device_code = #{record.deviceCode,jdbcType=VARCHAR},
+      device_name = #{record.deviceName,jdbcType=VARCHAR},
+      device_type = #{record.deviceType,jdbcType=VARCHAR},
+      device_type_name = #{record.deviceTypeName,jdbcType=VARCHAR},
+      device_location = #{record.deviceLocation,jdbcType=VARCHAR},
+      community_code = #{record.communityCode,jdbcType=VARCHAR},
+      community_name = #{record.communityName,jdbcType=VARCHAR},
+      event = #{record.event,jdbcType=SMALLINT},
+      event_name = #{record.eventName,jdbcType=VARCHAR},
+      begin_time = #{record.beginTime,jdbcType=TIMESTAMP},
+      end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      cap_image = #{record.capImage,jdbcType=VARCHAR},
+      cap_video = #{record.capVideo,jdbcType=VARCHAR},
+      handel_status = #{record.handelStatus,jdbcType=TINYINT},
+      handel_time = #{record.handelTime,jdbcType=TIMESTAMP},
+      handel_user = #{record.handelUser,jdbcType=VARCHAR},
+      handel_user_id = #{record.handelUserId,jdbcType=VARCHAR},
+      handel_conn = #{record.handelConn,jdbcType=VARCHAR},
+      handel_advise = #{record.handelAdvise,jdbcType=VARCHAR},
+      code = #{record.code,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.windaka.suizhi.webapi.model.CaptureAbnormal" >
+    update capture_abnormal
+    <set >
+      <if test="captureTime != null" >
+        capture_time = #{captureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceCode != null" >
+        device_code = #{deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null" >
+        device_name = #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null" >
+        device_type = #{deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceTypeName != null" >
+        device_type_name = #{deviceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceLocation != null" >
+        device_location = #{deviceLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="communityCode != null" >
+        community_code = #{communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="communityName != null" >
+        community_name = #{communityName,jdbcType=VARCHAR},
+      </if>
+      <if test="event != null" >
+        event = #{event,jdbcType=SMALLINT},
+      </if>
+      <if test="eventName != null" >
+        event_name = #{eventName,jdbcType=VARCHAR},
+      </if>
+      <if test="beginTime != null" >
+        begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="capImage != null" >
+        cap_image = #{capImage,jdbcType=VARCHAR},
+      </if>
+      <if test="capVideo != null" >
+        cap_video = #{capVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="handelStatus != null" >
+        handel_status = #{handelStatus,jdbcType=TINYINT},
+      </if>
+      <if test="handelTime != null" >
+        handel_time = #{handelTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handelUser != null" >
+        handel_user = #{handelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="handelUserId != null" >
+        handel_user_id = #{handelUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="handelConn != null" >
+        handel_conn = #{handelConn,jdbcType=VARCHAR},
+      </if>
+      <if test="handelAdvise != null" >
+        handel_advise = #{handelAdvise,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.windaka.suizhi.webapi.model.CaptureAbnormal" >
+    update capture_abnormal
+    set capture_time = #{captureTime,jdbcType=TIMESTAMP},
+      device_code = #{deviceCode,jdbcType=VARCHAR},
+      device_name = #{deviceName,jdbcType=VARCHAR},
+      device_type = #{deviceType,jdbcType=VARCHAR},
+      device_type_name = #{deviceTypeName,jdbcType=VARCHAR},
+      device_location = #{deviceLocation,jdbcType=VARCHAR},
+      community_code = #{communityCode,jdbcType=VARCHAR},
+      community_name = #{communityName,jdbcType=VARCHAR},
+      event = #{event,jdbcType=SMALLINT},
+      event_name = #{eventName,jdbcType=VARCHAR},
+      begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      cap_image = #{capImage,jdbcType=VARCHAR},
+      cap_video = #{capVideo,jdbcType=VARCHAR},
+      handel_status = #{handelStatus,jdbcType=TINYINT},
+      handel_time = #{handelTime,jdbcType=TIMESTAMP},
+      handel_user = #{handelUser,jdbcType=VARCHAR},
+      handel_user_id = #{handelUserId,jdbcType=VARCHAR},
+      handel_conn = #{handelConn,jdbcType=VARCHAR},
+      handel_advise = #{handelAdvise,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

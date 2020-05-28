@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.SysDicDataMapper">
+
+
+    <!--    根据字典标签和key值  得到value-->
+    <select id="getDictValue" resultType="String" parameterType="Map">
+       select dic.dic_value value
+        from sys_dic_data dic
+        where dic.dic_code=#{dicCode} and dic.dic_key=#{dicKey}
+    </select>
+
+    <!--    根据字典标签和value值  得到key-->
+    <select id="getDictKey" resultType="String" parameterType="Map">
+        select dic.dic_key level from sys_dic_data dic
+     where dic_code=#{dicCode} and dic_value=#{dicValue}
+     limit 1
+    </select>
+</mapper>

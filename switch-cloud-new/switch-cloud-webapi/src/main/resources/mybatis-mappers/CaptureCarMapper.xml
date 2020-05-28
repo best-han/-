@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.CaptureCarMapper">
+    <!--    socket查询抓拍人员列表推送-->
+    <select id="queryCapCarList" parameterType="Integer" resultType="Map">
+        select
+        car.id  id,
+        device_name capAddress,
+        date_format(capture_time,'%Y-%m-%d %H:%i:%s') capTime,
+        cap_image capImage,
+        full_image fullImage,
+        car.community_code xqCode,
+        car.community_name xqName,
+        car.car_num carNum
+        from capture_car car
+         where  car.id &gt; #{id}
+            order by car.id asc limit 200
+    </select>
+
+<!--    今日车辆抓拍数量-->
+    <select id="selectCarCapNum" resultType="int" parameterType="Map">
+        select count(*) from capture_car car
+        where date(car.capture_time)=date(now())
+        <if test="xqCode.size()>0 ">
+            and car.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+
+    <!--车辆实时抓拍查询-->
+    <select id="queryCarCaptureList" resultType="java.util.Map" parameterType="map">
+        select
+               a.id,
+               date_format(capture_time,'%Y-%m-%d %H:%i:%s') as capTime,
+               device_name as capAddress,
+               cap_image as capImage,
+               device_location as capDeviceLocation,
+               full_image as fullImage
+        from capture_car a
+        <!--left join base_community c on a.community_code=c.code
+       inner join (select area_id from ht_area  where parent_ids like concat('%',#{params.areaId},'%')) area on area.area_id=c.area-->
+       where 1=1
+       <if test="params.xqCode != null and params.xqCode !=''">
+           and a.community_code in (${params.xqCode})
+       </if>
+       <if test="params.carNum!=null and params.carNum!=''">
+           and a.car_num=#{params.carNum}
+       </if>
+       <if test="params.carColorName!=null and params.carColorName!=''">
+           <if test="params.carColorName=='未识别'">
+               and a.car_color_name='' or a.car_color_name is NULL
+           </if>
+           <if test="params.carColorName!='未识别'">
+               and a.car_color_name=#{params.carColorName}
+           </if>
+       </if>
+       <if test="params.carTypeName!=null and params.carTypeName!=''">
+           <if test="params.carTypeName=='未识别'">
+               and a.car_type_name='' or a.car_type_name is NULL
+           </if>
+           <if test="params.carTypeName!='未识别'">
+               and a.car_type_name=#{params.carTypeName}
+           </if>
+       </if>
+       <if test="params.carBrandName!=null and params.carBrandName!=''">
+           <if test="params.carBrandName=='未识别'">
+               and a.car_brand_name='' or a.car_brand_name is NULL
+           </if>
+           <if test="params.carBrandName!='未识别'">
+               and a.car_brand_name=#{params.carBrandName}
+           </if>
+       </if>
+       <if test="params.startTime !=null and params.startTime !='' and params.endTime !=null and params.endTime!=''">
+           and a.capture_time between STR_TO_DATE(#{params.startTime},'%Y-%m-%d %H:%i:%s') and STR_TO_DATE(#{params.endTime},'%Y-%m-%d %H:%i:%s')
+       </if>
+       order by a.capture_time desc
+   </select>
+
+    <!--车牌模糊查询-->
+    <select id="queryCarNumLikeStr" resultType="java.util.Map" parameterType="String">
+        select carNum from (
+          select car_num carNum,community_code xqCode from capture_car GROUP BY car_num) num
+        where xqCode in(${xqCode}) and carNum like concat('%',#{carNumLikeStr},'%')
+    </select>
+
+
+</mapper>

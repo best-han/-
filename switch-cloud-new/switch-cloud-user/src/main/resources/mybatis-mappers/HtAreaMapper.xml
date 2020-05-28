@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.user.dao.auto.HtAreaMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.user.model.HtArea" >
+    <id column="area_id" property="areaId" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="VARCHAR" />
+    <result column="parent_ids" property="parentIds" jdbcType="VARCHAR" />
+    <result column="tree_sort" property="treeSort" jdbcType="DECIMAL" />
+    <result column="tree_sorts" property="treeSorts" jdbcType="VARCHAR" />
+    <result column="tree_leaf" property="treeLeaf" jdbcType="CHAR" />
+    <result column="tree_level" property="treeLevel" jdbcType="DECIMAL" />
+    <result column="tree_names" property="treeNames" jdbcType="VARCHAR" />
+    <result column="area_name" property="areaName" jdbcType="VARCHAR" />
+    <result column="area_type" property="areaType" jdbcType="CHAR" />
+    <result column="status" property="status" jdbcType="CHAR" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    area_id, parent_id, parent_ids, tree_sort, tree_sorts, tree_leaf, tree_level, tree_names, 
+    area_name, area_type, status, create_by, create_date, update_by, update_date, remarks
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.windaka.suizhi.user.model.HtAreaExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from ht_area
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from ht_area
+    where area_id = #{areaId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ht_area
+    where area_id = #{areaId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.windaka.suizhi.user.model.HtAreaExample" >
+    delete from ht_area
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.windaka.suizhi.user.model.HtArea" >
+    <selectKey resultType="java.lang.String" keyProperty="areaId" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ht_area (parent_id, parent_ids, tree_sort, 
+      tree_sorts, tree_leaf, tree_level, 
+      tree_names, area_name, area_type, 
+      status, create_by, create_date, 
+      update_by, update_date, remarks
+      )
+    values (#{parentId,jdbcType=VARCHAR}, #{parentIds,jdbcType=VARCHAR}, #{treeSort,jdbcType=DECIMAL}, 
+      #{treeSorts,jdbcType=VARCHAR}, #{treeLeaf,jdbcType=CHAR}, #{treeLevel,jdbcType=DECIMAL}, 
+      #{treeNames,jdbcType=VARCHAR}, #{areaName,jdbcType=VARCHAR}, #{areaType,jdbcType=CHAR}, 
+      #{status,jdbcType=CHAR}, #{createBy,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.windaka.suizhi.user.model.HtArea" >
+    <selectKey resultType="java.lang.String" keyProperty="areaId" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ht_area
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="parentIds != null" >
+        parent_ids,
+      </if>
+      <if test="treeSort != null" >
+        tree_sort,
+      </if>
+      <if test="treeSorts != null" >
+        tree_sorts,
+      </if>
+      <if test="treeLeaf != null" >
+        tree_leaf,
+      </if>
+      <if test="treeLevel != null" >
+        tree_level,
+      </if>
+      <if test="treeNames != null" >
+        tree_names,
+      </if>
+      <if test="areaName != null" >
+        area_name,
+      </if>
+      <if test="areaType != null" >
+        area_type,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createBy != null" >
+        create_by,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="updateBy != null" >
+        update_by,
+      </if>
+      <if test="updateDate != null" >
+        update_date,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="parentId != null" >
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentIds != null" >
+        #{parentIds,jdbcType=VARCHAR},
+      </if>
+      <if test="treeSort != null" >
+        #{treeSort,jdbcType=DECIMAL},
+      </if>
+      <if test="treeSorts != null" >
+        #{treeSorts,jdbcType=VARCHAR},
+      </if>
+      <if test="treeLeaf != null" >
+        #{treeLeaf,jdbcType=CHAR},
+      </if>
+      <if test="treeLevel != null" >
+        #{treeLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="treeNames != null" >
+        #{treeNames,jdbcType=VARCHAR},
+      </if>
+      <if test="areaName != null" >
+        #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="areaType != null" >
+        #{areaType,jdbcType=CHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.windaka.suizhi.user.model.HtAreaExample" resultType="java.lang.Integer" >
+    select count(*) from ht_area
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ht_area
+    <set >
+      <if test="record.areaId != null" >
+        area_id = #{record.areaId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentId != null" >
+        parent_id = #{record.parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentIds != null" >
+        parent_ids = #{record.parentIds,jdbcType=VARCHAR},
+      </if>
+      <if test="record.treeSort != null" >
+        tree_sort = #{record.treeSort,jdbcType=DECIMAL},
+      </if>
+      <if test="record.treeSorts != null" >
+        tree_sorts = #{record.treeSorts,jdbcType=VARCHAR},
+      </if>
+      <if test="record.treeLeaf != null" >
+        tree_leaf = #{record.treeLeaf,jdbcType=CHAR},
+      </if>
+      <if test="record.treeLevel != null" >
+        tree_level = #{record.treeLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="record.treeNames != null" >
+        tree_names = #{record.treeNames,jdbcType=VARCHAR},
+      </if>
+      <if test="record.areaName != null" >
+        area_name = #{record.areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.areaType != null" >
+        area_type = #{record.areaType,jdbcType=CHAR},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=CHAR},
+      </if>
+      <if test="record.createBy != null" >
+        create_by = #{record.createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateBy != null" >
+        update_by = #{record.updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateDate != null" >
+        update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.remarks != null" >
+        remarks = #{record.remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update ht_area
+    set area_id = #{record.areaId,jdbcType=VARCHAR},
+      parent_id = #{record.parentId,jdbcType=VARCHAR},
+      parent_ids = #{record.parentIds,jdbcType=VARCHAR},
+      tree_sort = #{record.treeSort,jdbcType=DECIMAL},
+      tree_sorts = #{record.treeSorts,jdbcType=VARCHAR},
+      tree_leaf = #{record.treeLeaf,jdbcType=CHAR},
+      tree_level = #{record.treeLevel,jdbcType=DECIMAL},
+      tree_names = #{record.treeNames,jdbcType=VARCHAR},
+      area_name = #{record.areaName,jdbcType=VARCHAR},
+      area_type = #{record.areaType,jdbcType=CHAR},
+      status = #{record.status,jdbcType=CHAR},
+      create_by = #{record.createBy,jdbcType=VARCHAR},
+      create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      update_by = #{record.updateBy,jdbcType=VARCHAR},
+      update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+      remarks = #{record.remarks,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.windaka.suizhi.user.model.HtArea" >
+    update ht_area
+    <set >
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentIds != null" >
+        parent_ids = #{parentIds,jdbcType=VARCHAR},
+      </if>
+      <if test="treeSort != null" >
+        tree_sort = #{treeSort,jdbcType=DECIMAL},
+      </if>
+      <if test="treeSorts != null" >
+        tree_sorts = #{treeSorts,jdbcType=VARCHAR},
+      </if>
+      <if test="treeLeaf != null" >
+        tree_leaf = #{treeLeaf,jdbcType=CHAR},
+      </if>
+      <if test="treeLevel != null" >
+        tree_level = #{treeLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="treeNames != null" >
+        tree_names = #{treeNames,jdbcType=VARCHAR},
+      </if>
+      <if test="areaName != null" >
+        area_name = #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="areaType != null" >
+        area_type = #{areaType,jdbcType=CHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=CHAR},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where area_id = #{areaId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.windaka.suizhi.user.model.HtArea" >
+    update ht_area
+    set parent_id = #{parentId,jdbcType=VARCHAR},
+      parent_ids = #{parentIds,jdbcType=VARCHAR},
+      tree_sort = #{treeSort,jdbcType=DECIMAL},
+      tree_sorts = #{treeSorts,jdbcType=VARCHAR},
+      tree_leaf = #{treeLeaf,jdbcType=CHAR},
+      tree_level = #{treeLevel,jdbcType=DECIMAL},
+      tree_names = #{treeNames,jdbcType=VARCHAR},
+      area_name = #{areaName,jdbcType=VARCHAR},
+      area_type = #{areaType,jdbcType=CHAR},
+      status = #{status,jdbcType=CHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    where area_id = #{areaId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.BaseRoomMapper">
+    <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.BaseRoom">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="community_code" property="communityCode" jdbcType="VARCHAR"/>
+        <result column="community_name" property="communityName" jdbcType="VARCHAR"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="building_num" property="buildingNum" jdbcType="SMALLINT"/>
+        <result column="building_name" property="buildingName" jdbcType="VARCHAR"/>
+        <result column="unit_num" property="unitNum" jdbcType="SMALLINT"/>
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR"/>
+        <result column="room_num" property="roomNum" jdbcType="SMALLINT"/>
+        <result column="room_name" property="roomName" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="SMALLINT"/>
+        <result column="type_name" property="typeName" jdbcType="VARCHAR"/>
+        <result column="building_area" property="buildingArea" jdbcType="DECIMAL"/>
+        <result column="usable_area" property="usableArea" jdbcType="DECIMAL"/>
+        <result column="ownership" property="ownership" jdbcType="VARCHAR"/>
+        <result column="building_location" property="buildingLocation" jdbcType="VARCHAR"/>
+        <result column="op_date" property="opDate" jdbcType="TIMESTAMP"/>
+        <result column="building_code" property="buildingCode" jdbcType="VARCHAR"/>
+        <result column="unit_code" property="unitCode" jdbcType="VARCHAR"/>
+        <result column="use_type" property="useType" jdbcType="SMALLINT"/>
+        <result column="use_type_name" property="useTypeName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, community_code, community_name, code, building_num, building_name, unit_num, 
+    unit_name, room_num, room_name, type, type_name, building_area, usable_area, ownership, 
+    building_location, op_date,building_code,unit_code,use_type,use_type_name
+  </sql>
+
+    <!--    根据roomCode 查找房间名-->
+    <select id="queryHouseNameByRoomCode" parameterType="String" resultType="String">
+        select CONCAT_WS(" ",building_name,unit_name,room_name) houseName from base_room
+        where  code=#{roomCode}
+    </select>
+<!--    根据roomCode 查找房间名 小区名+房间名-->
+    <select id="queryHouseNameByRoomCode2" parameterType="String" resultType="String">
+        select CONCAT_WS(" ",community_name,building_name,unit_name,room_name) houseName from base_room
+        where  code=#{roomCode}
+    </select>
+    <select id="queryHouseNameByRoomCode3" parameterType="Map" resultType="String">
+        select CONCAT_WS(" ",community_name,building_name,unit_name,room_name) houseName from base_room
+        where  1=1
+        <if test="roomCode!=null and roomCode!=''">
+            and code=#{roomCode}
+        </if>
+        <if test="communityCode!=null and communityCode!=''">
+            and community_code=#{communityCode}
+        </if>
+    </select>
+
+    <!--  新增房间信息 ygy-->
+    <insert id="insertRoom" parameterType="com.windaka.suizhi.manageport.model.BaseRoom">
+    insert into base_room (id, community_code, community_name, 
+      code, building_num, building_name, 
+      unit_num, unit_name, room_num, 
+      room_name, type, type_name, 
+      building_area, usable_area, ownership, 
+      building_location, op_date,building_code,unit_code,use_type,use_type_name)
+    values (#{id,jdbcType=INTEGER}, #{communityCode,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR}, 
+      #{code,jdbcType=VARCHAR}, #{buildingNum,jdbcType=SMALLINT}, #{buildingName,jdbcType=VARCHAR}, 
+      #{unitNum,jdbcType=SMALLINT}, #{unitName,jdbcType=VARCHAR}, #{roomNum,jdbcType=SMALLINT}, 
+      #{roomName,jdbcType=VARCHAR}, #{type,jdbcType=SMALLINT}, #{typeName,jdbcType=VARCHAR}, 
+      #{buildingArea,jdbcType=DECIMAL}, #{usableArea,jdbcType=DECIMAL}, #{ownership,jdbcType=VARCHAR}, 
+      #{buildingLocation,jdbcType=VARCHAR}, now(),#{buildingCode,jdbcType=VARCHAR},#{unitCode,jdbcType=VARCHAR},#{useType},#{useTypeName})
+  </insert>
+
+    <!--  删除房间信息 by code  ygy-->
+    <delete id="deleteRoomByCode" parameterType="String">
+    delete from base_room
+    where code=#{code}
+  </delete>
+
+    <select id="selectOtherRoomsInUnit" resultMap="BaseResultMap" parameterType="Map">
+        select distinct code,room_num,room_name,type,type_name,building_area,usable_area,ownership
+        from base_room
+        where unit_code = #{unitCode} and code != #{code}
+    </select>
+
+    <!--  更新房间信息 by code ygy-->
+    <update id="updateRoomByCode" parameterType="com.windaka.suizhi.manageport.model.BaseRoom">
+    update base_room
+    set
+      code = #{code,jdbcType=VARCHAR},
+      room_num = #{roomNum,jdbcType=SMALLINT},
+      room_name = #{roomName,jdbcType=VARCHAR},
+      type = #{type,jdbcType=SMALLINT},
+      type_name = #{typeName,jdbcType=VARCHAR},
+      building_area = #{buildingArea,jdbcType=DECIMAL},
+      usable_area = #{usableArea,jdbcType=DECIMAL},
+      ownership = #{ownership,jdbcType=VARCHAR},
+      use_type=#{useType},
+      use_type_name=#{useTypeName},
+      op_date =now()
+    where code=#{code}
+  </update>
+
+<!--    单元信息更新  ps  某单条记录只存在楼栋单元信息 不存在房间  更新单元 插入房间信息-->
+    <update id="updateUnitById" parameterType="com.windaka.suizhi.manageport.model.BaseRoom">
+        update base_room
+        set
+          code = #{code,jdbcType=VARCHAR},
+          room_num = #{roomNum,jdbcType=SMALLINT},
+          room_name = #{roomName,jdbcType=VARCHAR},
+          type = #{type,jdbcType=SMALLINT},
+          type_name = #{typeName,jdbcType=VARCHAR},
+          building_area = #{buildingArea,jdbcType=DECIMAL},
+          usable_area = #{usableArea,jdbcType=DECIMAL},
+          ownership = #{ownership,jdbcType=VARCHAR},
+          use_type=#{useType},
+          use_type_name=#{useTypeName},
+          op_date =now()
+        where id=#{id}
+    </update>
+
+    <!--  查询房间列表 ygy-->
+    <select id="selectRoomList" resultMap="BaseResultMap" parameterType="Map">
+        select
+        <include refid="Base_Column_List"/>
+        from base_room
+        where 1=1
+        <if test="code!=null and code!=''">
+            and code=#{code}
+        </if>
+        <if test="communityCode!=null and communityCode!=''">
+            and community_code=#{communityCode}
+        </if>
+    </select>
+
+    <!--    楼栋信息新增 ygy-->
+    <insert id="insertBuilding" parameterType="com.windaka.suizhi.manageport.model.BaseRoom">
+     insert into base_room (id, community_code, community_name,
+       building_num, building_name, building_location,op_date,building_code)
+        values (#{id,jdbcType=INTEGER}, #{communityCode,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR},
+      #{buildingNum,jdbcType=SMALLINT}, #{buildingName,jdbcType=VARCHAR},#{buildingLocation,jdbcType=VARCHAR},now(),#{buildingCode})
+    </insert>
+
+    <!--    楼栋信息delete ygy-->
+    <delete id="deleteBuildingByKey" parameterType="String">
+     delete from base_room
+        where   building_code=#{buildingCode}
+    </delete>
+
+    <!--    楼栋信息update ygy-->
+    <update id="updateBuildingByKey" parameterType="Map">
+        update base_room
+        set community_code = #{communityCode,jdbcType=VARCHAR},
+        community_name = #{communityName,jdbcType=VARCHAR},
+         building_num = #{buildingNum,jdbcType=SMALLINT},
+         building_name = #{buildingName,jdbcType=VARCHAR},
+         building_location = #{buildingLocation,jdbcType=VARCHAR},
+         op_date =now(),
+         building_code=#{buildingCode}
+        where   building_code=#{buildingCode}
+    </update>
+
+<!--    楼栋信息查询 ygy-->
+    <select id="selectBuildingList"  resultMap="BaseResultMap"  parameterType="Map">
+        select
+        <include refid="Base_Column_List"/>
+        from base_room
+        where    building_code=#{buildingCode}
+    </select>
+
+<!--单元信息新增 -->
+    <insert id="insertUnit" parameterType="com.windaka.suizhi.manageport.model.BaseRoom">
+        insert into base_room(id, community_code, community_name, building_num, building_name, unit_num, unit_name, op_date, building_location,building_code,unit_code)
+        values (#{id,jdbcType=INTEGER}, #{communityCode,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR},
+        #{buildingNum,jdbcType=SMALLINT}, #{buildingName,jdbcType=VARCHAR},#{unitNum,jdbcType=SMALLINT}, #{unitName,jdbcType=VARCHAR},now(),
+        #{buildingLocation,jdbcType=VARCHAR},#{buildingCode},#{unitCode})
+    </insert>
+
+<!--    单元信息更新-->
+    <update id="updateUnit" parameterType="com.windaka.suizhi.manageport.model.BaseRoom">
+        update base_room
+        set
+        unit_code=#{unitCode},
+        unit_num=#{unitNum},
+          unit_name = #{unitName,jdbcType=VARCHAR},
+          op_date =now()
+        where  unit_code = #{unitCode}
+    </update>
+
+<!--    楼栋信息更新  ps  某单条记录只存在楼栋 不存在单元  更新楼栋 插入单元信息 -->
+    <update id="updateBuildingById" parameterType="com.windaka.suizhi.manageport.model.BaseRoom">
+        update base_room
+        set
+          unit_num = #{unitNum,jdbcType=SMALLINT},
+          unit_name = #{unitName,jdbcType=VARCHAR},
+          unit_code = #{unitCode,jdbcType=VARCHAR},
+          op_date =now()
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+<!--    单元信息删除-->
+    <delete id="deleteUnit" parameterType="String">
+        delete from base_room
+        where unit_code = #{unitCode}
+    </delete>
+
+    <select id="selectOtherUnitsInBuilding" resultMap="BaseResultMap" parameterType="Map">
+        select distinct unit_num, unit_name, unit_code
+       from base_room
+       where building_code = #{buildingCode} and unit_code != #{unitCode}
+    </select>
+
+<!--    单元信息查询列表-->
+    <select id="selectUnitList" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_room
+        where 1=1
+        <if test="communityCode!=null and communityCode!=''">
+            and community_code = #{communityCode,jdbcType=VARCHAR}
+        </if>
+        <if test="buildingCode!=null and buildingCode!=''">
+            and building_code = #{buildingCode}
+        </if>
+        <if test="unitCode!=null and unitCode!=''">
+            and unit_code = #{unitCode}
+        </if>
+    </select>
+
+    <delete id="deleteAnyByCommunityCode" parameterType="String">
+        delete from base_room
+        where community_code=#{communityCode}
+    </delete>
+
+    <!--  更新房间信息 by code ygy-->
+    <update id="updateRoomByCommunityCode" parameterType="Map">
+    update base_room
+    set
+     community_name=#{communityName}
+    where community_code=#{communityCode}
+  </update>
+
+</mapper>

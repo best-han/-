@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.CaptureAlarmPersonMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.CaptureAlarmPerson" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="capture_time" property="captureTime" jdbcType="TIMESTAMP" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="device_name" property="deviceName" jdbcType="VARCHAR" />
+    <result column="device_type" property="deviceType" jdbcType="SMALLINT" />
+    <result column="device_type_name" property="deviceTypeName" jdbcType="VARCHAR" />
+    <result column="device_location" property="deviceLocation" jdbcType="VARCHAR" />
+    <result column="cap_image" property="capImage" jdbcType="VARCHAR" />
+    <result column="cap_video" property="capVideo" jdbcType="VARCHAR" />
+    <result column="detail_id" property="detailId" jdbcType="VARCHAR" />
+    <result column="detail_image" property="detailImage" jdbcType="VARCHAR" />
+    <result column="detail_level" property="detailLevel" jdbcType="SMALLINT" />
+    <result column="detail_level_name" property="detailLevelName" jdbcType="VARCHAR" />
+    <result column="detail_reason" property="detailReason" jdbcType="VARCHAR" />
+    <result column="detail_person_code" property="detailPersonCode" jdbcType="VARCHAR" />
+    <result column="detail_person_name" property="detailPersonName" jdbcType="VARCHAR" />
+    <result column="detail_person_paper_num" property="detailPersonPaperNum" jdbcType="VARCHAR" />
+    <result column="detail_person_phone" property="detailPersonPhone" jdbcType="VARCHAR" />
+    <result column="group_code" property="groupCode" jdbcType="VARCHAR" />
+    <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+    <result column="handel_status" property="handelStatus" jdbcType="TINYINT" />
+    <result column="handel_time" property="handelTime" jdbcType="TIMESTAMP" />
+    <result column="handel_user" property="handelUser" jdbcType="VARCHAR" />
+    <result column="handel_conn" property="handelConn" jdbcType="VARCHAR" />
+    <result column="contrast_value" property="contrastValue" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, community_code, capture_time, device_code, device_name, device_type, device_type_name, 
+    device_location, cap_image, cap_video, detail_id, detail_image, detail_level, detail_level_name, 
+    detail_reason, detail_person_code, detail_person_name, detail_person_paper_num, detail_person_phone, 
+    group_code, group_name, handel_status, handel_time, handel_user, handel_conn,contrast_value
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from capture_alarm_person
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from capture_alarm_person
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.windaka.suizhi.manageport.model.CaptureAlarmPerson" >
+    insert into capture_alarm_person (id, community_code, capture_time, 
+      device_code, device_name, device_type, 
+      device_type_name, device_location, cap_image, 
+      cap_video, detail_id, detail_image, 
+      detail_level, detail_level_name, detail_reason, 
+      detail_person_code, detail_person_name, detail_person_paper_num, 
+      detail_person_phone, group_code, group_name, 
+      handel_status, handel_time, handel_user, 
+      handel_conn,contrast_value)
+    values (#{id,jdbcType=INTEGER}, #{communityCode,jdbcType=VARCHAR}, #{captureTime,jdbcType=TIMESTAMP}, 
+      #{deviceCode,jdbcType=VARCHAR}, #{deviceName,jdbcType=VARCHAR}, #{deviceType,jdbcType=SMALLINT}, 
+      #{deviceTypeName,jdbcType=VARCHAR}, #{deviceLocation,jdbcType=VARCHAR}, #{capImage,jdbcType=VARCHAR}, 
+      #{capVideo,jdbcType=VARCHAR}, #{detailId,jdbcType=VARCHAR}, #{detailImage,jdbcType=VARCHAR}, 
+      #{detailLevel,jdbcType=SMALLINT}, #{detailLevelName,jdbcType=VARCHAR}, #{detailReason,jdbcType=VARCHAR}, 
+      #{detailPersonCode,jdbcType=VARCHAR}, #{detailPersonName,jdbcType=VARCHAR}, #{detailPersonPaperNum,jdbcType=VARCHAR}, 
+      #{detailPersonPhone,jdbcType=VARCHAR}, #{groupCode,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR}, 
+      #{handelStatus,jdbcType=TINYINT}, #{handelTime,jdbcType=TIMESTAMP}, #{handelUser,jdbcType=VARCHAR}, 
+      #{handelConn,jdbcType=VARCHAR},#{contrastValue})
+  </insert>
+  <insert id="insertSelective" parameterType="com.windaka.suizhi.manageport.model.CaptureAlarmPerson" >
+    insert into capture_alarm_person
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="communityCode != null" >
+        community_code,
+      </if>
+      <if test="captureTime != null" >
+        capture_time,
+      </if>
+      <if test="deviceCode != null" >
+        device_code,
+      </if>
+      <if test="deviceName != null" >
+        device_name,
+      </if>
+      <if test="deviceType != null" >
+        device_type,
+      </if>
+      <if test="deviceTypeName != null" >
+        device_type_name,
+      </if>
+      <if test="deviceLocation != null" >
+        device_location,
+      </if>
+      <if test="capImage != null" >
+        cap_image,
+      </if>
+      <if test="capVideo != null" >
+        cap_video,
+      </if>
+      <if test="detailId != null" >
+        detail_id,
+      </if>
+      <if test="detailImage != null" >
+        detail_image,
+      </if>
+      <if test="detailLevel != null" >
+        detail_level,
+      </if>
+      <if test="detailLevelName != null" >
+        detail_level_name,
+      </if>
+      <if test="detailReason != null" >
+        detail_reason,
+      </if>
+      <if test="detailPersonCode != null" >
+        detail_person_code,
+      </if>
+      <if test="detailPersonName != null" >
+        detail_person_name,
+      </if>
+      <if test="detailPersonPaperNum != null" >
+        detail_person_paper_num,
+      </if>
+      <if test="detailPersonPhone != null" >
+        detail_person_phone,
+      </if>
+      <if test="groupCode != null" >
+        group_code,
+      </if>
+      <if test="groupName != null" >
+        group_name,
+      </if>
+      <if test="handelStatus != null" >
+        handel_status,
+      </if>
+      <if test="handelTime != null" >
+        handel_time,
+      </if>
+      <if test="handelUser != null" >
+        handel_user,
+      </if>
+      <if test="handelConn != null" >
+        handel_conn,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="communityCode != null" >
+        #{communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="captureTime != null" >
+        #{captureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceCode != null" >
+        #{deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null" >
+        #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null" >
+        #{deviceType,jdbcType=SMALLINT},
+      </if>
+      <if test="deviceTypeName != null" >
+        #{deviceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceLocation != null" >
+        #{deviceLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="capImage != null" >
+        #{capImage,jdbcType=VARCHAR},
+      </if>
+      <if test="capVideo != null" >
+        #{capVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="detailId != null" >
+        #{detailId,jdbcType=VARCHAR},
+      </if>
+      <if test="detailImage != null" >
+        #{detailImage,jdbcType=VARCHAR},
+      </if>
+      <if test="detailLevel != null" >
+        #{detailLevel,jdbcType=SMALLINT},
+      </if>
+      <if test="detailLevelName != null" >
+        #{detailLevelName,jdbcType=VARCHAR},
+      </if>
+      <if test="detailReason != null" >
+        #{detailReason,jdbcType=VARCHAR},
+      </if>
+      <if test="detailPersonCode != null" >
+        #{detailPersonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="detailPersonName != null" >
+        #{detailPersonName,jdbcType=VARCHAR},
+      </if>
+      <if test="detailPersonPaperNum != null" >
+        #{detailPersonPaperNum,jdbcType=VARCHAR},
+      </if>
+      <if test="detailPersonPhone != null" >
+        #{detailPersonPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="groupCode != null" >
+        #{groupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="groupName != null" >
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="handelStatus != null" >
+        #{handelStatus,jdbcType=TINYINT},
+      </if>
+      <if test="handelTime != null" >
+        #{handelTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handelUser != null" >
+        #{handelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="handelConn != null" >
+        #{handelConn,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.windaka.suizhi.manageport.model.CaptureAlarmPerson" >
+    update capture_alarm_person
+    <set >
+      <if test="communityCode != null" >
+        community_code = #{communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="captureTime != null" >
+        capture_time = #{captureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceCode != null" >
+        device_code = #{deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null" >
+        device_name = #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null" >
+        device_type = #{deviceType,jdbcType=SMALLINT},
+      </if>
+      <if test="deviceTypeName != null" >
+        device_type_name = #{deviceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceLocation != null" >
+        device_location = #{deviceLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="capImage != null" >
+        cap_image = #{capImage,jdbcType=VARCHAR},
+      </if>
+      <if test="capVideo != null" >
+        cap_video = #{capVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="detailId != null" >
+        detail_id = #{detailId,jdbcType=VARCHAR},
+      </if>
+      <if test="detailImage != null" >
+        detail_image = #{detailImage,jdbcType=VARCHAR},
+      </if>
+      <if test="detailLevel != null" >
+        detail_level = #{detailLevel,jdbcType=SMALLINT},
+      </if>
+      <if test="detailLevelName != null" >
+        detail_level_name = #{detailLevelName,jdbcType=VARCHAR},
+      </if>
+      <if test="detailReason != null" >
+        detail_reason = #{detailReason,jdbcType=VARCHAR},
+      </if>
+      <if test="detailPersonCode != null" >
+        detail_person_code = #{detailPersonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="detailPersonName != null" >
+        detail_person_name = #{detailPersonName,jdbcType=VARCHAR},
+      </if>
+      <if test="detailPersonPaperNum != null" >
+        detail_person_paper_num = #{detailPersonPaperNum,jdbcType=VARCHAR},
+      </if>
+      <if test="detailPersonPhone != null" >
+        detail_person_phone = #{detailPersonPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="groupCode != null" >
+        group_code = #{groupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="groupName != null" >
+        group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="handelStatus != null" >
+        handel_status = #{handelStatus,jdbcType=TINYINT},
+      </if>
+      <if test="handelTime != null" >
+        handel_time = #{handelTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handelUser != null" >
+        handel_user = #{handelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="handelConn != null" >
+        handel_conn = #{handelConn,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.windaka.suizhi.manageport.model.CaptureAlarmPerson" >
+    update capture_alarm_person
+    set community_code = #{communityCode,jdbcType=VARCHAR},
+      capture_time = #{captureTime,jdbcType=TIMESTAMP},
+      device_code = #{deviceCode,jdbcType=VARCHAR},
+      device_name = #{deviceName,jdbcType=VARCHAR},
+      device_type = #{deviceType,jdbcType=SMALLINT},
+      device_type_name = #{deviceTypeName,jdbcType=VARCHAR},
+      device_location = #{deviceLocation,jdbcType=VARCHAR},
+      cap_image = #{capImage,jdbcType=VARCHAR},
+      cap_video = #{capVideo,jdbcType=VARCHAR},
+      detail_id = #{detailId,jdbcType=VARCHAR},
+      detail_image = #{detailImage,jdbcType=VARCHAR},
+      detail_level = #{detailLevel,jdbcType=SMALLINT},
+      detail_level_name = #{detailLevelName,jdbcType=VARCHAR},
+      detail_reason = #{detailReason,jdbcType=VARCHAR},
+      detail_person_code = #{detailPersonCode,jdbcType=VARCHAR},
+      detail_person_name = #{detailPersonName,jdbcType=VARCHAR},
+      detail_person_paper_num = #{detailPersonPaperNum,jdbcType=VARCHAR},
+      detail_person_phone = #{detailPersonPhone,jdbcType=VARCHAR},
+      group_code = #{groupCode,jdbcType=VARCHAR},
+      group_name = #{groupName,jdbcType=VARCHAR},
+      handel_status = #{handelStatus,jdbcType=TINYINT},
+      handel_time = #{handelTime,jdbcType=TIMESTAMP},
+      handel_user = #{handelUser,jdbcType=VARCHAR},
+      handel_conn = #{handelConn,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

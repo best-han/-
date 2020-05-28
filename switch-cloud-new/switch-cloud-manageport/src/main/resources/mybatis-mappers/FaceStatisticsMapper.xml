@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.FaceStatisticsMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.FaceStatistics" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="face_id" property="faceId" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="TINYINT" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.windaka.suizhi.manageport.model.FaceStatistics" extends="BaseResultMap" >
+    <result column="records" property="records" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, face_id, type
+  </sql>
+  <sql id="Blob_Column_List" >
+    records
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from face_statistics
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from face_statistics
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.windaka.suizhi.manageport.model.FaceStatistics" >
+    insert into face_statistics (id, face_id, type, 
+      records)
+    values (#{id,jdbcType=INTEGER}, #{faceId,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, 
+      #{records,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.windaka.suizhi.manageport.model.FaceStatistics" >
+    insert into face_statistics
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="faceId != null" >
+        face_id,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="records != null" >
+        records,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="faceId != null" >
+        #{faceId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="records != null" >
+        #{records,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.windaka.suizhi.manageport.model.FaceStatistics" >
+    update face_statistics
+    <set >
+      <if test="faceId != null" >
+        face_id = #{faceId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="records != null" >
+        records = #{records,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.windaka.suizhi.manageport.model.FaceStatistics" >
+    update face_statistics
+    set face_id = #{faceId,jdbcType=VARCHAR},
+      type = #{type,jdbcType=TINYINT},
+      records = #{records,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.windaka.suizhi.manageport.model.FaceStatistics" >
+    update face_statistics
+    set face_id = #{faceId,jdbcType=VARCHAR},
+      type = #{type,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

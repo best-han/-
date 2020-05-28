@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.CaptureCarMapper">
+    <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.CaptureCar">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="capture_time" property="captureTime" jdbcType="TIMESTAMP"/>
+        <result column="device_code" property="deviceCode" jdbcType="VARCHAR"/>
+        <result column="device_name" property="deviceName" jdbcType="VARCHAR"/>
+        <result column="device_type" property="deviceType" jdbcType="VARCHAR"/>
+        <result column="device_type_name" property="deviceTypeName" jdbcType="VARCHAR"/>
+        <result column="device_location" property="deviceLocation" jdbcType="VARCHAR"/>
+        <result column="community_code" property="communityCode" jdbcType="VARCHAR"/>
+        <result column="community_name" property="communityName" jdbcType="VARCHAR"/>
+        <result column="car_num" property="carNum" jdbcType="VARCHAR"/>
+        <result column="car_num_color" property="carNumColor" jdbcType="SMALLINT"/>
+        <result column="car_num_color_name" property="carNumColorName" jdbcType="VARCHAR"/>
+        <result column="car_type" property="carType" jdbcType="SMALLINT"/>
+        <result column="car_type_name" property="carTypeName" jdbcType="VARCHAR"/>
+        <result column="car_brand" property="carBrand" jdbcType="SMALLINT"/>
+        <result column="car_brand_name" property="carBrandName" jdbcType="VARCHAR"/>
+        <result column="car_color" property="carColor" jdbcType="SMALLINT"/>
+        <result column="car_color_name" property="carColorName" jdbcType="VARCHAR"/>
+        <result column="car_image" property="carImage" jdbcType="VARCHAR"/>
+        <result column="car_direction" property="carDirection" jdbcType="TINYINT"/>
+        <result column="cap_image" property="capImage" jdbcType="VARCHAR"/>
+        <result column="cap_video" property="capVideo" jdbcType="VARCHAR"/>
+        <result column="person_code" property="personCode" jdbcType="VARCHAR"/>
+        <result column="person_name" property="personName" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="full_image" property="fullImage" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, capture_time, device_code, device_name, device_type, device_type_name, device_location, 
+    community_code, community_name, car_num, car_num_color, car_num_color_name, car_type, 
+    car_type_name, car_brand, car_brand_name, car_color, car_color_name, car_image, car_direction, 
+    cap_image, cap_video,person_code,person_name,type,full_image
+  </sql>
+
+    <!--  抓拍车辆 插入 ygy-->
+    <insert id="insertCaptureCar" parameterType="com.windaka.suizhi.manageport.model.CaptureCar">
+    insert into capture_car (id, capture_time, device_code,
+      device_name, device_type, device_type_name,
+      device_location, community_code, community_name,
+      car_num, car_num_color, car_num_color_name,
+      car_type, car_type_name, car_brand,
+      car_brand_name, car_color, car_color_name,
+      car_image, car_direction, cap_image,
+      cap_video,person_code,person_name,type,full_image)
+    values (#{id,jdbcType=INTEGER}, #{captureTime,jdbcType=TIMESTAMP}, #{deviceCode,jdbcType=VARCHAR},
+      #{deviceName,jdbcType=VARCHAR}, #{deviceType,jdbcType=SMALLINT}, #{deviceTypeName,jdbcType=VARCHAR},
+      #{deviceLocation,jdbcType=VARCHAR}, #{communityCode,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR},
+      #{carNum,jdbcType=VARCHAR}, #{carNumColor,jdbcType=SMALLINT}, #{carNumColorName,jdbcType=VARCHAR},
+      #{carType,jdbcType=SMALLINT}, #{carTypeName,jdbcType=VARCHAR}, #{carBrand,jdbcType=SMALLINT},
+      #{carBrandName,jdbcType=VARCHAR}, #{carColor,jdbcType=SMALLINT}, #{carColorName,jdbcType=VARCHAR},
+      #{carImage,jdbcType=VARCHAR}, #{carDirection,jdbcType=TINYINT}, #{capImage,jdbcType=VARCHAR},
+      #{capVideo,jdbcType=VARCHAR},#{personCode},#{personName},#{type},#{fullImage})
+  </insert>
+
+    <!--  抓拍车辆 删除  ygy-->
+    <delete id="deleteById" parameterType="String">
+    delete from capture_car
+    where id = #{id}
+  </delete>
+
+    <!--  抓拍车辆  查询列表 ygy-->
+    <select id="selectCaptureCarList" resultMap="BaseResultMap" parameterType="Map">
+        select
+        <include refid="Base_Column_List"/>
+        from capture_car
+        where 1=1
+        <if test="communityCode!=null and communityCode!=''">
+            and community_code=#{communityCode}
+        </if>
+        <if test="carNum!=null and carNum!=''">
+            and car_num=#{carNum}
+        </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.BaseRoomDao">
+
+    <!--    根据roomCode 查找房间名-->
+    <select id="queryHouseNameByRoomCode" parameterType="String" resultType="String">
+    select CONCAT_WS(" ",building_name,unit_name,room_name) houseName from base_room
+    where  code=#{roomCode}
+</select>
+
+    <!--    实有房屋数量-->
+    <select id="selectRoomNum" parameterType="Map" resultType="int">
+        select count(*) from base_room room
+        where room.code is not null and room.code!=''
+        <if test="xqCode.size()>0 ">
+            and room.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <!--地图-房屋楼栋列表-->
+    <select id="queryBuildingList" parameterType="Map" resultType="map">
+        select
+        building_code as buildingCode,
+        CONCAT(community_name,building_name) as buildingName,
+        building_location as buildingLocation
+        from base_room
+        where 1=1
+        <if test="params.xqCode != null and params.xqCode !=''">
+            and community_code in (${params.xqCode})
+        </if>
+        GROUP BY community_code,building_code
+        order by community_code,building_num
+    </select>
+
+    <select id="queryXqListInRoom" parameterType="map" resultType="map">
+        select community_code communityCode,community_name communityName from base_room
+        where code is not null and code!=''
+        <if test="xqCode!=null and xqCode!=''">
+            and community_code in (${xqCode})
+        </if>
+        group by community_code,community_name
+        order by community_code
+    </select>
+    <select id="queryBuildingsByXqCodeInRoom" parameterType="map" resultType="map">
+        select building_code buildingCode,building_name buildingName from base_room
+        where building_code is not null and building_code!=''
+            and community_code = #{xqCode}
+        group by building_code,building_name
+        order by building_num
+    </select>
+    <select id="queryUnitsByXqCodeAndBuildingCodeInRoom" parameterType="map" resultType="map">
+        select unit_code unitCode,unit_name unitName from base_room
+        where unit_code is not null and unit_code!=''
+            and community_code = #{xqCode}
+            and building_code = #{buildingCode}
+        group by unit_code,unit_name
+        order by unit_num
+    </select>
+    <!--<resultMap id="getBuilding" type="com.windaka.suizhi.webapi.model.Building">
+        <result column="buildingCode" property="buildingCode"></result>
+        <result column="buildingName" property="buildingName"></result>
+        <collection property="units" select="queryUnitsByXqCodeAndBuildingCodeInRoom" column="buildingCode"></collection>
+
+    </resultMap>
+    <select id="queryBuildingsByXqCodeInRoom" parameterType="map" resultMap="getBuilding">
+        select building_code buildingCode,building_name buildingName from base_room
+        where building_code is not null and building_code!=''
+            and community_code = #{xqCode}
+        group by building_code,building_name
+        order by building_num
+    </select>
+    <select id="queryUnitsByXqCodeAndBuildingCodeInRoom" resultType="map">
+        select unit_code unitCode,unit_name unitName from base_room
+        where unit_code is not null and unit_code!=''
+
+            and building_code = #{buildingCode}
+        group by unit_code,unit_name
+        order by unit_num
+    </select>-->
+
+    <!--一房一档-房屋基础信息-->
+    <select id="queryRoomInfoByRoomCode" parameterType="String" resultType="map">
+        select
+               room.community_name as xqName,
+               room.building_name as buildingName,
+               room.unit_name as unitName,
+               room.room_name as roomName,
+               room.type_name as useNatureName,
+               room.use_type_name as purposeName,
+               room.building_area as buildingArea,
+               room.ownership as housePropertyCardNo,
+               person.name as ownerName,
+               CASE WHEN person.sex = '1' THEN '男'
+                    WHEN person.sex = '2' THEN '女'
+                    ELSE '未知' END as sex,
+               person.phone,
+               person.paper_number as IDCard
+        from base_room room
+          left join base_person person on person.room_code=room.code
+        where room.code=#{roomCode} and person.type=1
+    </select>
+
+    <!--一房一档-人员信息列表-->
+    <select id="queryPersonInfoByRoomCode" parameterType="String" resultType="map">
+        select
+               person.code  as ownerId,
+               person.image,
+               person.`name` as ownerName,
+               CASE WHEN person.sex = '1' THEN '男'
+                    WHEN person.sex = '2' THEN '女'
+                    ELSE '未知' END as sex,
+               person.type_name as liveTypeName,
+               person.paper_number as IDCard,
+               person.phone
+        from base_person person
+          right join base_room room on room.`code`=person.room_code
+        where room.code=#{roomCode}
+    </select>
+
+    <!--一房一档-车信息列表-->
+    <select id="queryCarInfoByRoomCode" parameterType="String" resultType="map">
+        select
+               person.`name` as ownerName,
+               person.type_name as liveTypeName,
+               person.paper_number as IDCard,
+               person.phone,
+               car.num as carNum,
+               car.image
+        from base_person person
+                 right join base_room room on room.`code`=person.room_code
+                 left join base_car car on car.person_code=person.`code`
+        where room.code=#{roomCode}
+    </select>
+
+    <!--一房一档-犬类管理-->
+    <select id="queryDogsByRoomCode" parameterType="String" resultType="map">
+        select
+               CASE pet.`mode`
+                 when '1' THEN '小型犬'
+                 when '2' THEN '中型犬'
+                 ELSE '大型犬' END as dogType,
+               CASE WHEN pet.adoption='1' THEN '是' ELSE '否' END as isHandleDogCard,
+               pet.image
+        from base_pet pet
+          right join base_person person on person.`code`=pet.person_code
+        where pet.breed=0 and person.room_code=#{roomCode}
+    </select>
+
+    <!--实有房产 定时任务 -->
+    <insert id="addjBaseHouse">
+        INSERT INTO
+            j_baseHouse
+          (xqCode,xqName,buildingCode,buildingName,unitCode,unitName,roomCode,roomName,buildingArea,purpose,purposeName,useNature,useNatureName,roomOwner,phone,paperNumber)
+        select
+            room.community_code as xqCode,
+            room.community_name as xqName,
+            room.building_code as buildingCode,
+            room.building_name as buildingName,
+            room.unit_code as unitCode,
+            room.unit_name as unitName,
+            room.`code` as roomCode,
+            room.room_name as roomName,
+            room.building_area as buildingArea,
+            room.use_type as purpose,
+            room.use_type_name as purposeName,
+            room.type as useNature,
+            room.type_name as useNatureName,
+            person.`name` as roomOwner,
+            person.phone,
+            person.paper_number as paperNumber
+        from base_room room
+                 left join (select room_code,name,phone,paper_number from base_person where room_code is not null and room_code!='' GROUP BY room_code) person on person.room_code=room.`code`
+        where
+            room.code is not null and room.code!=''
+    </insert>
+
+    <delete id="deletejBaseHouse">
+        delete from j_baseHouse
+    </delete>
+
+    <!--实有房产列表查询-->
+    <select id="queryRoomInfoList" parameterType="Map" resultType="map">
+        select
+        xqName,
+        buildingName,
+        unitName,
+        roomCode,
+        roomName,
+        buildingArea,
+        purposeName,
+        useNatureName,
+        roomOwner
+        from j_baseHouse
+        where 1=1
+        <if test="params.xqCode != null and params.xqCode !=''">
+            and xqCode in (${params.xqCode})
+        </if>
+        <if test="params.buildingCode!=null and params.buildingCode!=''">
+            and buildingCode=#{params.buildingCode}
+        </if>
+        <if test="params.unitCode!=null and params.unitCode!=''">
+            and unitCode=#{params.unitCode}
+        </if>
+        <if test="params.useNature != null and params.useNature !=''">
+            and useNature=#{params.useNature}
+        </if>
+        <if test="params.purpose!=null and params.purpose!=''">
+            and purpose=#{params.purpose}
+        </if>
+        <if test="params.likeStr!=null and params.likeStr!=''">
+            and CONCAT_WS('',xqName,buildingName,unitName,roomName,paperNumber,roomOwner,phone) like
+            concat('%',#{params.likeStr},'%')
+        </if>
+        order by xqCode,buildingCode,unitCode,roomCode
+    </select>
+
+    <!--房间关联人数-->
+    <select id="queryLivePersonNumByRoomCode" parameterType="String" resultType="int">
+        select count(*) from base_person where room_code=#{roomCode}
+    </select>
+
+    <!--房间关联车数-->
+    <select id="queryRoomCarNumByRoomCode" parameterType="String" resultType="int">
+        select count(*) from base_car where person_code in (select code from base_person where room_code=#{roomCode})
+    </select>
+
+    <!--    通过楼栋code查询单元列表-->
+    <select id="queryCellListByBuildingCode" parameterType="Map" resultType="Map">
+    select community_code xqCode,community_name xqName, building_name buildingName,unit_code cellId	, unit_name cellName from base_room
+        where building_code=#{buildingCode}
+        GROUP BY unit_code
+				order by unit_num asc
+    </select>
+    <!--    通过楼栋code 和单元code 查询房屋列表-->
+    <select id="queryRoomListByCode" resultType="Map" parameterType="Map">
+        select code roomId,room_num roomNum,room_name roomName,use_type_name purposeName,type_name funcName from base_room
+        where building_code=#{buildingCode}
+        and unit_code=#{cellId}
+        order by room_num desc
+    </select>
+
+</mapper>

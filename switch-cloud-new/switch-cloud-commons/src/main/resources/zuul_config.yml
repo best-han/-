@@ -1,0 +1,37 @@
+spring:
+
+  redis:
+    #host: 10.10.6.54
+    host: 172.16.1.150 #公安测试
+    #host: localhost
+    port: 6379
+    password: suizhi@123
+    timeout: 10s
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+
+eureka:
+  client:
+    serviceUrl:
+      #defaultZone: http://10.10.6.54:8761/eureka/   #测试
+      defaultZone: http://172.16.1.150:8761/eureka/   #公安测试
+      #defaultZone: http://localhost:8761/eureka/
+    registry-fetch-interval-seconds: 5
+  instance:
+    lease-expiration-duration-in-seconds: 15
+    lease-renewal-interval-in-seconds: 5
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${random.int}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.PersonInoutMapper">
+
+    <!--    人员出入列表-->
+    <select id="personAccessList" resultType="Map" parameterType="Map">
+        select access.community_code xqCode,access.community_name xqName,access.device_code deviceId,access.device_name
+        deviceName,DATE_FORMAT(access.capture_time,'%Y-%m-%d %H:%i:%s') openTime,
+        access.person_code personCode,person.name personName,access.access access,access.cap_image capImage,person.image
+        faceImage,
+        CONCAT_WS(' ',room.building_name,room.unit_name,room.room_name) roomName,person.phone phone,person.paper_number
+        paperNum,person.type liveType, access.cap_type capType,access.person_code personId
+        from person_inout access
+        left join base_person person on person.code =access.person_code
+        left join base_room room on room.code=person.room_code
+        where 1=1
+        and DATE_SUB(CURDATE(),INTERVAL 3 MONTH)  <![CDATA[ < ]]> date(access.capture_time)
+        <if test="xqCode.size()>0 ">
+            and access.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            and UNIX_TIMESTAMP(access.capture_time) &gt;=UNIX_TIMESTAMP(#{startTime})
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and UNIX_TIMESTAMP(access.capture_time) &lt;=UNIX_TIMESTAMP(#{endTime})
+        </if>
+        <if test="personName!=null and personName!=''">
+            and access.person_name=#{name}
+        </if>
+        <if test="liveType!=null and liveType!=''">
+            <if test="liveType=='1'.toString">
+                and person.type in (1)
+            </if>
+            <if test="liveType=='2'.toString">
+                and person.type in (2)
+            </if>
+            <if test="liveType=='3'.toString">
+                and person.type in (3)
+            </if>
+        </if>
+        <if test="likeStr!=null and likeStr!=''">
+            and
+            CONCAT_WS('',room.room_name,person.name,person.phone,person.paper_number,access.device_name)
+            like concat('%',#{likeStr},'%')
+        </if>
+        order by access.capture_time desc
+    </select>
+
+    <select id="personAccessListOptimizeCount" resultType="int" parameterType="Map">
+        select count(1)
+        from person_inout access
+        <if test="personLink==1">
+            left join
+            (select code,type,name,image,phone,paper_number,room_code from base_person where 1=1
+            ) person on person.code =access.person_code
+        </if>
+        <if test="houseLink==1">
+            left join
+            (select code,building_name,unit_name,room_name from base_room)
+            room on room.code=person.room_code
+        </if>
+        where 1=1
+        and DATE_SUB(CURDATE(),INTERVAL 3 MONTH)  <![CDATA[ < ]]> date(access.capture_time)
+        <if test="personLink==1">
+            <if test="liveType!=null and liveType!=''">
+                <if test="liveType=='1'.toString">
+                    and person.type in (1)
+                </if>
+                <if test="liveType=='2'.toString">
+                    and person.type in (2)
+                </if>
+                <if test="liveType=='3'.toString">
+                    and person.type in (3)
+                </if>
+            </if>
+        </if>
+        <if test="xqCode.size()>0 ">
+            and access.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            and UNIX_TIMESTAMP(access.capture_time) &gt;=UNIX_TIMESTAMP(#{startTime})
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and UNIX_TIMESTAMP(access.capture_time) &lt;=UNIX_TIMESTAMP(#{endTime})
+        </if>
+        <if test="likeStr!=null and likeStr!=''">
+            and
+            CONCAT_WS('',room.room_name,access.person_name,person.phone,person.paper_number,access.device_name)
+            like concat('%',#{likeStr},'%')
+        </if>
+    </select>
+
+    <select id="personAccessListOptimize" resultType="Map" parameterType="Map">
+        select community_code xqCode,community_name xqName,device_code deviceId,device_name
+        deviceName,DATE_FORMAT(access.capture_time,'%Y-%m-%d %H:%i:%s') openTime,
+        access.person_code personCode,access.access access,access.cap_image capImage, access.cap_type
+        capType,access.person_code personId
+        <if test="personLink==1">
+            ,person.name personName,person.image faceImage,person.phone phone,person.paper_number
+            paperNum,person.type liveType
+        </if>
+        <if test="houseLink==1">
+            ,CONCAT_WS(' ',room.building_name,room.unit_name,room.room_name) roomName
+        </if>
+        from person_inout access
+        <if test="personLink==1">
+            left join
+            (select code,type,name,image,phone,paper_number,room_code from base_person where 1=1
+            ) person on person.code =access.person_code
+        </if>
+        <if test="houseLink==1">
+            left join
+            (select code,building_name,unit_name,room_name from base_room)
+            room on room.code=person.room_code
+        </if>
+        where 1=1
+        and DATE_SUB(CURDATE(),INTERVAL 3 MONTH)  <![CDATA[ < ]]> date(access.capture_time)
+        <if test="personLink==1">
+            <if test="liveType!=null and liveType!=''">
+                <if test="liveType=='1'.toString">
+                    and person.type in (1)
+                </if>
+                <if test="liveType=='2'.toString">
+                    and person.type in (2)
+                </if>
+                <if test="liveType=='3'.toString">
+                    and person.type in (3)
+                </if>
+            </if>
+        </if>
+        <if test="xqCode.size()>0 ">
+            and access.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            and UNIX_TIMESTAMP(access.capture_time) &gt;=UNIX_TIMESTAMP(#{startTime})
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and UNIX_TIMESTAMP(access.capture_time) &lt;=UNIX_TIMESTAMP(#{endTime})
+        </if>
+        <if test="likeStr!=null and likeStr!=''">
+            and
+            CONCAT_WS('',room.room_name,access.person_name,person.phone,person.paper_number,access.device_name)
+            like concat('%',#{likeStr},'%')
+        </if>
+        order by access.capture_time desc
+        limit #{start},#{limit}
+    </select>
+
+    <!--    高频出入人员-->
+    <select id="personSenseHighAccess" parameterType="Map" resultType="Map">
+        select access.community_code xqCode,access.person_code personId,access.community_name xqName,access.person_name
+        personName,access.cap_image capImage,person.image faceImage,
+        person.type liveType,person.phone phone,access.cap_type personType ,count(*) senseNum
+        from person_inout access
+        left join base_person person on person.code=access.person_code
+        where DATE(NOW())=DATE_FORMAT(access.capture_time,'%Y-%m-%d')
+        <if test="xqCode.size()>0 ">
+            and access.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="communityCode!=null and communityCode!=''">
+            and access.community_code in (${communityCode})
+        </if>
+        <if test="personId!=null and personId!=''">
+            and person_code=#{personId}
+        </if>
+        <if test="liveType!=null and liveType!=''">
+            <if test="liveType=='1'.toString">
+                and person.type in (1)
+            </if>
+            <if test="liveType=='2'.toString">
+                and person.type in (2)
+            </if>
+            <if test="liveType=='3'.toString">
+                and person.type in (3)
+            </if>
+            <if test="liveType=='4'.toString">
+                and access.cap_type=2
+            </if>
+        </if>
+        <if test="likeStr!=null and likeStr!=''">
+            and
+            CONCAT_WS('',access.person_name,person.phone,person.paper_number)
+            like concat('%',#{likeStr},'%')
+        </if>
+        GROUP BY access.person_code
+        having senseNum&gt;=3
+        <if test="accessNum!=null and accessNum!=''">
+            and senseNum &gt;= #{accessNum}
+        </if>
+        order by senseNum desc
+    </select>
+
+    <select id="singlePersonAccessByCode" resultType="Map" parameterType="String">
+        select   access.community_code xqCode,access.community_name xqName,DATE_FORMAT(access.capture_time,'%Y-%m-%d %H:%i:%s') capTime,
+        access.device_name capAddress,access.cap_image image
+         from person_inout access
+         where access.person_code=#{personId}
+         and DATE(NOW())=DATE_FORMAT(access.capture_time,'%Y-%m-%d')
+         ORDER BY access.capture_time desc
+    </select>
+
+    <!--    今日人员出入数量-->
+    <select id="selectPersonAccessNum" resultType="int" parameterType="Map">
+        select count(*) from person_inout access
+        where date(access.capture_time)=date(now())
+        <if test="xqCode.size()>0 ">
+            and access.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+    </select>
+</mapper>

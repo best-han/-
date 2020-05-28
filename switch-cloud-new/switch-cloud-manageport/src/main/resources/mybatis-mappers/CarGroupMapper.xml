@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.CarGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.CarGroup" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="SMALLINT" />
+    <result column="type_name" property="typeName" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="SMALLINT" />
+    <result column="level_name" property="levelName" jdbcType="VARCHAR" />
+    <result column="op_time" property="opTime" jdbcType="TIMESTAMP" />
+    <result column="op_user" property="opUser" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, type, type_name, name, remarks, level, level_name, op_time, op_user
+  </sql>
+  <select id="selectCarGroupList" resultMap="BaseResultMap" parameterType="Map" >
+    select
+    <include refid="Base_Column_List" />
+    from car_group
+    where 1=1
+    <if test="id != null" >
+      and id = #{id,jdbcType=INTEGER}
+    </if>
+    <if test="code != null" >
+      and code = #{code,jdbcType=VARCHAR}
+    </if>
+    <if test="type != null" >
+      and type = #{type,jdbcType=SMALLINT}
+    </if>
+    <if test="typeName != null" >
+      and type_name = #{typeName,jdbcType=VARCHAR}
+    </if>
+    <if test="name != null" >
+      and name = #{name,jdbcType=VARCHAR}
+    </if>
+    <if test="remarks != null" >
+      and remarks = #{remarks,jdbcType=VARCHAR}
+    </if>
+    <if test="level != null" >
+      and level = #{level,jdbcType=SMALLINT}
+    </if>
+    <if test="levelName != null" >
+      and level_name = #{levelName,jdbcType=VARCHAR}
+    </if>
+    <if test="opTime != null" >
+      and op_time = #{opTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="opUser != null" >
+      and op_user = #{opUser,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <delete id="deleteByCode" parameterType="java.lang.String" >
+    delete from car_group
+    where code = #{code,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.windaka.suizhi.manageport.model.CarGroup" >
+    insert into car_group (id, code, type, 
+      type_name, name, remarks, 
+      level, level_name, op_time, 
+      op_user)
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{type,jdbcType=SMALLINT}, 
+      #{typeName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, 
+      #{level,jdbcType=SMALLINT}, #{levelName,jdbcType=VARCHAR}, now(),
+      #{opUser,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByCode" parameterType="com.windaka.suizhi.manageport.model.CarGroup">
+    update car_group
+    set
+      type = #{type,jdbcType=SMALLINT},
+      type_name = #{typeName,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      level = #{level,jdbcType=SMALLINT},
+      level_name = #{levelName,jdbcType=VARCHAR},
+      op_time = now(),
+      op_user = #{opUser,jdbcType=VARCHAR}
+    where code = #{code,jdbcType=VARCHAR}
+  </update>
+</mapper>

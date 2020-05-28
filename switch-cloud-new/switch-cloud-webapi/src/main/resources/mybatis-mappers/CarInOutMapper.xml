@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.CarInOutDao" >
+
+    <!--车辆出入场统计条数(按权限)-->
+    <select id="carAccessTotalRows" resultType="int" parameterType="Map">
+        select count(*) totalRows from
+            (select
+            a.community_code as xqCode,
+            a.community_name as xqName,
+            a.dev_chn_name as devChnName,
+            a.dev_chn_id as devChnId,
+            a.dev_chn_num as devChnNum,
+            a.car_num as carNum,
+            a.cap_image as realCapturePicPath,
+            a.ori_image as originalPicPath,
+            DATE_FORMAT(a.capture_time,'%Y-%m-%d %H:%i:%s') as capTime,
+            CASE WHEN a.person_code='' THEN '无' ELSE person.type_name END as liveTypeName,
+            CASE WHEN a.car_direct='8' THEN '进入' ELSE '驶出' END as carDirect,
+            CASE WHEN a.person_code='' THEN '陌生人' ELSE person.name END as personName,
+            CASE WHEN a.person_code='' THEN '无' ELSE room.type_name END as useNature,
+            CASE WHEN a.person_code='' THEN '无' ELSE room.use_type_name END as purpose,
+            room.type,
+            room.use_type,
+            person_code
+            from car_access a
+            left join base_person person on person.code = a.person_code
+            left join base_room room on person.room_code=room.code
+            where  a.capture_time>=#{params.saveTime}) record
+        where  1=1
+        <if test="params.xqCode != null and params.xqCode != ''">
+            and record.xqCode in (${params.xqCode})
+        </if>
+        <!--<if test="params.carNum!=null and params.carNum!=''">-->
+            <!--and record.carNum=#{params.carNum}-->
+        <!--</if>-->
+        <if test="params.useNature!=null and params.useNature!=''">
+            and record.type=#{params.useNature}
+        </if>
+        <if test="params.purpose!=null and params.purpose!=''">
+            and record.use_type=#{params.purpose}
+        </if>
+        <!--<if test="params.personName!=null and params.personName!=''">-->
+            <!--and record.personName=#{params.personName}-->
+        <!--</if>-->
+        <if test="params.likeStr!=null and params.likeStr!=''">
+            and CONCAT_WS('',record.carNum,record.personName,record.carDirect,record.devChnName) like concat('%',#{params.likeStr},'%')
+        </if>
+    </select>
+
+    <!--车辆出入场统计列表查询-->
+    <select id="queryCarAccessList" resultType="java.util.Map" parameterType="Map">
+          select * from
+              (select
+                   a.community_code as xqCode,
+                   a.community_name as xqName,
+                   a.dev_chn_name as devChnName,
+                   a.dev_chn_id as devChnId,
+                   a.dev_chn_num as devChnNum,
+                   CASE WHEN a.car_num='' THEN '未识别' ELSE a.car_num END as carNum,
+                   a.cap_image as realCapturePicPath,
+                   a.ori_image as originalPicPath,
+                   DATE_FORMAT(a.capture_time,'%Y-%m-%d %H:%i:%s') as capTime,
+                   CASE WHEN a.person_code='' THEN '无' ELSE person.type_name END as liveTypeName,
+                   CASE WHEN a.car_direct='8' THEN '进入' ELSE '驶出' END as carDirect,
+                   CASE WHEN a.person_code='' THEN '陌生人' ELSE person.name END as personName,
+                   CASE WHEN a.person_code='' THEN '无' ELSE room.type_name END as useNature,
+                   CASE WHEN a.person_code='' THEN '无' ELSE room.use_type_name END as purpose,
+                   room.type,
+                   room.use_type,
+                   person_code
+        from car_access a
+            left join base_person person on person.code = a.person_code
+            left join base_room room on person.room_code=room.code
+            where  a.capture_time>=#{params.saveTime}) record
+          where 1=1
+        <if test="params.xqCode != null and params.xqCode != ''">
+            and record.xqCode in (${params.xqCode})
+        </if>
+        <!--<if test="params.carNum!=null and params.carNum!=''">-->
+            <!--and record.carNum=#{params.carNum}-->
+        <!--</if>-->
+        <if test="params.useNature!=null and params.useNature!=''">
+            and record.type=#{params.useNature}
+        </if>
+        <if test="params.purpose!=null and params.purpose!=''">
+            and record.use_type=#{params.purpose}
+        </if>
+        <!--<if test="params.personName!=null and params.personName!=''">-->
+            <!--and record.personName=#{params.personName}-->
+        <!--</if>-->
+        <if test="params.likeStr!=null and params.likeStr!=''">
+            and CONCAT_WS('',record.carNum,record.personName,record.carDirect,record.devChnName) like concat('%',#{params.likeStr},'%')
+        </if>
+        order by record.capTime desc
+        limit #{params.start}, #{params.limit}
+    </select>
+
+
+    <!--查询某辆车的出入记录详情-->
+    <select id="queryCarAccessDetailsByCarNum" resultType="Map" parameterType="Map">
+        select car_num,
+               community_name as xqName,
+               cap_image as capImage,
+               DATE_FORMAT(capture_time,'%Y-%m-%d %H:%i:%s') as capTime,
+               dev_chn_name as capAddress
+        from car_access
+        where
+              car_num=#{params.carNum} and capture_time between STR_TO_DATE(#{params.startTime},'%Y-%m-%d %H:%i:%s') and STR_TO_DATE(#{params.endTime},'%Y-%m-%d %H:%i:%s')
+        ORDER BY capture_time DESC
+    </select>
+
+    <!--当天车辆高频出入次数>=3的-->
+    <select id="queryCarHighAccessList" resultType="java.util.Map" parameterType="map">
+     select * from (
+        select community_code as xqCode,community_name as xqName,car_num as carNum,type,person_code as personCode,CASE WHEN person_name is NULL THEN '陌生人' ELSE person_name END as personName,count(*) as senseNum,date_format(MAX(capture_time),'%Y-%m-%d %H:%i:%s') as captureTime from
+        (select * from car_access where capture_time between STR_TO_DATE(#{params.startTime},'%Y-%m-%d %H:%i:%s') and
+    STR_TO_DATE(#{params.endTime},'%Y-%m-%d %H:%i:%s')
+     ) record
+   where 1=1
+   <if test="params.xqCode != null and params.xqCode !=''">
+       and record.community_code in (${params.xqCode})
+   </if>
+   <!--<if test="params.carNum!=null and params.carNum!=''">-->
+       <!--and record.car_num=#{params.carNum}-->
+   <!--</if>-->
+   <!--<if test="params.personName!=null and params.personName!=''">-->
+       <!--and record.person_name=#{params.personName}-->
+   <!--</if>-->
+   <if test="params.likeStr!=null and params.likeStr!=''">
+       and record.car_num like concat('%',#{params.likeStr},'%') or record.person_name like concat('%',#{params.likeStr},'%')
+   </if>
+   GROUP BY carNum) a
+   where senseNum>=3
+   order by senseNum desc,captureTime desc
+</select>
+
+<!--根据personCode查询电话-->
+    <select id="queryPhoneByPersonCode" resultType="String" parameterType="String">
+    select phone from base_person where code=#{persondCode}
+    </select>
+
+    <!--车牌号和时间查询最近一次抓拍照片-->
+    <select id="queryLastCarImage" resultType="String" parameterType="String">
+    select cap_image from car_access where car_num=#{carNum} and date_format(capture_time,'%Y-%m-%d %H:%i:%s')=#{captureTime} limit 1
+    </select>
+
+    <!--查询房间信息-->
+    <select id="queryRoomName" resultType="String" parameterType="String">
+    select CONCAT(building_name,unit_name,room_name) as roomName
+    from base_room
+    where code=(select room_code from base_person where code=#{persondCode} limit 1)
+        <if test="purpose!=null and purpose!=''">
+          and use_type=#{purpose}
+        </if>
+        <if test="useNature!=null and useNature!=''">
+            and type=#{useNature}
+        </if>
+    </select>
+
+</mapper>

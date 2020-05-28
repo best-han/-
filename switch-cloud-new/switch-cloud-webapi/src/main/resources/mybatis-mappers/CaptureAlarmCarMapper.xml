@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.CaptureAlarmCarMapper" >
+<!-- websocket zdq 车辆报警   -->
+    <select id="queryAlarmCarList" parameterType="Integer" resultType="Map">
+        select
+            alarm.id id,
+            cap_image capImage,
+            detail.car_image groupImage,
+            alarm.group_code groupCode,
+            alarm.group_name groupName,
+            detail_level groupLevel,
+            alarm.car_num carNum,
+            device_code deviceCode,
+            device_name capAddress,
+            date_format(capture_time,'%Y-%m-%d %H:%i:%s') capTime,
+            alarm.community_code xqCode
+            from capture_alarm_car alarm
+            inner join car_group_detail detail on detail.car_num=alarm.car_num
+            where  alarm.id &gt; #{id}
+            order by alarm.id asc limit 200
+    </select>
+    <!-- 查询车辆预警信息 by lxh -->
+    <select id="selectCarAlarmList" parameterType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAlarmCar"
+            resultType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAlarmCar">
+        select
+        a.id,
+        (case when a.cap_image is null or a.cap_image ='' then null else CONCAT_WS('',#{capImage},a.cap_image ) end )
+        capImage,
+        date_format(a.capture_time,'%Y-%m-%d %H:%i:%s') captureTimesStr,
+        CONCAT_WS('',xq.name, a.device_name ) location,
+        a.detail_level detailLevel,
+        a.detail_level_name detailLevelName,
+        a.car_num carNum,
+        a.device_name deviceName,
+        a.detail_reason detailReason,
+        a.group_name groupName,
+        a.handel_conn handelConn,
+        a.handel_user handelUser,
+        a.handel_status handelStatus,
+        date_format(a.handel_time,'%Y年%m月%d日') handelTimeStr
+        from capture_alarm_car a
+        left  join  base_community xq on a.community_code = xq.code
+        <where>
+            <if test="groupCode != null and groupCode !=''">
+                AND a.group_code=#{groupCode}
+            </if>
+            <if test="detailLevel != null ">
+                AND a.detail_level=#{detailLevel}
+            </if>
+            <if test="handelStatus != null ">
+                AND a.handel_status=#{handelStatus}
+            </if>
+            <if test="handelUserId != null and handelUserId!='' ">
+                AND a.handel_user_id=#{handelUserId}
+            </if>
+            <if test="likeStr != null and likeStr !=''  ">
+                AND car_num LIKE concat("%",#{likeStr},"%")
+            </if>
+            <if test="userList!=null ">
+                and a.create_user_id in
+                <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                    #{item.userId}
+                </foreach>
+            </if>
+        </where>
+        order  by capture_time desc
+    </select>
+    <!-- 获取车辆预警总数 -->
+    <select id="countCarList" parameterType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAlarmCar"
+            resultType="java.lang.Integer">
+        select
+        count(*)
+        from capture_alarm_car
+        <where>
+            <if test="groupCode != null and groupCode !=''">
+                AND group_code=#{groupCode}
+            </if>
+            <if test="detailLevel != null ">
+                AND detail_level=#{detailLevel}
+            </if>
+            <if test="handelStatus != null ">
+                AND handel_status=#{handelStatus}
+            </if>
+            <if test="handelUserId != null and handelUserId!='' ">
+                AND handel_user_id=#{handelUserId}
+            </if>
+            <if test="userList!=null ">
+                and create_user_id in
+                <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                    #{item.userId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <!-- 警务通 获取车辆预警集合 -->
+    <select id="selectAppCarAlarmList" parameterType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAlarmCar"
+            resultType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAlarmCar">
+        select
+        a.id,
+        (case when a.cap_image is null or a.cap_image ='' then null else CONCAT_WS('',#{capImage},a.cap_image ) end )
+        capImage,
+        (case when a.cap_small_image is null or a.cap_small_image ='' then null else CONCAT_WS('',#{capImage},a.cap_small_image ) end )
+        capSmallImage,
+        date_format(a.capture_time,'%Y-%m-%d %H:%i') captureTimesStr,
+        CONCAT_WS('',xq.name, a.device_name ) location,
+        a.detail_level detailLevel,
+        CONCAT_WS(a.group_name,'发现','车辆' )
+        eventName,
+        a.detail_level_name detailLevelName,
+        a.car_num carNum,
+        a.device_name deviceName,
+        a.detail_reason detailReason,
+        a.group_name groupName,
+        a.handel_conn handelConn,
+        a.handel_user handelUser,
+        a.handel_status handelStatus,
+        date_format(a.handel_time,'%Y年%m月%d日') handelTimeStr
+        from capture_alarm_car a
+        left  join  base_community xq on a.community_code = xq.code
+        <where>
+            <if test="groupCode != null and groupCode !=''">
+                AND a.group_code=#{groupCode}
+            </if>
+            <if test="detailLevel != null ">
+                AND a.detail_level=#{detailLevel}
+            </if>
+            <if test="handelStatus != null ">
+                AND a.handel_status=#{handelStatus}
+            </if>
+            <if test="handelUserId != null and handelUserId!='' ">
+                AND a.handel_user_id=#{handelUserId}
+            </if>
+            <if test="likeStr != null and likeStr !=''  ">
+                AND (car_num LIKE concat("%",#{likeStr},"%")  or xq.name LIKE concat("%",#{likeStr},"%") )
+            </if>
+            <if test="userList!=null ">
+                and a.create_user_id in
+                <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                    #{item.userId}
+                </foreach>
+            </if>
+        </where>
+        <if test=" orderByClause != null and orderByClause!=''">
+            order  by ${orderByClause}
+        </if>
+    </select>
+    <!-- 根据ID查询车辆预警信息 by lxh -->
+    <select id="getCarById" parameterType="Integer"
+            resultType="com.windaka.suizhi.webapi.model.CaptureAlarmCar">
+        select
+      id,
+       handel_conn handelConn
+        from capture_alarm_car
+        where id = #{id}
+    </select>
+    <update id="updateCarAlarmById" parameterType="com.windaka.suizhi.webapi.model.CaptureAlarmCar" >
+        update capture_alarm_car
+        <set >
+            <if test="handelStatus != null" >
+                handel_status = #{handelStatus},
+            </if>
+            <if test="handelTime != null" >
+                handel_time = #{handelTime},
+            </if>
+            <if test="handelUser != null and handelUser !='' " >
+                handel_user = #{handelUser},
+            </if>
+            <if test="handelUserId != null  and handelUserId !='' " >
+                handel_user_id = #{handelUserId},
+            </if>
+            <if test="handelConn != null  and handelConn !=''" >
+                handel_conn = #{handelConn},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

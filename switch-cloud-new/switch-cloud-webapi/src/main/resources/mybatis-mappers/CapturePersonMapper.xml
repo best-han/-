@@ -1,0 +1,744 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.CapturePersonMapper">
+
+    <!--    socket查询抓拍人员列表推送 ygy-->
+    <select id="queryCapPersonList" parameterType="Integer" resultType="Map">
+        select
+        person.id  id,
+        device_name capAddress,
+        date_format(capture_time,'%Y-%m-%d %H:%i:%s') capTime,
+        cap_image bodyImage,
+        cap_person_image faceImage,
+        person.community_code xqCode,
+        person.community_name xqName,
+        person.person_name name
+        from capture_person person
+         where  person.id &gt; #{id}
+            order by person.id asc limit 200
+    </select>
+
+    <!--    感知抓拍人员数量 ygy-->
+    <select id="SensePersonNum" parameterType="Map" resultType="int">
+        select count(*) count from capture_person person
+        where 1=1
+        <if test="xqCode!=null and xqCode!=''">
+            and person.community_code in (${xqCode})
+        </if>
+        -- 本日感知数量
+        <if test="timeType == 'day'">
+            and DATE_FORMAT(person.capture_time,"%Y-%m-%d")=DATE_FORMAT(CURDATE(),"%Y-%m-%d")
+        </if>
+        -- 本月感知数量
+        <if test="timeType == 'month'">
+            and DATE_FORMAT(person.capture_time,"%Y-%m")=DATE_FORMAT(CURDATE(),"%Y-%m")
+        </if>
+        -- 感知陌生人数量
+        <if test="personType =='2'.toString ">
+            and person.type=2
+        </if>
+    </select>
+
+    <!--    根据id 查询抓拍人员信息 目的 将信息插入告警人员表-->
+    <select id="selectCapturePersonInfo" parameterType="String" resultType="Map">
+        select
+        person.community_code communityCode,person.capture_time CapTime,person.device_code deviceCode,person.device_name deviceName,
+        person.device_type deviceType,person.device_type_name deviceTypeName,person.device_location deviceLoaction,person.cap_image capImage,
+        person.cap_video capVideo,detail.id detailId,detail.person_image detailImage,detail.level detailLevel,detail.level_name detailLevelName,
+        detail.reason detailReason,detail.person_code detailPersonCode,detail.person_name detailPersonName,detail.person_paper_number detailPersonPaperNum,
+        detail.person_phone detailPersonPhone,detail.group_code detailGroupCode,detail.group_name detailGroupName
+        from capture_person person
+        left JOIN  face_group_detail detail on detail.person_code=person.person_code
+        where person.id=#{id}
+    </select>
+
+    <!--陌生人员列表查询-->
+    <select id="personStrangerList" parameterType="Map" resultType="Map">
+        select MAX(id) id,person.person_code personCode, count(1) accessNum from capture_person person
+        where person.type="1"
+        <if test="xqCode.size()>0 ">
+            and person.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="age!=null and age!=''">
+            <if test="age=='0'.toString">
+                and person.cap_age='未成年'
+            </if>
+            <if test="age=='1'.toString">
+                and person.cap_age='青年人'
+            </if>
+            <if test="age=='2'.toString">
+                and person.cap_age='中年人'
+            </if>
+            <if test="age=='3'.toString">
+                and person.cap_age='老年人'
+            </if>
+        </if>
+        <if test="timeType!=null and timeType!=''">
+            <if test="timeType='month'.toString">
+                and DATE_FORMAT(person.capture_time,"%Y-%m")=DATE_FORMAT(CURDATE(),"%Y-%m")
+            </if>
+            <if test="timeType='day'.toString">
+                and DATE_FORMAT(person.capture_time,"%Y-%m-%d")=DATE_FORMAT(CURDATE(),"%Y-%m-%d")
+            </if>
+        </if>
+        <if test="likeStr!=null and likeStr!=''">
+            and CONCAT_WS('',person.cap_age,person.cap_sex,person.cap_country,person.community_name) like
+            concat('%',#{likeStr},'%')
+        </if>
+        GROUP BY person_code
+        <if test="accessNumBegin!=null and accessNumBegin!='' ">
+            having accessNum>=#{accessNumBegin}
+            <if test="accessNumEnd!=null and accessNumEnd!=''">
+                and #{accessNumEnd}>=accessNum
+            </if>
+        </if>
+    </select>
+    <select id="selectCapInfoById" resultType="Map" parameterType="String">
+        select * from capture_person
+        where id=#{id}
+    </select>
+
+    <!--    抓拍人员-单人记录列表-->
+    <select id="selectCapPersonByCode" parameterType="Map" resultType="Map">
+        select date_format(person.capture_time,'%Y-%m-%d %H:%i:%s') capTime,person.community_code
+        xqCode,person.community_name xqName,device.name capAddress,person.cap_image bodyImage,person.cap_person_image
+        faceImage from capture_person person
+        INNER JOIN capture_device device on device.`code`=person.device_code
+        where person.person_code=#{personId}
+        <if test="xqCode.size()>0 ">
+            and person.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="capTime!=null and capTime!='' ">
+            and date_format(person.capture_time,'%Y-%m-%d')=DATE_FORMAT(#{capTime},'%Y-%m-%d')
+        </if>
+        <if test="suspectAdd!=null and suspectAdd!=''">
+            <if test="suspectAdd='1'.toString">
+                and DATE_SUB(CURDATE(),INTERVAL 15 DAY) <![CDATA[ < ]]> date(person.capture_time)
+            </if>
+        </if>
+        ORDER BY person.capture_time desc
+    </select>
+
+    <!--    抓拍人员列表-->
+    <select id="personCaptureList" resultType="Map" parameterType="Map">
+        select
+        capture_person.id id,
+        DATE_FORMAT(capture_person.capture_time,'%Y-%m-%d %H:%i:%s') capTime,
+        cap_image bodyImage,
+        cap_person_image faceImage,
+        capture_person.device_name capAddress,
+        capture_person.community_code xqCode,
+        capture_person.community_name xqName,
+        capture_person.device_location deviceLocation,
+        capture_person.person_code personId,
+        capture_person.person_name name
+        from
+        capture_person
+        where 1=1
+        <if test="xqCode!=null and xqCode.size()>0">
+            and capture_person.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="personCode!=null and personCode.size()>0 ">
+            and person_code in
+            <foreach collection="personCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="id!=null and id!=''">
+            and person_code=(select person_code from capture_person where id=#{id})
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            and UNIX_TIMESTAMP(capture_person.capture_time) &gt;=UNIX_TIMESTAMP(#{startTime})
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and UNIX_TIMESTAMP(capture_person.capture_time) &lt;=UNIX_TIMESTAMP(#{endTime})
+        </if>
+        <if test="name!=null and name!=''">
+            and capture_person.person_name like concat('%',#{name},'%')
+        </if>
+        <if test="age!=null and age!=''">
+            <if test="age=='0'.toString">
+                and cap_age='未成年'
+            </if>
+            <if test="age=='1'.toString">
+                and cap_age='青年人'
+            </if>
+            <if test="age=='2'.toString">
+                and cap_age='中年人'
+            </if>
+            <if test="age=='3'.toString">
+                and cap_age='老年人'
+            </if>
+        </if>
+        <if test="sex!=null and sex!=''">
+            and capture_person.cap_sex = #{sex}
+        </if>
+        <if test="bmask!=null and bmask!=''">
+            and capture_person.cap_bmask = #{bmask}
+        </if>
+        <if test="eyeglass!=null and eyeglass!=''">
+            and capture_person.cap_eyeglass = #{eyeglass}
+        </if>
+        <if test="knapsack!=null and knapsack!=''">
+            and capture_person.cap_knapsack = #{knapsack}
+        </if>
+        <if test="hat!=null and hat!=''">
+            and capture_person.cap_hat = #{hat}
+        </if>
+        <if test="handbag!=null and handbag!=''">
+            and capture_person.cap_handbag = #{handbag}
+        </if>
+        <if test="coatType!=null and coatType!=''">
+            and capture_person.cap_coat_type = #{coatType}
+        </if>
+        <if test="coatColor!=null and coatColor!=''">
+            and capture_person.cap_coat_color = #{coatColor}
+        </if>
+        <if test="trousersType!=null and trousersType!=''">
+            and capture_person.cap_trousers_type = #{trousersType}
+        </if>
+        <if test="trousersColor!=null and trousersColor!=''">
+            and capture_person.cap_trousers_color = #{trousersColor}
+        </if>
+        order by capture_person.capture_time desc
+    </select>
+
+    <select id="selectPersonCodeById" parameterType="String" resultType="Map">
+        select person_code from capture_person where id=#{id}
+    </select>
+
+    <!--    疑似新增人-->
+    <select id="personAddedList" resultType="Map" parameterType="Map">
+        select personId,count(*) capDays from
+        (select DISTINCT person.person_code personId,DATE_FORMAT(person.capture_time,'%Y-%m-%d') catTime from
+        (select * from capture_person
+        where type=2
+        )as person
+        where DATE_SUB(CURDATE(),INTERVAL 15 DAY) <![CDATA[ < ]]> date(person.capture_time))as a
+        group by a.personId
+        having capDays>=8
+        order by capDays desc
+    </select>
+    <select id="selectPersonInfoByCode" parameterType="String" resultType="Map">
+        select * from capture_person
+        where person_code=#{personCode}
+    </select>
+
+
+
+<!--    疑似新增人表 插入-->
+    <insert id="insertPersonAddTable" parameterType="Map" >
+         insert into suspected_add_person
+        (id,community_code,community_name,person_code,cap_sex,cap_age,cap_day,face_image,body_image,msg_status,op_time)
+        values
+        (#{id},#{communityCode},#{communityName},#{personCode},#{capSex},#{capAge},#{capDays},#{faceImage},#{bodyImage},0,now())
+    </insert>
+
+    <!-- 疑似新增人 app推送表 清空 -->
+    <update id="emptyPersonAddApp">
+        truncate table suspected_add_person_app
+    </update>
+
+    <!-- 疑似新增人 app推送表 增加 -->
+    <insert id="insertPersonAddApp" parameterType="Map" >
+         insert into suspected_add_person_app
+        (id,community_code,community_name,person_code,cap_sex,cap_age,cap_day,face_image,body_image,msg_status,op_time)
+        values
+        (#{id},#{communityCode},#{communityName},#{personCode},#{capSex},#{capAge},#{capDays},#{faceImage},#{bodyImage},0,now())
+    </insert>
+
+    <!--    根据personCode 判断是否存在此人-->
+    <select id="selectPersonAddByCode" resultType="Map" parameterType="String">
+       select * from suspected_add_person
+       where person_code=#{personCode}
+   </select>
+
+    <!--    //疑似新增人表 更新-->
+    <update id="updatePersonAddTable" parameterType="Map">
+        update suspected_add_person person
+        set cap_day=#{capDay},op_time=now(),face_image=#{faceImage},body_image=#{bodyImage}
+        where  person_code=#{personCode}
+    </update>
+
+    <update id="updatePersonAddTable15" parameterType="String">
+        update suspected_add_person person
+        set msg_status=0,op_time=now()
+        where DATE_SUB(CURDATE(),INTERVAL 15 DAY) <![CDATA[ > ]]> date(person.op_time) and msg_status=1 and person_code=#{personCode}
+    </update>
+
+<!--    清理 之前感知到  16天后 并未感知到到人员-->
+    <delete id="deletePersonAdd">
+        delete from suspected_add_person
+        where DATE_SUB(CURDATE(),INTERVAL 16 DAY) <![CDATA[ > ]]> date(suspected_add_person.op_time)
+    </delete>
+
+
+
+<!--    业务查询疑似新增 人员列表-->
+    <select id="selectPersonAddList" parameterType="Map" resultType="Map">
+        select person.community_code xqCode,person.community_name xqName,person.person_code personId,
+        person.cap_sex sex,person.cap_age age,person.cap_day capDays ,person.face_image faceImage,person.body_image bodyImage
+        from suspected_add_person person
+        where 1=1
+        <if test="xqCode!=null and xqCode.size()>0">
+            and community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="likeStr!=null and likeStr!=''">
+            and person.community_name like concat('%',#{likeStr},'%')
+        </if>
+        <if test="sex!=null and sex!=''">
+            and person.cap_sex= #{sex}
+        </if>
+        <if test="age!=null and age!=''">
+            <if test="age=='0'.toString">
+                and cap_age='未成年'
+            </if>
+            <if test="age=='1'.toString">
+                and cap_age='青年人'
+            </if>
+            <if test="age=='2'.toString">
+                and cap_age='中年人'
+            </if>
+            <if test="age=='3'.toString">
+                and cap_age='老年人'
+            </if>
+        </if>
+        <if test="daySmall!=null and daySmall!=''">
+            and person.cap_day >= #{daySmall}
+        </if>
+        <if test="dayBig!=null and dayBig!=''">
+            and #{dayBig} >= person.cap_day
+        </if>
+        order by person.cap_day desc
+    </select>
+
+    <select id="selectPersonAddListCount" parameterType="Map" resultType="int">
+        select count(1) from suspected_add_person
+        where 1=1
+        <if test="xqCode!=null and xqCode.size()>0">
+            and community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <!--    今日抓拍人数-->
+    <select id="selectPersonCapNum" resultType="int" parameterType="Map">
+        select count(*) from capture_person person
+        where date(person.capture_time)=date(now())
+        <if test="xqCode.size()>0 ">
+            and person.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <!--    抓拍人员【以图搜图】点击查询-->
+    <select id="selectCapPersonById" resultType="Map" parameterType="Map">
+        select
+        capture_person.id id,
+        DATE_FORMAT(capture_person.capture_time,'%Y-%m-%d %H:%i:%s') capTime,
+        cap_image bodyImage,
+        cap_person_image faceImage,
+        capture_person.device_name capAddress,
+        capture_person.community_code xqCode,
+        capture_person.community_name xqName,
+        capture_person.device_location deviceLocation,
+        capture_person.person_code personId,
+        capture_person.person_name name
+        from
+        capture_person
+        where 1=1
+				and person_code=(select person_code from capture_person where id=#{id})
+        <if test="xqCode.size()>0 ">
+            and community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        order by capture_person.capture_time desc
+    </select>
+
+<!--    抓拍人员【以图搜图】 图像查询-->
+    <select id="selectCapPersonByCodes" parameterType="Map" resultType="Map">
+        select
+        capture_person.id id,
+        DATE_FORMAT(capture_person.capture_time,'%Y-%m-%d %H:%i:%s') capTime,
+        cap_image bodyImage,
+        cap_person_image faceImage,
+        capture_person.device_name capAddress,
+        capture_person.community_code xqCode,
+        capture_person.community_name xqName,
+        capture_person.device_location deviceLocation,
+        capture_person.person_code personId,
+        capture_person.person_name name
+        from
+        capture_person
+        where 1=1
+        <if test="xqCode.size()>0 ">
+            and community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="personCode.size()>0 ">
+            and person_code in
+            <foreach collection="personCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        order by capture_person.capture_time desc
+    </select>
+
+    <!--    疑似迁出人（15天）-->
+    <select id="quitPersonList" parameterType="Map" resultType="Map">
+        select
+        xq_code xqCode,xq_name xqName,owner_id ownerId,name,phone,paper_number paperNumber,
+        date_format(checkin_date,'%Y-%m-%d %H:%i:%s') checkinDate,house_name houseName,live_type_name liveTypeName,no_sence_time noSenceTime,date_format(last_cap_time,'%Y-%m-%d %H:%i:%s') lastCapTime,image,full_image fullImage
+        from
+        suspected_quit_person
+        where 1=1
+        <if test="xqCode!=null and xqCode.size()>0 ">
+            and xq_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="daySmall!=null and daySmall!=''">
+            and no_sence_time &gt;= #{daySmall}
+        </if>
+        <if test="dayBig!=null and dayBig!=''">
+            and no_sence_time &lt;= #{dayBig}
+        </if>
+        <if test="liveTypeName!=null and liveTypeName!=''">
+            and live_type_name = #{liveTypeName}
+        </if>
+        <if test="likeStr!=null and likeStr!=''">
+            and (xq_name like concat('%',#{likeStr},'%') or name like concat('%',#{likeStr},'%')
+            or phone like concat('%',#{likeStr},'%') or paper_number like concat('%',#{likeStr},'%')
+            or house_name like concat('%',#{likeStr},'%') or live_type_name like concat('%',#{likeStr},'%'))
+        </if>
+        order by no_sence_time desc
+    </select>
+
+    <!-- 疑似迁出人员-定时任务专用 -->
+    <select id="personQuitListTask" resultType="Map" parameterType="Map">
+        select
+            ownerId,name,phone,image,fullImage,lastCapTime,noSenceTime,xqCode,xqName,checkin_time checkinDate,type_name liveTypeName,
+             CONCAT_WS(" ",building_name,unit_name,room_name) houseName,paperNumber
+        from
+        (
+            select
+                max(id) id,community_code xqCode,person_code ownerId,person_name name,person_phone phone,person_paper_number paperNumber,cap_person_image image,cap_image fullImage
+            from
+                capture_person
+            where
+                person_code is not null and person_code!='' and type!='2' and person_name is not null and person_name != ''
+            group by
+                person_code,community_code) person1
+            inner join (
+                select
+                    id id2,date_format(capture_time,'%Y-%m-%d %H:%i:%s') lastCapTime,
+                DATEDIFF(now(),capture_time) noSenceTime,community_name xqName
+                from
+                    capture_person
+				) person2 on person1.id=person2.id2
+            inner join (
+                select
+                    base_person.code,base_room.community_code,base_person.checkin_time,base_person.type_name,base_room.building_name,base_room.unit_name,base_room.room_name
+                from
+                    base_person
+                inner join
+                    base_room
+                on
+                    base_person.room_code=base_room.code
+                group by
+                    base_person.code,base_room.community_code
+                ) person3 on person3.code=person1.ownerId and person3.community_code=person1.xqCode
+    </select>
+
+    <!-- 疑似迁出车-定时任务专用 -->
+    <select id="personCarQuitListTask" resultType="Map" parameterType="Map">
+        select
+        carNum,lastCapTimeCar,noSenceTimeCar,xqCode
+        from
+        (
+        select
+        max(id) id,car_num carNum,community_code xqCode
+        from
+        capture_car
+        where
+        car_num is not null and car_num!=''
+        group by car_num,community_code) car1
+        inner join
+        (
+        select
+        id id2, date_format(capture_time,'%Y-%m-%d %H:%i:%s') lastCapTimeCar,DATEDIFF(now(), capture_time) noSenceTimeCar
+        from
+        capture_car
+        where 1=1
+        <if test="carNum!=null and carNum!=''">
+            and car_num=#{carNum}
+        </if>
+        <if test="xqCode!=null and xqCode!=''">
+            and community_code=#{xqCode}
+        </if>
+        ) car2 on car1.id=car2.id2
+        inner join
+        base_car on base_car.num=car1.carNum and base_car.community_code=car1.xqCode
+    </select>
+
+    <!-- 疑似迁出人员-添加项至展示表 -->
+    <insert id="insertPersonQuitList" parameterType="Map">
+        insert into suspected_quit_person
+        (id,image,full_image,live_type_name,house_name,phone,paper_number,xq_name,last_cap_time,xq_code,name,checkin_date,owner_id,no_sence_time)
+        values
+        (#{id},#{image},#{fullImage},#{liveTypeName},#{houseName},#{phone},#{paperNumber},#{xqName},#{lastCapTime},#{xqCode},#{name},#{checkinDate},#{ownerId},#{noSenceTime})
+    </insert>
+
+    <!-- 疑似迁出人员-清空展示表 -->
+    <update id="emptyPersonQuitList">
+        truncate table suspected_quit_person
+    </update>
+
+    <!-- 疑似迁出人员-迁出展示表中的某小区的某人 -->
+    <delete id="deletePersonQuitList" parameterType="Map">
+        delete from suspected_quit_person
+        where 1=1
+        and owner_id=#{ownerId}
+        and xq_code=#{xqCode}
+    </delete>
+
+    <!-- 疑似迁出人员-忽略展示表中的某小区的某人 -->
+    <insert id="insertPersonQuitIgnoreList" parameterType="Map">
+        insert into suspected_quit_person_ignore
+        (owner_id,xq_code,handle_time,ignore_time)
+        values
+        (#{ownerId},#{xqCode},now(),#{ignoreTime})
+    </insert>
+
+    <!-- 疑似迁出人员-某小区的某人是否已被忽略 -->
+    <select id="queryPersonQuitIgnoreNum" parameterType="Map" resultType="int">
+        select count(*)
+        from suspected_quit_person_ignore
+        where 1=1
+        and owner_id=#{ownerId}
+        and xq_code=#{xqCode}
+    </select>
+
+    <!-- 疑似迁出人员-某小区的某人的忽略情况 -->
+    <select id="queryPersonQuitIgnoreCondition" parameterType="Map" resultType="Map">
+        select DATEDIFF(now(), handle_time) lastDays,ignore_time ignoreTime
+        from suspected_quit_person_ignore
+        where 1=1
+        and owner_id=#{ownerId}
+        and xq_code=#{xqCode}
+    </select>
+
+    <!-- 疑似迁出人员-更新某小区的某人的忽略情况 -->
+    <update id="updatePersonQuitIgnoreList" parameterType="Map">
+        update suspected_quit_person_ignore
+        set handle_time=now(),ignore_time=#{ignoreTime}
+        where 1=1
+        and owner_id=#{ownerId}
+        and xq_code=#{xqCode}
+    </update>
+
+    <!-- 疑似迁出人员-添加至迁出记录 迁出某小区的某人 -->
+    <insert id="insertPersonQuitRecordList" parameterType="Map">
+        insert into suspected_quit_person_record
+        (image,full_image,live_type_name,house_name,phone,paper_number,xq_name,last_cap_time,xq_code,name,checkin_date,owner_id,no_sence_time,quit_time,handle_user)
+        values
+        (#{image},#{fullImage},#{liveTypeName},#{houseName},#{phone},#{paperNumber},#{xqName},#{lastCapTime},#{xqCode},#{name},#{checkinDate},#{ownerId},#{noSenceTime},now(),#{handleUser})
+    </insert>
+
+    <!-- 疑似迁出人员-添加至处理记录 -->
+    <insert id="insertPersonQuitHandleList" parameterType="Map">
+        insert into suspected_quit_person_handle
+        (image,full_image,live_type_name,house_name,phone,paper_number,xq_name,last_cap_time,xq_code,name,checkin_date,owner_id,no_sence_time,handle_content,handle_time,handle_user)
+        values
+        (#{image},#{fullImage},#{liveTypeName},#{houseName},#{phone},#{paperNumber},#{xqName},#{lastCapTime},#{xqCode},#{name},#{checkinDate},#{ownerId},#{noSenceTime},#{handleContent},now(),#{handleUser})
+    </insert>
+
+    <!-- 疑似迁出人员-单独查询   -->
+    <select id="quitPersonListSingle" parameterType="Map" resultType="Map">
+        select
+        xq_code xqCode,xq_name xqName,owner_id ownerId,name,phone,paper_number paperNumber,
+        checkin_date checkinDate,house_name houseName,live_type_name liveTypeName,no_sence_time noSenceTime,last_cap_time lastCapTime,image,full_image fullImage
+        from
+        suspected_quit_person
+        where 1=1
+        <if test="ownerId!=null and ownerId!=''">
+            and owner_id=#{ownerId}
+        </if>
+        <if test="xqCode!=null and xqCode!=''">
+            and xq_code=#{xqCode}
+        </if>
+    </select>
+
+    <!-- 疑似迁出人员-单独查询   -->
+    <select id="quitPersonListSingleByCode" parameterType="Map" resultType="Map">
+        select
+        xq_code xqCode,xq_name xqName,owner_id ownerId,name,phone,paper_number paperNumber,
+        checkin_date checkinDate,house_name houseName,live_type_name liveTypeName,no_sence_time noSenceTime,last_cap_time lastCapTime,image,full_image fullImage
+        from
+        suspected_quit_person
+        where 1=1
+        <if test="ownerId!=null and ownerId!=''">
+            and owner_id=#{ownerId}
+        </if>
+        <if test="communityCode!=null and communityCode!=''">
+            and xq_code in (${communityCode})
+        </if>
+
+    </select>
+
+    <!-- 疑似迁出人员-查询处理列表   -->
+    <select id="quitPersonHandleList" parameterType="Map" resultType="Map">
+        select
+        xq_code xqCode,xq_name xqName,owner_id ownerId,name,phone,paper_number paperNumber,
+        date_format(checkin_date,'%Y-%m-%d %H:%i:%s') checkinDate,house_name houseName,live_type_name liveTypeName,no_sence_time noSenceTime,date_format(last_cap_time,'%Y-%m-%d %H:%i:%s') lastCapTime,image,full_image fullImage,
+        handle_content handleContent,date_format(handle_time,'%Y-%m-%d %H:%i:%s') handleTime,handle_user handleUser
+        from
+        suspected_quit_person_handle
+        where 1=1
+        <if test="xqCode.size()>0 ">
+            and xq_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="daySmall!=null and daySmall!=''">
+            and no_sence_time &gt;= #{daySmall}
+        </if>
+        <if test="dayBig!=null and dayBig!=''">
+            and no_sence_time &lt;= #{dayBig}
+        </if>
+        <if test="liveTypeName!=null and liveTypeName!=''">
+            and live_type_name = #{liveTypeName}
+        </if>
+        <if test="likeStr!=null and likeStr!=''">
+            and (xq_name like concat('%',#{likeStr},'%') or name like concat('%',#{likeStr},'%')
+            or phone like concat('%',#{likeStr},'%') or paper_number like concat('%',#{likeStr},'%')
+            or house_name like concat('%',#{likeStr},'%') or live_type_name like concat('%',#{likeStr},'%')
+            or handle_content like concat('%',#{likeStr},'%') or handle_user like concat('%',#{likeStr},'%'))
+        </if>
+        order by handle_time desc
+    </select>
+
+    <!-- 疑似迁出人员-查询实际迁出列表   -->
+    <select id="quitPersonDeleteList" parameterType="Map" resultType="Map">
+        select
+        xq_code xqCode,xq_name xqName,owner_id ownerId,name,phone,paper_number paperNumber,
+        date_format(checkin_date,'%Y-%m-%d %H:%i:%s') checkinDate,house_name houseName,live_type_name liveTypeName,no_sence_time noSenceTime,date_format(last_cap_time,'%Y-%m-%d %H:%i:%s') lastCapTime,image,full_image fullImage,
+        date_format(quit_time,'%Y-%m-%d %H:%i:%s') quitTime,handle_user handleUser
+        from
+        suspected_quit_person_record
+        where 1=1
+        <if test="xqCode.size()>0 ">
+            and xq_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="daySmall!=null and daySmall!=''">
+            and no_sence_time &gt;= #{daySmall}
+        </if>
+        <if test="dayBig!=null and dayBig!=''">
+            and no_sence_time &lt;= #{dayBig}
+        </if>
+        <if test="liveTypeName!=null and liveTypeName!=''">
+            and live_type_name = #{liveTypeName}
+        </if>
+        <if test="likeStr!=null and likeStr!=''">
+            and (xq_name like concat('%',#{likeStr},'%') or name like concat('%',#{likeStr},'%')
+            or phone like concat('%',#{likeStr},'%') or paper_number like concat('%',#{likeStr},'%')
+            or house_name like concat('%',#{likeStr},'%') or live_type_name like concat('%',#{likeStr},'%')
+            or handle_user like concat('%',#{likeStr},'%'))
+        </if>
+        order by quit_time desc
+    </select>
+
+    <!-- 疑似迁出人员-查询某小区某人是否已迁出   -->
+    <select id="queryPersonQuitRecordNum" parameterType="Map" resultType="int">
+        select count(*)
+        from suspected_quit_person_record
+        where 1=1
+        and owner_id=#{ownerId}
+        and xq_code=#{xqCode};
+    </select>
+
+    <!-- 疑似迁出人员-查询疑似迁出总数   -->
+    <select id="queryPersonQuitTotal" parameterType="Map" resultType="int">
+        select count(*)
+        from suspected_quit_person
+        where 1=1
+        <if test="xqCode.size()>0 ">
+            and xq_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <!-- 疑似迁出人员-查询某小区某人的短信发送情况   -->
+    <select id="queryPersonQuitMsgCondition" parameterType="Map" resultType="Map">
+        select DATEDIFF(now(), send_time) lastDays,gap_time gapTime
+        from suspected_quit_person_msg
+        where 1=1
+        and owner_id=#{ownerId}
+        and xq_code=#{xqCode}
+    </select>
+
+    <!-- 疑似迁出人员-插入短信发送项   -->
+    <insert id="insertPersonQuitMsg" parameterType="Map">
+        insert into suspected_quit_person_msg
+        (id,image,full_image,live_type_name,house_name,phone,paper_number,xq_name,last_cap_time,xq_code,name,checkin_date,owner_id,no_sence_time,send_time,gap_time,msg_status)
+        values
+        (#{id},#{image},#{fullImage},#{liveTypeName},#{houseName},#{phone},#{paperNumber},#{xqName},#{lastCapTime},#{xqCode},#{name},#{checkinDate},#{ownerId},#{noSenceTime},now(),15,0)
+    </insert>
+
+    <!-- 疑似迁出人员-更新短信发送状态   -->
+    <update id="updatePersonQuitMsgStatus" parameterType="Map">
+        update suspected_quit_person_msg
+        set msg_status=0,send_time=now()
+        where 1=1
+        and owner_id=#{ownerId}
+        and xq_code=#{xqCode}
+    </update>
+
+    <!-- 疑似迁出人员-删除短信发送状态   -->
+    <delete id="deletePersonQuitMsg" parameterType="Map">
+        delete from suspected_quit_person_msg
+        where 1=1
+        and owner_id=#{ownerId}
+        and xq_code=#{xqCode}
+    </delete>
+
+    <!-- 疑似迁出人 app推送表 清空 -->
+    <update id="emptySuspectedPersonQuitApp">
+        truncate table suspected_quit_person_app
+    </update>
+
+    <!-- 疑似迁出人 app推送表 增加 -->
+    <insert id="insertPersonQuitApp" parameterType="Map">
+        insert into suspected_quit_person_app
+        (id,image,full_image,live_type_name,house_name,phone,paper_number,xq_name,last_cap_time,xq_code,name,checkin_date,owner_id,no_sence_time)
+        values
+        (#{id},#{image},#{fullImage},#{liveTypeName},#{houseName},#{phone},#{paperNumber},#{xqName},#{lastCapTime},#{xqCode},#{name},#{checkinDate},#{ownerId},#{noSenceTime})
+    </insert>
+</mapper>

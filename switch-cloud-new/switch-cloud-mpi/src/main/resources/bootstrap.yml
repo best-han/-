@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: sjwl-mpi
+
+  rabbitmq:
+    #host: 10.10.6.54  #测试
+    host: 172.16.1.150  #公安测试
+    #host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: /
+
+      #zipkin:
+      #base-url: http://localhost:9411
+      #enabled: true
+      #sender:
+      #type: web
+  ftp:
+    host: 218.58.65.21
+    port: 21
+    username: fhcpasqsj_hlw
+    password: pasq@ry
+    basePath: /
+    httpPath: http://218.58.65.21
+
+logging:
+  level:
+    root: info
+    com.windaka.suizhi: info
+  file: logs/${spring.application.name}.log
+mybatis:
+  type-aliases-package: com.windaka.suizhi.mpi.model
+  mapper-locations: classpath:/mybatis-mappers/*
+  configuration:
+    mapUnderscoreToCamelCase: true
+server:
+  port: 9010
+
+
+
+#以图搜图接口路径
+search:
+  image-by-image-path: /windaka/cloud/getDataByImg
+
+#获取视频流路径
+rtmp:
+  openPath: /windaka/cloud/getRtmpUrl
+#关闭视频流路径
+  closePath: /windaka/cloud/stopRtmp

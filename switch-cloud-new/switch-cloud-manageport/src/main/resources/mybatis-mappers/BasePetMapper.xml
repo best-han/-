@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.BasePetMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.BasePet" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="breed" property="breed" jdbcType="SMALLINT" />
+    <result column="breed_name" property="breedName" jdbcType="VARCHAR" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="community_name" property="communityName" jdbcType="VARCHAR" />
+    <result column="person_code" property="personCode" jdbcType="VARCHAR" />
+    <result column="mode" property="mode" jdbcType="SMALLINT" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="color" property="color" jdbcType="SMALLINT" />
+    <result column="color_name" property="colorName" jdbcType="VARCHAR" />
+    <result column="immune" property="immune" jdbcType="TINYINT" />
+    <result column="count" property="count" jdbcType="INTEGER" />
+    <result column="op_date" property="opDate" jdbcType="TIMESTAMP" />
+    <result column="adoption" property="adoption" jdbcType="SMALLINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, breed, breed_name, image, person_code, mode, sex, color, color_name, immune, count,
+    op_date,community_code,community_name,adoption
+  </sql>
+
+<!--  宠物插入 ygy-->
+  <insert id="insertPets" parameterType="com.windaka.suizhi.manageport.model.BasePet" >
+    insert into base_pet (id, code, breed,
+      breed_name, image, person_code,
+      mode, sex, color,
+      color_name, immune, count, op_date,community_code,community_name,adoption
+      )
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{breed,jdbcType=SMALLINT},
+      #{breedName,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR}, #{personCode,jdbcType=VARCHAR},
+      #{mode,jdbcType=SMALLINT}, #{sex,jdbcType=VARCHAR}, #{color,jdbcType=SMALLINT},
+      #{colorName,jdbcType=VARCHAR}, #{immune,jdbcType=TINYINT}, #{count,jdbcType=INTEGER}, now(),#{communityCode},#{communityName},#{adoption}
+      )
+  </insert>
+
+<!--  宠物删除 ygy-->
+  <delete id="deleteByCode" parameterType="String" >
+    delete from base_pet
+    where code=#{code}
+  </delete>
+
+<!--  宠物更新 ygy-->
+  <update id="updateByCode" parameterType="com.windaka.suizhi.manageport.model.BasePet" >
+    update base_pet
+    set code = #{code,jdbcType=VARCHAR},
+      breed = #{breed,jdbcType=SMALLINT},
+      breed_name = #{breedName,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      person_code = #{personCode,jdbcType=VARCHAR},
+      mode = #{mode,jdbcType=SMALLINT},
+      sex = #{sex,jdbcType=VARCHAR},
+      color = #{color,jdbcType=SMALLINT},
+      color_name = #{colorName,jdbcType=VARCHAR},
+      immune = #{immune,jdbcType=TINYINT},
+      count = #{count,jdbcType=INTEGER},
+      op_date =now(),
+      community_code=#{communityCode},
+      community_name=#{communityName},
+      adoption=#{adoption}
+    where code = #{code}
+  </update>
+
+<!--  宠物列表查询 ygy-->
+  <select id="selectPetsList" resultMap="BaseResultMap" parameterType="Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_pet
+    where 1=1
+    <if test="code!=null and code!=''">
+      and code=#{code}
+    </if>
+    <if test="personCode!=null and personCode!=''">
+      and person_code=#{personCode}
+    </if>
+    <if test="breed!=null and breed!=''">
+      and breed=#{breed}
+    </if>
+    <if test="communityCode!=null and communityCode!=''">
+      and community_code=#{communityCode}
+    </if>
+  </select>
+
+  <update id="updatePetByCommunityCode" parameterType="Map">
+    update base_pet
+    set
+     community_name=#{communityName}
+    where community_code=#{communityCode}
+  </update>
+
+</mapper>

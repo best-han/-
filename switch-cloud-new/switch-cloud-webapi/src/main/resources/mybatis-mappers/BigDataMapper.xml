@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.windaka.suizhi.webapi.dao.BigDataDao">
+    <resultMap id="BaseResultMap" type="com.windaka.suizhi.webapi.model.CapturePerson">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="capture_time" jdbcType="TIMESTAMP" property="captureTime"/>
+        <result column="capture_device_id" jdbcType="VARCHAR" property="captureDeviceId"/>
+        <result column="capture_img" jdbcType="VARCHAR" property="captureImg"/>
+        <result column="person_id" jdbcType="VARCHAR" property="personId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="sex" jdbcType="SMALLINT" property="sex"/>
+        <result column="type" jdbcType="SMALLINT" property="type"/>
+        <result column="age" jdbcType="SMALLINT" property="age"/>
+        <result column="country" jdbcType="SMALLINT" property="country"/>
+        <result column="bmask" jdbcType="BIT" property="bmask"/>
+        <result column="eyeglass" jdbcType="BIT" property="eyeglass"/>
+        <result column="hat" jdbcType="BIT" property="hat"/>
+        <result column="knapsack" jdbcType="BIT" property="knapsack"/>
+        <result column="handbag" jdbcType="BIT" property="handbag"/>
+        <result column="coat_type" jdbcType="INTEGER" property="coatType"/>
+        <result column="coat_color" jdbcType="INTEGER" property="coatColor"/>
+        <result column="trousers_type" jdbcType="INTEGER" property="trousersType"/>
+        <result column="trousers_color" jdbcType="INTEGER" property="trousersColor"/>
+        <result column="similar" jdbcType="DOUBLE" property="similar"/>
+        <result column="xq_code" jdbcType="VARCHAR" property="xqCode"/>
+        <result column="manage_id" jdbcType="VARCHAR" property="manageId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, capture_time, capture_device_id, capture_img, person_id, name, sex, type, age, 
+    country, bmask, eyeglass, hat, knapsack, handbag, coat_type, coat_color, trousers_type, 
+    trousers_color, similar, xq_code, manage_id
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from face_person_attr
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+<!--hjt-->
+    <select id="totalPersonRows"  resultType="java.lang.Integer">
+        SELECT
+        count(*)
+        FROM
+        (
+        SELECT
+        z.name ,
+        count( OPEN.id ) times,
+        OPEN.community_name communityName,
+        OPEN.community_code communityCode,
+        OPEN.person_code personCode,
+        DATE_FORMAT(max( OPEN.capture_time ),'%Y-%m-%d %H:%i:%s') captureTime,
+        max( OPEN.cap_image ) capImage,
+        z.image image,
+        z.type_name identityName,
+        z.paper_number,z.phone,
+        ho.type_name typeName
+        FROM
+        person_inout OPEN
+        LEFT JOIN base_person z ON z.code = OPEN.person_code
+        left join base_room ho on ho.code=z.room_code
+        WHERE
+        OPEN.capture_time <![CDATA[ > ]]> DATE_ADD( now(), INTERVAL - 1 MONTH )
+        <if test="params.xqCode!=null and params.xqCode!=''">
+          and OPEN.community_code in (${params.xqCode})
+        </if>
+        <if test="params.searchText!=null and params.searchText!=''">
+            and (OPEN.person_name like concat('%',#{params.searchText},'%') or z.paper_number like concat('%',#{params.searchText},'%') or z.phone like concat('%',#{params.searchText},'%') )
+        </if>
+        <if test="params.identity!=null and params.identity!=''">
+          and z.type =#{params.identity}
+        </if>
+        <if test="params.startDate !=null and params.startDate !='' and params.endDate !=null and params.endDate!=''">
+          and OPEN.capture_time  between  STR_TO_DATE(#{params.startDate},'%Y-%m-%d %H:%i:%s') and STR_TO_DATE(#{params.endDate},'%Y-%m-%d %H:%i:%s')
+        </if>
+        AND z.name != ''
+        and OPEN.access = '1'
+        AND ( HOUR ( OPEN.capture_time ) <![CDATA[ >= ]]>23  OR HOUR ( OPEN.capture_time ) <![CDATA[ < ]]> 5 )
+        GROUP BY
+        OPEN.person_code
+        ORDER BY
+        OPEN.capture_time DESC
+        ) a where 1=1
+        <if test="params.times!=null and params.times!=''">
+            and a.times <![CDATA[ >= ]]> #{params.times}
+        </if>
+    </select>
+    <!--hjt-->
+    <select id="getNightReturnPerson"  parameterType="map" resultType="map">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        z.name ,
+        count( OPEN.id ) times,
+        OPEN.community_name communityName,
+        OPEN.community_code communityCode,
+        OPEN.person_code personCode,
+        DATE_FORMAT(max( OPEN.capture_time ),'%Y-%m-%d %H:%i:%s') captureTime,
+        max( OPEN.cap_image ) capImage,
+        z.image image,
+        z.type_name identityName,
+        z.paper_number,z.phone,
+        ho.type_name typeName
+        FROM
+        person_inout OPEN
+        LEFT JOIN base_person z ON z.code = OPEN.person_code
+        left join base_room ho on ho.code=z.room_code
+        WHERE
+        OPEN.capture_time <![CDATA[ > ]]> DATE_ADD( now(), INTERVAL - 1 MONTH )
+        <if test="params.xqCode!=null and params.xqCode!=''">
+            and OPEN.community_code in (${params.xqCode})
+        </if>
+        <if test="params.searchText!=null and params.searchText!=''">
+            and (OPEN.person_name like concat('%',#{params.searchText},'%') or z.paper_number like concat('%',#{params.searchText},'%') or z.phone like concat('%',#{params.searchText},'%') )
+        </if>
+        <if test="params.identity!=null and params.identity!=''">
+            and z.type =#{params.identity}
+        </if>
+        <if test="params.startDate !=null and params.startDate !='' and params.endDate !=null and params.endDate!=''">
+            and OPEN.capture_time  between  STR_TO_DATE(#{params.startDate},'%Y-%m-%d %H:%i:%s') and STR_TO_DATE(#{params.endDate},'%Y-%m-%d %H:%i:%s')
+        </if>
+        AND z.name != ''
+        and OPEN.access = '1'
+        AND ( HOUR ( OPEN.capture_time ) <![CDATA[ >= ]]>23  OR HOUR ( OPEN.capture_time ) <![CDATA[ < ]]> 5 )
+        GROUP BY
+        OPEN.person_code
+        ORDER BY
+        OPEN.capture_time DESC
+        ) a where 1=1
+        <if test="params.times!=null and params.times!=''">
+            and a.times <![CDATA[ >= ]]> #{params.times}
+        </if>
+        ORDER BY
+        a.times DESC
+        limit #{params.start},#{params.limit}
+    </select>
+    <!--hjt-->
+    <select id="totalGetNightReturnPersonByPersonCode"  resultType="int">
+        SELECT
+        count(1)
+        from
+        person_inout OPEN
+        WHERE
+        OPEN.capture_time <![CDATA[ > ]]> DATE_ADD( now(), INTERVAL - 1 MONTH )
+        <if test="params.xqCode!=null and params.xqCode!=''">
+            and OPEN.community_code in (${params.xqCode})
+        </if>
+        <if test="params.startDate !=null and params.startDate !='' and params.endDate !=null and params.endDate!=''">
+            and OPEN.capture_time  between  STR_TO_DATE(#{params.startDate},'%Y-%m-%d %H:%i:%s') and STR_TO_DATE(#{params.endDate},'%Y-%m-%d %H:%i:%s')
+        </if>
+        AND  OPEN.person_code = #{params.personCode}
+        and OPEN.access = '1'
+        AND ( HOUR ( OPEN.capture_time ) <![CDATA[ >= ]]>23  OR HOUR ( OPEN.capture_time ) <![CDATA[ < ]]> 5 )
+    </select>
+
+    <select id="totalGetNightReturnPersonByCode"  resultType="int" parameterType="Map">
+        SELECT
+        count(1)
+        from
+        person_inout OPEN
+        WHERE
+        OPEN.capture_time <![CDATA[ > ]]> DATE_ADD( now(), INTERVAL - 1 MONTH )
+        <if test="communityCode!=null and communityCode!=''">
+            and OPEN.community_code in (${communityCode})
+        </if>
+        AND  OPEN.person_code = #{personId}
+        and OPEN.access = '1'
+        AND ( HOUR ( OPEN.capture_time ) <![CDATA[ >= ]]>23  OR HOUR ( OPEN.capture_time ) <![CDATA[ < ]]> 5 )
+    </select>
+    <!--hjt-->
+    <select id="getNightReturnPersonByPersonCode"  parameterType="map" resultType="map">
+        SELECT
+        OPEN.community_name communityName,
+        OPEN.community_code communityCode,
+        OPEN.person_code personCode,
+        DATE_FORMAT( OPEN.capture_time ,'%Y-%m-%d %H:%i:%s') captureTime,
+        OPEN.cap_image  capImage,
+        OPEN.device_name  deviceName
+        FROM
+        person_inout OPEN
+        WHERE
+        OPEN.capture_time <![CDATA[ > ]]> DATE_ADD( now(), INTERVAL - 1 MONTH )
+        <if test="params.xqCode!=null and params.xqCode!=''">
+            and OPEN.community_code in (${params.xqCode})
+        </if>
+        <if test="params.startDate !=null and params.startDate !='' and params.endDate !=null and params.endDate!=''">
+            and OPEN.capture_time  between  STR_TO_DATE(#{params.startDate},'%Y-%m-%d %H:%i:%s') and STR_TO_DATE(#{params.endDate},'%Y-%m-%d %H:%i:%s')
+        </if>
+        AND  OPEN.person_code = #{params.personCode}
+        and OPEN.access = '1'
+        AND ( HOUR ( OPEN.capture_time ) <![CDATA[ >= ]]>23  OR HOUR ( OPEN.capture_time ) <![CDATA[ < ]]> 5 )
+        ORDER BY
+        OPEN.capture_time DESC
+        limit #{params.start},#{params.limit}
+    </select>
+    <!--hjt-->
+    <select id="totalCarRows"  resultType="java.lang.Integer">
+        SELECT
+        count(*)
+        FROM
+        (
+        SELECT
+        c.car_num carNum,
+        DATE_FORMAT(max( c.capture_time ),'%Y-%m-%d %H:%i:%s') captureTime,
+        c.community_name communityName,
+        c.community_code communityCode,
+        car.image oriImage,
+        count( c.car_num ) times
+        FROM
+        car_access c
+        inner join base_car car on car.num=c.car_num
+        WHERE
+        c.capture_time <![CDATA[ > ]]> DATE_ADD( now(), INTERVAL - 1 MONTH )
+        <if test="params.xqCode!=null and params.xqCode!=''">
+            and c.community_code in (${params.xqCode})
+        </if>
+        <if test="params.searchText!=null and params.searchText!=''">
+            and c.car_num like '%${params.searchText}%'
+        </if>
+        <if test="params.startDate !=null and params.startDate !='' and params.endDate !=null and params.endDate!=''">
+            and c.capture_time  between  STR_TO_DATE(#{params.startDate},'%Y-%m-%d %H:%i:%s') and STR_TO_DATE(#{params.endDate},'%Y-%m-%d %H:%i:%s')
+        </if>
+        AND c.car_direct = 8
+        AND ( HOUR ( c.capture_time )<![CDATA[ >= ]]> 23 OR HOUR ( c.capture_time )<![CDATA[ < ]]> 5 )
+        AND c.car_num != ''
+        GROUP BY
+        c.car_num
+        ) a where 1=1
+        <if test="params.times!=null and params.times!=''">
+            and a.times <![CDATA[ >= ]]> #{params.times}
+        </if>
+    </select>
+    <!--hjt-->
+    <select id="getNightReturnCar"  parameterType="map" resultType="map">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        c.car_num carNum,
+        DATE_FORMAT(max( c.capture_time ),'%Y-%m-%d %H:%i:%s') captureTime,
+        c.community_name communityName,
+        c.community_code communityCode,
+        car.image oriImage,
+        count( c.car_num ) times
+        FROM
+        car_access c
+        inner join base_car car on car.num=c.car_num
+        WHERE
+        c.capture_time <![CDATA[ > ]]> DATE_ADD( now(), INTERVAL - 1 MONTH )
+        <if test="params.xqCode!=null and params.xqCode!=''">
+            and c.community_code in (${params.xqCode})
+        </if>
+        <if test="params.searchText!=null and params.searchText!=''">
+            and c.car_num like '%${params.searchText}%'
+        </if>
+        <if test="params.startDate !=null and params.startDate !='' and params.endDate !=null and params.endDate!=''">
+            and c.capture_time  between  STR_TO_DATE(#{params.startDate},'%Y-%m-%d %H:%i:%s') and STR_TO_DATE(#{params.endDate},'%Y-%m-%d %H:%i:%s')
+        </if>
+        AND c.car_direct = 8
+        AND ( HOUR ( c.capture_time )<![CDATA[ >= ]]> 23 OR HOUR ( c.capture_time )<![CDATA[ < ]]> 5 )
+        AND c.car_num != ''
+        GROUP BY
+        c.car_num
+        ) a where 1=1
+        <if test="params.times!=null and params.times!=''">
+            and a.times <![CDATA[ >= ]]> #{params.times}
+        </if>
+        ORDER BY
+        times DESC,captureTime DESC
+        limit #{params.start},#{params.limit}
+    </select>
+
+    <!--hjt-->
+    <select id="totalGetNightReturnCarByCarNum"  parameterType="map" resultType="int">
+        SELECT
+        count(1)
+        FROM
+        car_access c
+        WHERE
+        c.capture_time <![CDATA[ > ]]> DATE_ADD( now(), INTERVAL - 1 MONTH )
+        <if test="params.xqCode!=null and params.xqCode!=''">
+            and c.community_code in (${params.xqCode})
+        </if>
+        <if test="params.startDate !=null and params.startDate !='' and params.endDate !=null and params.endDate!=''">
+            and c.capture_time  between  STR_TO_DATE(#{params.startDate},'%Y-%m-%d %H:%i:%s') and STR_TO_DATE(#{params.endDate},'%Y-%m-%d %H:%i:%s')
+        </if>
+        AND c.car_direct = 8
+        AND ( HOUR ( c.capture_time )<![CDATA[ >= ]]> 23 OR HOUR ( c.capture_time )<![CDATA[ < ]]> 5 )
+        AND c.car_num = #{params.carNum}
+    </select>
+    <!--hjt-->
+    <select id="getNightReturnCarByCarNum"  parameterType="map" resultType="map">
+        SELECT
+        c.car_num carNum,
+        DATE_FORMAT(c.capture_time ,'%Y-%m-%d %H:%i:%s') captureTime,
+        c.community_name communityName,
+        c.community_code communityCode,
+        c.cap_image capImage,
+        c.device_name deviceName
+        FROM
+        car_access c
+        WHERE
+        c.capture_time <![CDATA[ > ]]> DATE_ADD( now(), INTERVAL - 1 MONTH )
+        <if test="params.xqCode!=null and params.xqCode!=''">
+            and c.community_code in (${params.xqCode})
+        </if>
+        <if test="params.startDate !=null and params.startDate !='' and params.endDate !=null and params.endDate!=''">
+            and c.capture_time  between  STR_TO_DATE(#{params.startDate},'%Y-%m-%d %H:%i:%s') and STR_TO_DATE(#{params.endDate},'%Y-%m-%d %H:%i:%s')
+        </if>
+        AND c.car_direct = 8
+        AND ( HOUR ( c.capture_time )<![CDATA[ >= ]]> 23 OR HOUR ( c.capture_time )<![CDATA[ < ]]> 5 )
+        AND c.car_num = #{params.carNum}
+        ORDER BY
+        capture_time DESC
+        limit #{params.start},#{params.limit}
+    </select>
+
+    <!--hjt-->
+    <select id="totalWaterRows"  resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        (select * from
+        (SELECT
+        a.room_code roomCode,
+        sum(a.use_num +0) waterYield,
+        b.id roomId,
+        b.community_name xqName,
+        CONCAT( b.building_name, b.unit_name, b.room_name ) houseInfo,
+        b.room_name roomName,
+        b.use_type_name purposeName,
+        c.name ownerName,
+        c.phone phone
+        FROM
+        j_water_use a
+        JOIN base_room b ON b.code = a.room_code and a.community_code=b.community_code
+        left join base_person c on c.room_code=b.code and c.community_code=b.community_code
+        WHERE 1=1
+        <if test="params.startTime !=null and params.startTime !='' and params.endTime !=null and params.endTime!=''">
+            and a.use_date between STR_TO_DATE(#{params.startTime},'%Y-%m') and STR_TO_DATE(#{params.endTime},'%Y-%m')
+        </if>
+        <if test="params.xqCode!=null and params.xqCode!=''">
+            and a.community_code in (${params.xqCode})
+        </if>
+        <if test="params.useType!=null and params.useType!=''">
+            and a.use_type = #{params.useType}
+        </if>
+        group by a.room_code ,
+        b.id ,
+        b.community_name ,
+        b.room_name ,
+        b.use_type_name ,
+        c.name ,
+        c.phone) s
+        WHERE 1=1
+        <if test="params.waterYield!=null and params.waterYield!=''">
+            and s.waterYield  <![CDATA[ >= ]]> #{params.waterYield}
+        </if>
+        ) ss
+
+    </select>
+    <!--hjt-->
+    <select id="waterRate"  parameterType="map" resultType="map">
+        select * from
+        (SELECT
+        a.room_code roomCode,
+        sum(a.use_num +0) waterYield,
+        b.id roomId,
+        b.community_name communityName,
+        CONCAT( b.building_name, b.unit_name, b.room_name ) houseInfo,
+        b.room_name roomName,
+        b.use_type_name purposeName,
+        c.name ownerName,
+        c.phone phone
+        FROM
+        j_water_use a
+        JOIN base_room b ON b.code = a.room_code and a.community_code=b.community_code
+        left join base_person c on c.room_code=b.code and c.community_code=b.community_code
+        WHERE 1=1
+        <if test="params.startTime !=null and params.startTime !='' and params.endTime !=null and params.endTime!=''">
+            and a.use_date between STR_TO_DATE(#{params.startTime},'%Y-%m') and STR_TO_DATE(#{params.endTime},'%Y-%m')
+        </if>
+        <if test="params.xqCode!=null and params.xqCode!=''">
+            and a.community_code in (${params.xqCode})
+        </if>
+        <if test="params.useType!=null and params.useType!=''">
+            and a.use_type = #{params.useType}
+        </if>
+        group by a.room_code ,
+        b.id ,
+        b.community_name ,
+        b.room_name ,
+        b.use_type_name ,
+        c.name ,
+        c.phone
+        ) s
+        WHERE 1=1
+        <if test="params.waterYield!=null and params.waterYield!=''">
+            and s.waterYield  <![CDATA[ >= ]]> #{params.waterYield}
+        </if>
+        <if test="params.order==1">
+            order by s.waterYield asc
+        </if>
+        <if test="params.order==2">
+            order by s.waterYield desc
+        </if>
+        limit #{params.start},#{params.limit}
+    </select>
+    <!--hjt-->
+    <select id="totalGroupRentalRows"  resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM
+        j_group_rental_room
+        WHERE 1=1
+        <if test="params.xqCode!=null and params.xqCode!=''">
+            and communityCode in (${params.xqCode})
+        </if>
+        <if test="params.roomProperty!=null and params.roomProperty!=''">
+            and useType =#{params.roomProperty}
+        </if>
+        <if test="params.associateNum!=null and params.associateNum!=''">
+            and personNum <![CDATA[ >= ]]> #{params.associateNum}
+        </if>
+        <if test="params.searchText!=null and params.searchText!=''">
+            and houseInfo like '%${params.searchText}%'
+        </if>
+    </select>
+    <!--hjt-->
+    <select id="groupRentalResearch"  parameterType="map" resultType="map">
+        SELECT
+        roomId,
+        roomCode,
+        communityCode,
+        communityName xqName,
+        houseInfo,
+        roomName,
+        useType,
+        useTypeName purposeName,
+        personNum,
+        ownerId,
+        ownerName,
+        phone
+        FROM
+        j_group_rental_room
+        WHERE 1=1
+        <if test="params.xqCode!=null and params.xqCode!=''">
+            and communityCode in (${params.xqCode})
+        </if>
+        <if test="params.roomProperty!=null and params.roomProperty!=''">
+            and useType =#{params.roomProperty}
+        </if>
+        <if test="params.associateNum!=null and params.associateNum!=''">
+            and personNum <![CDATA[ >= ]]> #{params.associateNum}
+        </if>
+        <if test="params.searchText!=null and params.searchText!=''">
+            and houseInfo like '%${params.searchText}%'
+        </if>
+        order by personNum desc,roomId asc limit #{params.start},#{params.limit}
+    </select>
+    <update id="deleteGroupRentalRoom" >
+        delete  from j_group_rental_room
+    </update>
+    <insert id="saveGroupRentalRoom" parameterType="map" >
+        insert into j_group_rental_room (roomId,roomCode,communityCode,communityName,houseInfo,roomName,useType,useTypeName,personNum,
+        ownerId,ownerName,phone)
+        SELECT
+        roomId,roomCode,communityCode,communityName,houseInfo,roomName,useType,useTypeName,personNum,
+        ownerId,ownerName,phone
+        FROM
+        (
+        SELECT
+        a.id roomId,
+        a.code roomCode,
+        a.community_code communityCode,
+        a.community_name communityName,
+        CONCAT( a.building_name, a.unit_name, a.room_name ) houseInfo,
+        a.room_name roomName,
+        a.use_type useType,
+        a.use_type_name useTypeName,
+        ( SELECT count( * ) FROM base_person WHERE room_code = a.CODE AND community_code = a.community_code ) personNum,
+        b.id ownerId,
+        b.NAME ownerName,
+        b.phone phone
+        FROM
+        base_room a
+        JOIN ( SELECT * FROM base_person WHERE type = 1 ) b ON b.room_code = a.CODE
+        AND b.community_code = a.community_code
+        WHERE 1=1
+        group by roomId
+        ) k
+        where 1=1
+        <if test="params.associateNum!=null and params.associateNum!=''">
+            and k.personNum <![CDATA[ >= ]]> #{params.associateNum}
+        </if>
+    </insert>
+
+    <!--hjt-->
+    <select id="totalDayRentalResearch"  resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        (
+        SELECT
+        room_code roomCode,
+        community_name communityName,
+        community_code communityCode,
+        use_type_name useTypeName,
+        owner_name ownerName,
+        phone,
+        house_info houseInfo,
+        DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') createTime,
+        count( 1 ) bindNum
+        FROM
+        j_room_rent_record
+        WHERE 1 = 1
+        <if test="params.xqCode!=null and params.xqCode!=''">
+            and community_code in (${params.xqCode})
+        </if>
+        <if test="params.roomProperty!=null and params.roomProperty!=''">
+            and use_type =#{params.useType}
+        </if>
+        <if test="params.startTime !=null and params.startTime !='' and params.endTime !=null and params.endTime!=''">
+            and create_time between STR_TO_DATE(#{params.startTime},'%Y-%m-%d %H:%i:%s') and STR_TO_DATE(#{params.endTime},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="params.searchText!=null and params.searchText!=''">
+            and houseInfo like '%${params.searchText}%'
+        </if>
+        GROUP BY room_code,community_code
+        ) a
+        WHERE 1 = 1
+        <if test="params.bindNum!=null and params.bindNum!=''">
+            and a.bindNum <![CDATA[ >= ]]> #{params.bindNum}
+        </if>
+    </select>
+    <!--hjt-->
+    <select id="dayRentalResearch"  resultType="map">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        room_code roomCode,
+        community_name communityName,
+        community_code communityCode,
+        use_type_name useTypeName,
+        owner_name ownerName,
+        phone,
+        house_info houseInfo,
+        DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') createTime,
+        count( 1 ) bindNum
+        FROM
+        j_room_rent_record
+        WHERE 1 = 1
+        <if test="params.xqCode!=null and params.xqCode!=''">
+            and community_code in (${params.xqCode})
+        </if>
+        <if test="params.roomProperty!=null and params.roomProperty!=''">
+            and use_type =#{params.useType}
+        </if>
+        <if test="params.startTime !=null and params.startTime !='' and params.endTime !=null and params.endTime!=''">
+            and create_time between STR_TO_DATE(#{params.startTime},'%Y-%m-%d %H:%i:%s') and STR_TO_DATE(#{params.endTime},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="params.searchText!=null and params.searchText!=''">
+            and houseInfo like '%${params.searchText}%'
+        </if>
+        GROUP BY room_code,community_code
+        ) a
+        WHERE 1 = 1
+        <if test="params.bindNum!=null and params.bindNum!=''">
+            and a.bindNum <![CDATA[ >= ]]> #{params.bindNum}
+        </if>
+        ORDER BY a.bindNum DESC,a.createTime DESC
+        limit #{params.start},#{params.limit}
+    </select>
+    
+
+    
+
+
+</mapper>

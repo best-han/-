@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.windaka.suizhi.mpi.dao.SuspectedAppDao">
+    <select id="querySuspectedAddPersonAppGroupByXqCode" resultType="Map">
+        select count(1) as totalNew,community_code as xqCode
+        from suspected_add_person_app
+        group by community_code
+    </select>
+    <select id="querySuspectedQuitPersonAppGroupByXqCode" resultType="Map">
+        select count(1) as totalNew,xq_code as xqCode
+        from suspected_quit_person_app
+        group by xq_code
+    </select>
+    <select id="querySuspectedAddCarAppGroupByXqCode" resultType="Map">
+
+    </select>
+</mapper>

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.BaseCarDao">
+
+    <!--按权限查询车辆列表记录-->
+    <select id="totalRows" resultType="int" parameterType="Map">
+        select count(*) totalRows from base_car a
+        left join  base_community c on a.community_code=c.code
+        inner join (select area_id from ht_area  where parent_ids like concat('%',#{params.areaId},'%')) area on area.area_id=c.area
+        where 1=1
+        <if test="params.xqCode != null and params.xqCode != ''">
+            and a.community_code in (${params.xqCode})
+        </if>
+    </select>
+
+    <!--按权限查询车辆列表信息-->
+    <select id="queryCarInfoList" resultType="java.util.Map">
+        select
+               car.image,
+               car.num as carNum,
+               car.brand_name as carBrandName,
+               car.type_name as typeName,
+               car.community_code as xqCode,
+               car.community_name as xqName,
+               person.name as personName,
+               person.phone
+        from base_car car
+        left join base_person person on person.code = car.person_code
+        where 1=1
+        <if test="params.xqCode != null and params.xqCode != ''">
+            and car.community_code in (${params.xqCode})
+        </if>
+        <!--<if test="params.ownerName != null and params.ownerName != ''">-->
+            <!--and person.name=#{params.ownerName}-->
+        <!--</if>-->
+        <!--<if test="params.carNum!=null and params.carNum!=''">-->
+            <!--and car.num=#{params.carNum}-->
+        <!--</if>-->
+        <if test="params.carBrandName!=null and params.carBrandName!=''">
+            <if test="params.carBrandName=='未识别'">
+                and car.brand_name='' or car.brand_name is NULL
+            </if>
+            <if test="params.carBrandName!='未识别'">
+                and car.brand_name=#{params.carBrandName}
+            </if>
+        </if>
+        <if test="params.typeName!=null and params.typeName!=''">
+            <if test="params.typeName=='未识别'">
+                and car.type_name='' or car.type_name is NULL
+            </if>
+            <if test="params.typeName!='未识别'">
+                and car.type_name=#{params.typeName}
+            </if>
+        </if>
+        <if test="params.likeStr!=null and params.likeStr!=''">
+            and car.num like concat('%',#{params.likeStr},'%') or person.name like concat('%',#{params.likeStr},'%')
+        </if>
+    </select>
+
+    <!--车辆品牌-->
+    <select id="queryCarBrandName" resultType="map" parameterType="String">
+        select DISTINCT CASE WHEN brand_name='' or brand_name is NULL  THEN '未识别' ELSE brand_name END as brandName from base_car
+        <if test="brandNameLikeStr!=null and brandNameLikeStr!=''">
+          where brand_name like concat('%',#{brandNameLikeStr},'%')
+        </if>
+    </select>
+    <!--车辆类型-->
+    <select id="queryCarTypeName" resultType="map">
+        select DISTINCT CASE WHEN type_name=''  or type_name is NULL THEN '未识别' ELSE type_name END as typeName from base_car
+    </select>
+    <!--车辆颜色-->
+    <select id="queryCarColorName" resultType="map">
+        select DISTINCT CASE WHEN color_name='' or color_name is NULL THEN '未识别' ELSE color_name END as colorName from base_car
+    </select>
+
+
+
+
+    <!--常住人口车辆-->
+    <select id="permanentPopulationCarNum" resultType="int">
+        select count(*) totalRows from base_car a
+        left join base_person person on a.person_code=person.code
+        left join base_community c on a.community_code=c.code
+        inner join (select area_id from ht_area  where parent_ids like concat('%',#{params.areaId},'%')) area on area.area_id=c.area
+        where person.type in (1,2)
+        <if test="params.xqCode != null and params.xqCode != ''">
+            and a.community_code in (${params.xqCode})
+        </if>
+    </select>
+
+    <!--流动人口车辆-->
+    <select id="floatingPopulationCarNum" resultType="int">
+        select count(*) totalRows from base_car a
+        left join base_person person on a.person_code=person.code
+        left join base_community c on a.community_code=c.code
+        inner join (select area_id from ht_area  where parent_ids like concat('%',#{params.areaId},'%')) area on area.area_id=c.area
+        where person.type=3
+        <if test="params.xqCode != null and params.xqCode != ''">
+            and a.community_code in (${params.xqCode})
+        </if>
+    </select>
+
+    <!--本月新增车辆-->
+    <select id="monthAddCarCarNum" resultType="int">
+        select count(*) totalRows from base_car a
+        left join base_community c on a.community_code=c.code
+        inner join (select area_id from ht_area  where parent_ids like concat('%',#{params.areaId},'%')) area on area.area_id=c.area
+        where 1=1
+        <if test="params.xqCode != null and params.xqCode != ''">
+            and a.community_code in (${params.xqCode})
+        </if>
+        <if test="params.MonthStartTime !=null and params.MonthStartTime !='' and params.currentTime !=null and params.currentTime!=''">
+            and a.op_time between STR_TO_DATE(#{params.MonthStartTime},'%Y-%m-%d %H:%i:%s') and STR_TO_DATE(#{params.currentTime},'%Y-%m-%d %H:%i:%s')
+        </if>
+    </select>
+
+    <!--    实有车辆数量-->
+    <select id="selectCarNum" parameterType="Map" resultType="int">
+        select count(*) from base_car car
+        where 1=1
+        <if test="xqCode.size()>0 ">
+            and car.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+
+    <!--根据车牌号查询车和车主基础信息-->
+    <select id="queryPersonInfoAndOwnerInfoByCarNum" parameterType="String" resultType="map">
+        SELECT
+               car.image as carImage,
+               car.num as carNum,
+               car.type_name as carTypeName,
+               car.brand_name as carBrandName,
+               car.color_name as carColorName,
+               person.code as ownerId,
+               person.name as ownerName,
+               person.image as ownerImage,
+               CASE WHEN person.sex = '1' THEN '男'
+                    WHEN person.sex = '2' THEN '女'
+                    ELSE '未知' END as sex,
+               person.phone as phone,
+               person.paper_number as IDNumber
+        from base_car car
+                 INNER JOIN base_person person on car.person_code=person.code
+        WHERE car.num=#{carNum}
+    </select>
+
+
+    <!--根据车牌号查询布控标签-->
+    <select id="queryAbnormalTypeByCarNum" parameterType="map" resultType="map">
+        select
+               group_name as abnormalType
+        from car_group_detail
+        WHERE car_num=#{params.carNum}
+    </select>
+    <!--根据车牌号查询异常行为标签-->
+    <select id="queryHighAccessByCarNum" parameterType="map" resultType="map">
+        select * from (select * from (
+        select community_code as xqCode,community_name as xqName,car_num as carNum,type,person_code as personCode,CASE WHEN person_name is NULL THEN '陌生人' ELSE person_name END as personName,count(*) as senseNum,date_format(MAX(capture_time),'%Y-%m-%d %H:%i:%s') as captureTime from
+        (select * from car_access where capture_time between STR_TO_DATE(#{params.startTime},'%Y-%m-%d %H:%i:%s') and
+        STR_TO_DATE(#{params.endTime},'%Y-%m-%d %H:%i:%s')
+        ) record
+        where 1=1
+        <if test="params.xqCode != null and params.xqCode !=''">
+            and record.community_code in (${params.xqCode})
+        </if>
+        GROUP BY carNum) a
+        where senseNum>=3 ) aa
+        WHERE carNum=#{params.carNum}
+    </select>
+
+
+    <!--根据车牌号查询roomCode-->
+    <select id="queryRoomCodeByCarNum" parameterType="String" resultType="map">
+        select
+               room_code as roomCode
+        from base_person
+        where code=(select person_code from base_car WHERE num=#{carNum})
+    </select>
+    <!--根据roomCode查询房产信息-->
+    <select id="queryRoomInfoByRoomCode" parameterType="map" resultType="map">
+        select
+               CONCAT(community_name,building_name,unit_name,room_name) as roomInfo
+        from base_room
+        where code=#{roomCode}
+    </select>
+
+    <!--根据车牌号查询停车位-->
+    <select id="queryParkingByCarNum" parameterType="String" resultType="map">
+        select
+               CONCAT(community_code,num) as parking
+        from base_parking
+        where person_code=(select person_code from base_car where num=#{carNum})
+    </select>
+
+
+    <!--根据车牌号15天内查询某车某天抓拍次数-->
+    <select id="queryCaptureCountByCarNum" parameterType="map" resultType="int">
+        select
+               COUNT(*) as capCount
+        from capture_car
+        where
+              car_num=#{carNum}
+          and
+              STR_TO_DATE(capture_time,'%Y-%m-%d')=#{catTime}
+    </select>
+
+    <!--根据车牌号查询某天的抓拍记录详情-->
+    <select id="queryCaptureDetailsByCarNum" parameterType="map" resultType="map">
+        select
+            DATE_FORMAT(capture_time,'%Y-%m-%d %H:%i:%s') as capTime,
+            device_name as capLocation,
+            full_image as capImage,
+            community_name as xqCode
+        from capture_car
+        where
+            car_num=#{params.carNum}
+          and
+            capture_time like concat('%',#{params.capTime},'%')
+    </select>
+
+
+</mapper>
+

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.SysDicDataMapper">
+    <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.SysDicData">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="dic_code" property="dicCode" jdbcType="VARCHAR"/>
+        <result column="dic_key" property="dicKey" jdbcType="SMALLINT"/>
+        <result column="dic_value" property="dicValue" jdbcType="VARCHAR"/>
+        <result column="op_date" property="opDate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, dic_code, dic_key, dic_value, op_date
+  </sql>
+
+    <!--insert-->
+    <insert id="insertSysDicData" parameterType="com.windaka.suizhi.manageport.model.SysDicData">
+    insert into sys_dic_data (dic_code, dic_key, dic_value ,op_date)
+    values (#{dicCode}, #{dicKey},#{dicValue},now())
+  </insert>
+
+    <!--deleteById-->
+    <delete id="deleteById" parameterType="String">
+    delete from sys_dic_data
+     where id = #{id}
+  </delete>
+
+    <!--updateById-->
+    <update id="updateById" parameterType="com.windaka.suizhi.manageport.model.SysDic">
+    update sys_dic_data
+    set dic_code = #{dicCode},dic_key = #{dicKey},dic_value=#{dicValue},op_date =now()
+    where id = #{id}
+  </update>
+
+    <!--selectSysDicList  By keyword-->
+    <select id="selectSysDicDataList" resultMap="BaseResultMap" parameterType="Map">
+        select dicData.id,dicData.dic_code,dicData.dic_key, dicData.dic_value, dicData.op_date from sys_dic_data as dicData
+        where 1=1
+        <if test="id!=null and id!=''">
+            and id=#{id}
+        </if>
+        <if test="dicCode!=null and dicCode!=''">
+            and dic_code=#{dicCode}
+        </if>
+        <if test="dicKey!=null and dicKey!=''">
+            and dic_key=#{dicKey}
+        </if>
+        <if test="dicValue!=null and dicValue!=''">
+            and dic_value=#{dicValue}
+        </if>
+    </select>
+
+</mapper>

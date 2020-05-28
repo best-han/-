@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: sjwl-webapi
+
+      #zipkin:
+      #base-url: http://localhost:9411
+      #enabled: true
+      #sender:
+      #type: web
+  rabbitmq:
+    #host: 10.10.6.54  #测试
+    host: 172.16.1.150  #公安测试
+    #host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: /
+fdfs:
+  connect-timeout: 601
+  pool:
+    jmx-enabled: false
+  so-timeout: 1501
+  thumb-image:
+    height: 150
+    width: 125
+  tracker-list: 172.16.1.155:22122
+logging:
+  level:
+    root: info
+    com.windaka.suizhi: debug
+  file: logs/${spring.application.name}.log
+mybatis:
+  type-aliases-package: com.windaka.suizhi.webapi.model
+  mapper-locations: classpath:/mybatis-mappers/*
+  configuration:
+    mapUnderscoreToCamelCase: true
+    call-setters-on-nulls: true
+security:
+  oauth2:
+    resource:
+      #user-info-uri: http://10.10.6.54:9000/sjwl/oauth/user-me  #测试地址
+      user-info-uri: http://172.16.1.150:9000/sjwl/oauth/user-me  #公安测试地址
+      #user-info-uri: http://localhost:9000/sjwl/oauth/user-me
+      prefer-token-info: false
+server:
+  port: 8098
+
+
+

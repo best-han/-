@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.BaseCommunityMapper">
+    <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.BaseCommunity">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="address_code" property="addressCode" jdbcType="VARCHAR"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="floor_area" property="floorArea" jdbcType="DECIMAL"/>
+        <result column="building_area" property="buildingArea" jdbcType="DECIMAL"/>
+        <result column="pm_company_code" property="pmCompanyCode" jdbcType="VARCHAR"/>
+        <result column="pm_company_name" property="pmCompanyName" jdbcType="VARCHAR"/>
+        <result column="pm_company_person" property="pmCompanyPerson" jdbcType="VARCHAR"/>
+        <result column="pm_company_phone" property="pmCompanyPhone" jdbcType="VARCHAR"/>
+        <result column="estate_developer_name" property="estateDeveloperName" jdbcType="VARCHAR"/>
+        <result column="estate_developer_person" property="estateDeveloperPerson" jdbcType="VARCHAR"/>
+        <result column="estate_developer_phone" property="estateDeveloperPhone" jdbcType="VARCHAR"/>
+        <result column="op_date" property="opDate" jdbcType="TIMESTAMP"/>
+        <result column="area" property="area" jdbcType="VARCHAR"/>
+        <result column="area_name" property="areaName" jdbcType="VARCHAR"/>
+        <result column="location" property="location" jdbcType="VARCHAR"/>
+        <result column="location_area" property="locationArea" jdbcType="VARCHAR"/>
+        <result column="subdistrict_code" property="subdistrictCode" jdbcType="VARCHAR"/>
+        <result column="subdistrict_name" property="subdistrictName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, code, name, address_code, address, floor_area, building_area, pm_company_code, 
+    pm_company_name, pm_company_person, pm_company_phone, estate_developer_name, estate_developer_person, 
+    estate_developer_phone, op_date, area, area_name, location,location_area,subdistrict_code,subdistrict_name
+  </sql>
+
+    <!--  新增小区信息  ygy-->
+    <insert id="insertCommunity" parameterType="com.windaka.suizhi.manageport.model.BaseCommunity">
+    insert into base_community (id, code, name,
+      address_code, address, floor_area,
+      building_area, pm_company_code, pm_company_name,
+      pm_company_person, pm_company_phone, estate_developer_name,
+      estate_developer_person, estate_developer_phone,
+      op_date, area, area_name,location,location_area,subdistrict_code,subdistrict_name)
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+      #{addressCode,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{floorArea,jdbcType=DECIMAL},
+      #{buildingArea,jdbcType=DECIMAL}, #{pmCompanyCode,jdbcType=VARCHAR}, #{pmCompanyName,jdbcType=VARCHAR},
+      #{pmCompanyPerson,jdbcType=VARCHAR}, #{pmCompanyPhone,jdbcType=VARCHAR}, #{estateDeveloperName,jdbcType=VARCHAR},
+      #{estateDeveloperPerson,jdbcType=VARCHAR}, #{estateDeveloperPhone,jdbcType=VARCHAR},
+      now(), #{area,jdbcType=VARCHAR}, #{areaName,jdbcType=VARCHAR},
+      #{location,jdbcType=VARCHAR},#{locationArea,jdbcType=VARCHAR},#{subdistrictCode},#{subdistrictName})
+  </insert>
+
+    <!--  删除小区信息 by code  ygy-->
+    <delete id="deleteByCode" parameterType="String">
+    delete from base_community
+    where code = #{code}
+  </delete>
+
+    <!--  更新小区信息 by code  ygy-->
+    <update id="updateByCode" parameterType="com.windaka.suizhi.manageport.model.BaseCommunity">
+    update base_community
+    set code = #{code,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      address_code = #{addressCode,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      floor_area = #{floorArea,jdbcType=DECIMAL},
+      building_area = #{buildingArea,jdbcType=DECIMAL},
+      pm_company_code = #{pmCompanyCode,jdbcType=VARCHAR},
+      pm_company_name = #{pmCompanyName,jdbcType=VARCHAR},
+      pm_company_person = #{pmCompanyPerson,jdbcType=VARCHAR},
+      pm_company_phone = #{pmCompanyPhone,jdbcType=VARCHAR},
+      estate_developer_name = #{estateDeveloperName,jdbcType=VARCHAR},
+      estate_developer_person = #{estateDeveloperPerson,jdbcType=VARCHAR},
+      estate_developer_phone = #{estateDeveloperPhone,jdbcType=VARCHAR},
+      op_date =now(),
+      area = #{area,jdbcType=VARCHAR},
+      area_name = #{areaName,jdbcType=VARCHAR},
+      location = #{location,jdbcType=VARCHAR},
+      location_area = #{locationArea,jdbcType=VARCHAR},
+      subdistrict_code=#{subdistrictCode},
+      subdistrict_name=#{subdistrictName}
+    where code = #{code}
+  </update>
+
+    <!--  查询小区列表 by  keyword ygy-->
+    <select id="selectCommunityList" resultMap="BaseResultMap" parameterType="Map">
+        select
+        <include refid="Base_Column_List"/>
+        from base_community
+        where 1=1
+        <if test="code!=null and code!=''">
+            and code=#{code}
+        </if>
+    </select>
+
+</mapper>

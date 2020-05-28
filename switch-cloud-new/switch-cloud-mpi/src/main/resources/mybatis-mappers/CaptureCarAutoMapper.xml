@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.mpi.dao.auto.CaptureCarAutoMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.mpi.model.CaptureCar" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="capture_time" property="captureTime" jdbcType="TIMESTAMP" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="device_name" property="deviceName" jdbcType="VARCHAR" />
+    <result column="device_type" property="deviceType" jdbcType="VARCHAR" />
+    <result column="device_type_name" property="deviceTypeName" jdbcType="VARCHAR" />
+    <result column="device_location" property="deviceLocation" jdbcType="VARCHAR" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="community_name" property="communityName" jdbcType="VARCHAR" />
+    <result column="car_num" property="carNum" jdbcType="VARCHAR" />
+    <result column="car_num_color" property="carNumColor" jdbcType="SMALLINT" />
+    <result column="car_num_color_name" property="carNumColorName" jdbcType="VARCHAR" />
+    <result column="car_type" property="carType" jdbcType="SMALLINT" />
+    <result column="car_type_name" property="carTypeName" jdbcType="VARCHAR" />
+    <result column="car_brand" property="carBrand" jdbcType="SMALLINT" />
+    <result column="car_brand_name" property="carBrandName" jdbcType="VARCHAR" />
+    <result column="car_color" property="carColor" jdbcType="SMALLINT" />
+    <result column="car_color_name" property="carColorName" jdbcType="VARCHAR" />
+    <result column="car_image" property="carImage" jdbcType="VARCHAR" />
+    <result column="car_direction" property="carDirection" jdbcType="TINYINT" />
+    <result column="cap_image" property="capImage" jdbcType="VARCHAR" />
+    <result column="cap_video" property="capVideo" jdbcType="VARCHAR" />
+    <result column="person_code" property="personCode" jdbcType="VARCHAR" />
+    <result column="person_name" property="personName" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="full_image" property="fullImage" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, capture_time, device_code, device_name, device_type, device_type_name, device_location, 
+    community_code, community_name, car_num, car_num_color, car_num_color_name, car_type, 
+    car_type_name, car_brand, car_brand_name, car_color, car_color_name, car_image, car_direction, 
+    cap_image, cap_video, person_code, person_name, type, full_image
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.windaka.suizhi.mpi.model.CaptureCarExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from capture_car
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from capture_car
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from capture_car
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.windaka.suizhi.mpi.model.CaptureCarExample" >
+    delete from capture_car
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.windaka.suizhi.mpi.model.CaptureCar" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into capture_car (capture_time, device_code, device_name, 
+      device_type, device_type_name, device_location, 
+      community_code, community_name, car_num, 
+      car_num_color, car_num_color_name, car_type, 
+      car_type_name, car_brand, car_brand_name, 
+      car_color, car_color_name, car_image, 
+      car_direction, cap_image, cap_video, 
+      person_code, person_name, type, 
+      full_image)
+    values (#{captureTime,jdbcType=TIMESTAMP}, #{deviceCode,jdbcType=VARCHAR}, #{deviceName,jdbcType=VARCHAR}, 
+      #{deviceType,jdbcType=VARCHAR}, #{deviceTypeName,jdbcType=VARCHAR}, #{deviceLocation,jdbcType=VARCHAR}, 
+      #{communityCode,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR}, #{carNum,jdbcType=VARCHAR}, 
+      #{carNumColor,jdbcType=SMALLINT}, #{carNumColorName,jdbcType=VARCHAR}, #{carType,jdbcType=SMALLINT}, 
+      #{carTypeName,jdbcType=VARCHAR}, #{carBrand,jdbcType=SMALLINT}, #{carBrandName,jdbcType=VARCHAR}, 
+      #{carColor,jdbcType=SMALLINT}, #{carColorName,jdbcType=VARCHAR}, #{carImage,jdbcType=VARCHAR}, 
+      #{carDirection,jdbcType=TINYINT}, #{capImage,jdbcType=VARCHAR}, #{capVideo,jdbcType=VARCHAR}, 
+      #{personCode,jdbcType=VARCHAR}, #{personName,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      #{fullImage,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.windaka.suizhi.mpi.model.CaptureCar" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into capture_car
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="captureTime != null" >
+        capture_time,
+      </if>
+      <if test="deviceCode != null" >
+        device_code,
+      </if>
+      <if test="deviceName != null" >
+        device_name,
+      </if>
+      <if test="deviceType != null" >
+        device_type,
+      </if>
+      <if test="deviceTypeName != null" >
+        device_type_name,
+      </if>
+      <if test="deviceLocation != null" >
+        device_location,
+      </if>
+      <if test="communityCode != null" >
+        community_code,
+      </if>
+      <if test="communityName != null" >
+        community_name,
+      </if>
+      <if test="carNum != null" >
+        car_num,
+      </if>
+      <if test="carNumColor != null" >
+        car_num_color,
+      </if>
+      <if test="carNumColorName != null" >
+        car_num_color_name,
+      </if>
+      <if test="carType != null" >
+        car_type,
+      </if>
+      <if test="carTypeName != null" >
+        car_type_name,
+      </if>
+      <if test="carBrand != null" >
+        car_brand,
+      </if>
+      <if test="carBrandName != null" >
+        car_brand_name,
+      </if>
+      <if test="carColor != null" >
+        car_color,
+      </if>
+      <if test="carColorName != null" >
+        car_color_name,
+      </if>
+      <if test="carImage != null" >
+        car_image,
+      </if>
+      <if test="carDirection != null" >
+        car_direction,
+      </if>
+      <if test="capImage != null" >
+        cap_image,
+      </if>
+      <if test="capVideo != null" >
+        cap_video,
+      </if>
+      <if test="personCode != null" >
+        person_code,
+      </if>
+      <if test="personName != null" >
+        person_name,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="fullImage != null" >
+        full_image,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="captureTime != null" >
+        #{captureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceCode != null" >
+        #{deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null" >
+        #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null" >
+        #{deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceTypeName != null" >
+        #{deviceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceLocation != null" >
+        #{deviceLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="communityCode != null" >
+        #{communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="communityName != null" >
+        #{communityName,jdbcType=VARCHAR},
+      </if>
+      <if test="carNum != null" >
+        #{carNum,jdbcType=VARCHAR},
+      </if>
+      <if test="carNumColor != null" >
+        #{carNumColor,jdbcType=SMALLINT},
+      </if>
+      <if test="carNumColorName != null" >
+        #{carNumColorName,jdbcType=VARCHAR},
+      </if>
+      <if test="carType != null" >
+        #{carType,jdbcType=SMALLINT},
+      </if>
+      <if test="carTypeName != null" >
+        #{carTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="carBrand != null" >
+        #{carBrand,jdbcType=SMALLINT},
+      </if>
+      <if test="carBrandName != null" >
+        #{carBrandName,jdbcType=VARCHAR},
+      </if>
+      <if test="carColor != null" >
+        #{carColor,jdbcType=SMALLINT},
+      </if>
+      <if test="carColorName != null" >
+        #{carColorName,jdbcType=VARCHAR},
+      </if>
+      <if test="carImage != null" >
+        #{carImage,jdbcType=VARCHAR},
+      </if>
+      <if test="carDirection != null" >
+        #{carDirection,jdbcType=TINYINT},
+      </if>
+      <if test="capImage != null" >
+        #{capImage,jdbcType=VARCHAR},
+      </if>
+      <if test="capVideo != null" >
+        #{capVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="personCode != null" >
+        #{personCode,jdbcType=VARCHAR},
+      </if>
+      <if test="personName != null" >
+        #{personName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="fullImage != null" >
+        #{fullImage,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.windaka.suizhi.mpi.model.CaptureCarExample" resultType="java.lang.Integer" >
+    select count(*) from capture_car
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update capture_car
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.captureTime != null" >
+        capture_time = #{record.captureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.deviceCode != null" >
+        device_code = #{record.deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceName != null" >
+        device_name = #{record.deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceType != null" >
+        device_type = #{record.deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceTypeName != null" >
+        device_type_name = #{record.deviceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceLocation != null" >
+        device_location = #{record.deviceLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="record.communityCode != null" >
+        community_code = #{record.communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.communityName != null" >
+        community_name = #{record.communityName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carNum != null" >
+        car_num = #{record.carNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carNumColor != null" >
+        car_num_color = #{record.carNumColor,jdbcType=SMALLINT},
+      </if>
+      <if test="record.carNumColorName != null" >
+        car_num_color_name = #{record.carNumColorName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carType != null" >
+        car_type = #{record.carType,jdbcType=SMALLINT},
+      </if>
+      <if test="record.carTypeName != null" >
+        car_type_name = #{record.carTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carBrand != null" >
+        car_brand = #{record.carBrand,jdbcType=SMALLINT},
+      </if>
+      <if test="record.carBrandName != null" >
+        car_brand_name = #{record.carBrandName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carColor != null" >
+        car_color = #{record.carColor,jdbcType=SMALLINT},
+      </if>
+      <if test="record.carColorName != null" >
+        car_color_name = #{record.carColorName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carImage != null" >
+        car_image = #{record.carImage,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carDirection != null" >
+        car_direction = #{record.carDirection,jdbcType=TINYINT},
+      </if>
+      <if test="record.capImage != null" >
+        cap_image = #{record.capImage,jdbcType=VARCHAR},
+      </if>
+      <if test="record.capVideo != null" >
+        cap_video = #{record.capVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.personCode != null" >
+        person_code = #{record.personCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.personName != null" >
+        person_name = #{record.personName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fullImage != null" >
+        full_image = #{record.fullImage,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update capture_car
+    set id = #{record.id,jdbcType=INTEGER},
+      capture_time = #{record.captureTime,jdbcType=TIMESTAMP},
+      device_code = #{record.deviceCode,jdbcType=VARCHAR},
+      device_name = #{record.deviceName,jdbcType=VARCHAR},
+      device_type = #{record.deviceType,jdbcType=VARCHAR},
+      device_type_name = #{record.deviceTypeName,jdbcType=VARCHAR},
+      device_location = #{record.deviceLocation,jdbcType=VARCHAR},
+      community_code = #{record.communityCode,jdbcType=VARCHAR},
+      community_name = #{record.communityName,jdbcType=VARCHAR},
+      car_num = #{record.carNum,jdbcType=VARCHAR},
+      car_num_color = #{record.carNumColor,jdbcType=SMALLINT},
+      car_num_color_name = #{record.carNumColorName,jdbcType=VARCHAR},
+      car_type = #{record.carType,jdbcType=SMALLINT},
+      car_type_name = #{record.carTypeName,jdbcType=VARCHAR},
+      car_brand = #{record.carBrand,jdbcType=SMALLINT},
+      car_brand_name = #{record.carBrandName,jdbcType=VARCHAR},
+      car_color = #{record.carColor,jdbcType=SMALLINT},
+      car_color_name = #{record.carColorName,jdbcType=VARCHAR},
+      car_image = #{record.carImage,jdbcType=VARCHAR},
+      car_direction = #{record.carDirection,jdbcType=TINYINT},
+      cap_image = #{record.capImage,jdbcType=VARCHAR},
+      cap_video = #{record.capVideo,jdbcType=VARCHAR},
+      person_code = #{record.personCode,jdbcType=VARCHAR},
+      person_name = #{record.personName,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=VARCHAR},
+      full_image = #{record.fullImage,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.windaka.suizhi.mpi.model.CaptureCar" >
+    update capture_car
+    <set >
+      <if test="captureTime != null" >
+        capture_time = #{captureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceCode != null" >
+        device_code = #{deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null" >
+        device_name = #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null" >
+        device_type = #{deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceTypeName != null" >
+        device_type_name = #{deviceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceLocation != null" >
+        device_location = #{deviceLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="communityCode != null" >
+        community_code = #{communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="communityName != null" >
+        community_name = #{communityName,jdbcType=VARCHAR},
+      </if>
+      <if test="carNum != null" >
+        car_num = #{carNum,jdbcType=VARCHAR},
+      </if>
+      <if test="carNumColor != null" >
+        car_num_color = #{carNumColor,jdbcType=SMALLINT},
+      </if>
+      <if test="carNumColorName != null" >
+        car_num_color_name = #{carNumColorName,jdbcType=VARCHAR},
+      </if>
+      <if test="carType != null" >
+        car_type = #{carType,jdbcType=SMALLINT},
+      </if>
+      <if test="carTypeName != null" >
+        car_type_name = #{carTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="carBrand != null" >
+        car_brand = #{carBrand,jdbcType=SMALLINT},
+      </if>
+      <if test="carBrandName != null" >
+        car_brand_name = #{carBrandName,jdbcType=VARCHAR},
+      </if>
+      <if test="carColor != null" >
+        car_color = #{carColor,jdbcType=SMALLINT},
+      </if>
+      <if test="carColorName != null" >
+        car_color_name = #{carColorName,jdbcType=VARCHAR},
+      </if>
+      <if test="carImage != null" >
+        car_image = #{carImage,jdbcType=VARCHAR},
+      </if>
+      <if test="carDirection != null" >
+        car_direction = #{carDirection,jdbcType=TINYINT},
+      </if>
+      <if test="capImage != null" >
+        cap_image = #{capImage,jdbcType=VARCHAR},
+      </if>
+      <if test="capVideo != null" >
+        cap_video = #{capVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="personCode != null" >
+        person_code = #{personCode,jdbcType=VARCHAR},
+      </if>
+      <if test="personName != null" >
+        person_name = #{personName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="fullImage != null" >
+        full_image = #{fullImage,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.windaka.suizhi.mpi.model.CaptureCar" >
+    update capture_car
+    set capture_time = #{captureTime,jdbcType=TIMESTAMP},
+      device_code = #{deviceCode,jdbcType=VARCHAR},
+      device_name = #{deviceName,jdbcType=VARCHAR},
+      device_type = #{deviceType,jdbcType=VARCHAR},
+      device_type_name = #{deviceTypeName,jdbcType=VARCHAR},
+      device_location = #{deviceLocation,jdbcType=VARCHAR},
+      community_code = #{communityCode,jdbcType=VARCHAR},
+      community_name = #{communityName,jdbcType=VARCHAR},
+      car_num = #{carNum,jdbcType=VARCHAR},
+      car_num_color = #{carNumColor,jdbcType=SMALLINT},
+      car_num_color_name = #{carNumColorName,jdbcType=VARCHAR},
+      car_type = #{carType,jdbcType=SMALLINT},
+      car_type_name = #{carTypeName,jdbcType=VARCHAR},
+      car_brand = #{carBrand,jdbcType=SMALLINT},
+      car_brand_name = #{carBrandName,jdbcType=VARCHAR},
+      car_color = #{carColor,jdbcType=SMALLINT},
+      car_color_name = #{carColorName,jdbcType=VARCHAR},
+      car_image = #{carImage,jdbcType=VARCHAR},
+      car_direction = #{carDirection,jdbcType=TINYINT},
+      cap_image = #{capImage,jdbcType=VARCHAR},
+      cap_video = #{capVideo,jdbcType=VARCHAR},
+      person_code = #{personCode,jdbcType=VARCHAR},
+      person_name = #{personName,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      full_image = #{fullImage,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.CapturePersonMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.CapturePerson" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="capture_time" property="captureTime" jdbcType="TIMESTAMP" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="device_name" property="deviceName" jdbcType="VARCHAR" />
+    <result column="device_type" property="deviceType" jdbcType="VARCHAR" />
+    <result column="device_type_name" property="deviceTypeName" jdbcType="VARCHAR" />
+    <result column="device_location" property="deviceLocation" jdbcType="VARCHAR" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="community_name" property="communityName" jdbcType="VARCHAR" />
+    <result column="person_code" property="personCode" jdbcType="VARCHAR" />
+    <result column="person_name" property="personName" jdbcType="VARCHAR" />
+    <result column="person_type" property="personType" jdbcType="SMALLINT" />
+    <result column="person_type_name" property="personTypeName" jdbcType="VARCHAR" />
+    <result column="person_phone" property="personPhone" jdbcType="VARCHAR" />
+    <result column="person_sex" property="personSex" jdbcType="VARCHAR" />
+    <result column="person_birthday" property="personBirthday" jdbcType="TIMESTAMP" />
+    <result column="person_country" property="personCountry" jdbcType="SMALLINT" />
+    <result column="person_country_name" property="personCountryName" jdbcType="VARCHAR" />
+    <result column="person_nationality" property="personNationality" jdbcType="SMALLINT" />
+    <result column="person_nationality_name" property="personNationalityName" jdbcType="VARCHAR" />
+    <result column="person_paper_type" property="personPaperType" jdbcType="SMALLINT" />
+    <result column="person_paper_type_name" property="personPaperTypeName" jdbcType="VARCHAR" />
+    <result column="person_paper_number" property="personPaperNumber" jdbcType="VARCHAR" />
+    <result column="person_address" property="personAddress" jdbcType="VARCHAR" />
+    <result column="person_marriage" property="personMarriage" jdbcType="SMALLINT" />
+    <result column="person_marriage_name" property="personMarriageName" jdbcType="VARCHAR" />
+    <result column="person_political" property="personPolitical" jdbcType="SMALLINT" />
+    <result column="person_political_name" property="personPoliticalName" jdbcType="VARCHAR" />
+    <result column="person_education" property="personEducation" jdbcType="SMALLINT" />
+    <result column="person_education_name" property="personEducationName" jdbcType="VARCHAR" />
+    <result column="person_occupation" property="personOccupation" jdbcType="VARCHAR" />
+    <result column="person_image_path" property="personImagePath" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="TINYINT" />
+    <result column="cap_sex" property="capSex" jdbcType="VARCHAR" />
+    <result column="cap_age" property="capAge" jdbcType="VARCHAR" />
+    <result column="cap_country" property="capCountry" jdbcType="VARCHAR" />
+    <result column="cap_bmask" property="capBmask" jdbcType="TINYINT" />
+    <result column="cap_eyeglass" property="capEyeglass" jdbcType="TINYINT" />
+    <result column="cap_knapsack" property="capKnapsack" jdbcType="TINYINT" />
+    <result column="cap_coat_type" property="capCoatType" jdbcType="SMALLINT" />
+    <result column="cap_coat_type_name" property="capCoatTypeName" jdbcType="VARCHAR" />
+    <result column="cap_coat_color" property="capCoatColor" jdbcType="SMALLINT" />
+    <result column="cap_coat_color_name" property="capCoatColorName" jdbcType="VARCHAR" />
+    <result column="cap_trousers_type" property="capTrousersType" jdbcType="SMALLINT" />
+    <result column="cap_trousers_type_name" property="capTrousersTypeName" jdbcType="VARCHAR" />
+    <result column="cap_trousers_color" property="capTrousersColor" jdbcType="SMALLINT" />
+    <result column="cap_trousers_color_name" property="capTrousersColorName" jdbcType="VARCHAR" />
+    <result column="cap_hat" property="capHat" jdbcType="TINYINT" />
+    <result column="cap_handbag" property="capHandbag" jdbcType="TINYINT" />
+    <result column="cap_type" property="capType" jdbcType="SMALLINT" />
+    <result column="cap_person_image" property="capPersonImage" jdbcType="VARCHAR" />
+    <result column="cap_image" property="capImage" jdbcType="VARCHAR" />
+    <result column="cap_video" property="capVideo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, capture_time, device_code, device_name, device_type, device_type_name, device_location, 
+    community_code, community_name, person_code, person_name, person_type, person_type_name, 
+    person_phone, person_sex, person_birthday, person_country, person_country_name, person_nationality, 
+    person_nationality_name, person_paper_type, person_paper_type_name, person_paper_number, 
+    person_address, person_marriage, person_marriage_name, person_political, person_political_name, 
+    person_education, person_education_name, person_occupation, person_image_path, type, 
+    cap_sex, cap_age, cap_country, cap_bmask, cap_eyeglass, cap_knapsack, cap_coat_type, 
+    cap_coat_type_name, cap_coat_color, cap_coat_color_name, cap_trousers_type, cap_trousers_type_name, 
+    cap_trousers_color, cap_trousers_color_name, cap_hat, cap_handbag, cap_type, cap_person_image, 
+    cap_image, cap_video
+  </sql>
+  <select id="selectCapturePersonList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from capture_person
+    where 1=1
+    <if test="id != null" >
+      and id = #{id,jdbcType=INTEGER}
+    </if>
+    <if test="captureTime != null" >
+      and capture_time = #{captureTime,jdbcType=TIMESTAMP},
+    </if>
+    <if test="deviceCode != null" >
+      and device_code = #{deviceCode,jdbcType=VARCHAR},
+    </if>
+    <if test="deviceName != null" >
+      and device_name = #{deviceName,jdbcType=VARCHAR},
+    </if>
+    <if test="deviceType != null" >
+      and device_type = #{deviceType,jdbcType=VARCHAR},
+    </if>
+    <if test="deviceTypeName != null" >
+      and device_type_name = #{deviceTypeName,jdbcType=VARCHAR},
+    </if>
+    <if test="deviceLocation != null" >
+      and device_location = #{deviceLocation,jdbcType=VARCHAR},
+    </if>
+    <if test="communityCode != null" >
+      and community_code = #{communityCode,jdbcType=VARCHAR},
+    </if>
+    <if test="communityName != null" >
+      and community_name = #{communityName,jdbcType=VARCHAR},
+    </if>
+    <if test="personCode != null" >
+      and person_code = #{personCode,jdbcType=VARCHAR},
+    </if>
+    <if test="personName != null" >
+      and person_name = #{personName,jdbcType=VARCHAR},
+    </if>
+    <if test="personType != null" >
+      and person_type = #{personType,jdbcType=SMALLINT},
+    </if>
+    <if test="personTypeName != null" >
+      and person_type_name = #{personTypeName,jdbcType=VARCHAR},
+    </if>
+    <if test="personPhone != null" >
+      and person_phone = #{personPhone,jdbcType=VARCHAR},
+    </if>
+    <if test="personSex != null" >
+      and and person_sex = #{personSex,jdbcType=VARCHAR},
+    </if>
+    <if test="personBirthday != null" >
+      and person_birthday = #{personBirthday,jdbcType=TIMESTAMP},
+    </if>
+    <if test="personCountry != null" >
+      and person_country = #{personCountry,jdbcType=SMALLINT},
+    </if>
+    <if test="personCountryName != null" >
+      and person_country_name = #{personCountryName,jdbcType=VARCHAR},
+    </if>
+    <if test="personNationality != null" >
+      and person_nationality = #{personNationality,jdbcType=SMALLINT},
+    </if>
+    <if test="personNationalityName != null" >
+      and person_nationality_name = #{personNationalityName,jdbcType=VARCHAR},
+    </if>
+    <if test="personPaperType != null" >
+      and person_paper_type = #{personPaperType,jdbcType=SMALLINT},
+    </if>
+    <if test="personPaperTypeName != null" >
+      and person_paper_type_name = #{personPaperTypeName,jdbcType=VARCHAR},
+    </if>
+    <if test="personPaperNumber != null" >
+      and person_paper_number = #{personPaperNumber,jdbcType=VARCHAR},
+    </if>
+    <if test="personAddress != null" >
+      and person_address = #{personAddress,jdbcType=VARCHAR},
+    </if>
+    <if test="personMarriage != null" >
+      and person_marriage = #{personMarriage,jdbcType=SMALLINT},
+    </if>
+    <if test="personMarriageName != null" >
+      and person_marriage_name = #{personMarriageName,jdbcType=VARCHAR},
+    </if>
+    <if test="personPolitical != null" >
+      and person_political = #{personPolitical,jdbcType=SMALLINT},
+    </if>
+    <if test="personPoliticalName != null" >
+      and person_political_name = #{personPoliticalName,jdbcType=VARCHAR},
+    </if>
+    <if test="personEducation != null" >
+      and person_education = #{personEducation,jdbcType=SMALLINT},
+    </if>
+    <if test="personEducationName != null" >
+      and person_education_name = #{personEducationName,jdbcType=VARCHAR},
+    </if>
+    <if test="personOccupation != null" >
+      and person_occupation = #{personOccupation,jdbcType=VARCHAR},
+    </if>
+    <if test="personImagePath != null" >
+      and person_image_path = #{personImagePath,jdbcType=VARCHAR},
+    </if>
+    <if test="type != null" >
+      and type = #{type,jdbcType=TINYINT},
+    </if>
+    <if test="capSex != null" >
+      and cap_sex = #{capSex,jdbcType=VARCHAR},
+    </if>
+    <if test="capAge != null" >
+      and cap_age = #{capAge,jdbcType=VARCHAR},
+    </if>
+    <if test="capCountry != null" >
+      and cap_country = #{capCountry,jdbcType=VARCHAR},
+    </if>
+    <if test="capBmask != null" >
+      and cap_bmask = #{capBmask,jdbcType=TINYINT},
+    </if>
+    <if test="capEyeglass != null" >
+      and cap_eyeglass = #{capEyeglass,jdbcType=TINYINT},
+    </if>
+    <if test="capKnapsack != null" >
+      and cap_knapsack = #{capKnapsack,jdbcType=TINYINT},
+    </if>
+    <if test="capCoatType != null" >
+      and cap_coat_type = #{capCoatType,jdbcType=SMALLINT},
+    </if>
+    <if test="capCoatTypeName != null" >
+      and cap_coat_type_name = #{capCoatTypeName,jdbcType=VARCHAR},
+    </if>
+    <if test="capCoatColor != null" >
+      and cap_coat_color = #{capCoatColor,jdbcType=SMALLINT},
+    </if>
+    <if test="capCoatColorName != null" >
+      and cap_coat_color_name = #{capCoatColorName,jdbcType=VARCHAR},
+    </if>
+    <if test="capTrousersType != null" >
+      and cap_trousers_type = #{capTrousersType,jdbcType=SMALLINT},
+    </if>
+    <if test="capTrousersTypeName != null" >
+      and cap_trousers_type_name = #{capTrousersTypeName,jdbcType=VARCHAR},
+    </if>
+    <if test="capTrousersColor != null" >
+      and cap_trousers_color = #{capTrousersColor,jdbcType=SMALLINT},
+    </if>
+    <if test="capTrousersColorName != null" >
+      and cap_trousers_color_name = #{capTrousersColorName,jdbcType=VARCHAR},
+    </if>
+    <if test="capHat != null" >
+      and cap_hat = #{capHat,jdbcType=TINYINT},
+    </if>
+    <if test="capHandbag != null" >
+      and cap_handbag = #{capHandbag,jdbcType=TINYINT},
+    </if>
+    <if test="capType != null" >
+      and cap_type = #{capType,jdbcType=SMALLINT},
+    </if>
+    <if test="capPersonImage != null" >
+      and cap_person_image = #{capPersonImage,jdbcType=VARCHAR},
+    </if>
+    <if test="capImage != null" >
+      and cap_image = #{capImage,jdbcType=VARCHAR},
+    </if>
+    <if test="capVideo != null" >
+      and cap_video = #{capVideo,jdbcType=VARCHAR},
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from capture_person
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.windaka.suizhi.manageport.model.CapturePerson" >
+    insert into capture_person (id, capture_time, device_code, 
+      device_name, device_type, device_type_name, 
+      device_location, community_code, community_name, 
+      person_code, person_name, person_type, 
+      person_type_name, person_phone, person_sex, 
+      person_birthday, person_country, person_country_name, 
+      person_nationality, person_nationality_name, 
+      person_paper_type, person_paper_type_name, 
+      person_paper_number, person_address, person_marriage, 
+      person_marriage_name, person_political, person_political_name, 
+      person_education, person_education_name, 
+      person_occupation, person_image_path, type, 
+      cap_sex, cap_age, cap_country, 
+      cap_bmask, cap_eyeglass, cap_knapsack, 
+      cap_coat_type, cap_coat_type_name, cap_coat_color, 
+      cap_coat_color_name, cap_trousers_type, cap_trousers_type_name, 
+      cap_trousers_color, cap_trousers_color_name, 
+      cap_hat, cap_handbag, cap_type, 
+      cap_person_image, cap_image, cap_video
+      )
+    values (#{id,jdbcType=INTEGER}, #{captureTime,jdbcType=TIMESTAMP}, #{deviceCode,jdbcType=VARCHAR}, 
+      #{deviceName,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR}, #{deviceTypeName,jdbcType=VARCHAR},
+      #{deviceLocation,jdbcType=VARCHAR}, #{communityCode,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR}, 
+      #{personCode,jdbcType=VARCHAR}, #{personName,jdbcType=VARCHAR}, #{personType,jdbcType=SMALLINT}, 
+      #{personTypeName,jdbcType=VARCHAR}, #{personPhone,jdbcType=VARCHAR}, #{personSex,jdbcType=VARCHAR}, 
+      #{personBirthday,jdbcType=TIMESTAMP}, #{personCountry,jdbcType=SMALLINT}, #{personCountryName,jdbcType=VARCHAR}, 
+      #{personNationality,jdbcType=SMALLINT}, #{personNationalityName,jdbcType=VARCHAR}, 
+      #{personPaperType,jdbcType=SMALLINT}, #{personPaperTypeName,jdbcType=VARCHAR}, 
+      #{personPaperNumber,jdbcType=VARCHAR}, #{personAddress,jdbcType=VARCHAR}, #{personMarriage,jdbcType=SMALLINT}, 
+      #{personMarriageName,jdbcType=VARCHAR}, #{personPolitical,jdbcType=SMALLINT}, #{personPoliticalName,jdbcType=VARCHAR}, 
+      #{personEducation,jdbcType=SMALLINT}, #{personEducationName,jdbcType=VARCHAR}, 
+      #{personOccupation,jdbcType=VARCHAR}, #{personImagePath,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, 
+      #{capSex,jdbcType=VARCHAR}, #{capAge,jdbcType=VARCHAR}, #{capCountry,jdbcType=VARCHAR}, 
+      #{capBmask,jdbcType=TINYINT}, #{capEyeglass,jdbcType=TINYINT}, #{capKnapsack,jdbcType=TINYINT}, 
+      #{capCoatType,jdbcType=SMALLINT}, #{capCoatTypeName,jdbcType=VARCHAR}, #{capCoatColor,jdbcType=SMALLINT}, 
+      #{capCoatColorName,jdbcType=VARCHAR}, #{capTrousersType,jdbcType=SMALLINT}, #{capTrousersTypeName,jdbcType=VARCHAR}, 
+      #{capTrousersColor,jdbcType=SMALLINT}, #{capTrousersColorName,jdbcType=VARCHAR}, 
+      #{capHat,jdbcType=TINYINT}, #{capHandbag,jdbcType=TINYINT}, #{capType,jdbcType=SMALLINT}, 
+      #{capPersonImage,jdbcType=VARCHAR}, #{capImage,jdbcType=VARCHAR}, #{capVideo,jdbcType=VARCHAR}
+      )
+  </insert>
+</mapper>

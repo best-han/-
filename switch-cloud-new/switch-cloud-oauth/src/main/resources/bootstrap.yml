@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: sjwl-oauth
+  #config:
+      #discovery:
+        #enabled: true
+        #: yshs-config
+      #profile: oss
+      #fail-fast: true
+
+  mvc:
+    servlet:
+      load-on-startup: 1
+  #zipkin:
+    #base-url: http://localhost:9411
+    #enabled: true
+    #sender:
+      #type: web
+logging:
+  level:
+    root: info
+    com.windaka.suizhi: debug
+  file: logs/${spring.application.name}.log
+#jwt放开则为前端也需要进行密钥验证
+access_token:
+  store-jwt: false
+  jwt-signing-key: Qingdao@>>@windaka#<<#Yshspt#:->:&[verygood]&**+{^}
+  add-userinfo: true
+ribbon:
+  eager-load:
+    enabled: true
+    clients: sjwl-user
+  ReadTimeout: 10000
+  sConnectTimeout: 10000
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+
+server:
+  port: 8088
+feign:
+  hystrix:
+    enabled: true
+  client:
+      config:
+        default:
+          connectTimeout: 5000
+          readTimeout: 30000
+          loggerLevel: full

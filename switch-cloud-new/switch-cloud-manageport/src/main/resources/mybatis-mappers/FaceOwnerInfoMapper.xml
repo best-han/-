@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.FaceOwnerInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.FaceOwnerInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="person_code" property="personCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.windaka.suizhi.manageport.model.FaceOwnerInfo" extends="BaseResultMap" >
+    <result column="person_face" property="personFace" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, community_code, person_code
+  </sql>
+  <sql id="Blob_Column_List" >
+    person_face
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from face_owner_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="delete" parameterType="Map" >
+    delete from face_owner_info
+    where person_code=#{personCode} and community_code=#{communityCode}
+  </delete>
+  <insert id="insert" parameterType="com.windaka.suizhi.manageport.model.FaceOwnerInfo" >
+    insert into face_owner_info (id, community_code, person_code, 
+      person_face)
+    values (#{id,jdbcType=INTEGER}, #{communityCode,jdbcType=VARCHAR}, #{personCode,jdbcType=VARCHAR}, 
+      #{personFace,jdbcType=LONGVARCHAR})
+  </insert>
+
+</mapper>

@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.CaptureAlarmPersonMapper">
+    <!-- 查询人员预警信息 by lxh -->
+    <select id="selectPersonAlarmList" parameterType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAlarmPerson"
+            resultType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAlarmPerson">
+        select
+        a.id,
+        (case when a.cap_image is null or a.cap_image ='' then null else CONCAT_WS('',#{capImage},a.cap_image ) end )
+        capImage,
+        (case when a.detail_image is null or a.detail_image ='' then null else CONCAT_WS('',#{capImage}, a.detail_image ) end )
+        detailImage,
+        date_format(a.capture_time,'%Y-%m-%d %H:%i:%s') captureTimesStr,
+        CONCAT_WS('',xq.name, a.device_name ) location,
+        a.device_name deviceName,
+        a.detail_level detailLevel,
+        a.detail_level_name detailLevelName,
+        a.detail_reason detailReason,
+        a.detail_person_name detailPersonName,
+        a.detail_person_paper_num detailPersonPaperNum,
+        a.detail_person_phone detailPersonPhone,
+        a.group_name groupName,
+        a.contrast_value contrastValue,
+        a.handel_conn handelConn,
+        a.handel_user handelUser,
+        a.handel_status handelStatus,
+        date_format(a.handel_time,'%Y年%m月%d日') handelTimeStr
+        from capture_alarm_person a
+        left join base_community xq on a.community_code = xq.code
+        <where>
+            <if test="groupCode != null and groupCode !=''">
+                AND a.group_code=#{groupCode}
+            </if>
+            <if test="detailLevel != null and detailLevel!='' ">
+                AND a.detail_level=#{detailLevel}
+            </if>
+            <if test="handelStatus != null ">
+                AND a.handel_status=#{handelStatus}
+            </if>
+            <if test="handelUserId != null and handelUserId != '' ">
+                AND a.handel_user_id=#{handelUserId}
+            </if>
+            <if test="userList!=null ">
+                and a.create_user_id in
+                <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                    #{item.userId}
+                </foreach>
+            </if>
+            <if test="likeStr != null and likeStr!=''">
+                AND (detail_person_name LIKE concat("%",#{likeStr},"%") or detail_person_paper_num LIKE concat("%",#{likeStr},"%") or detail_person_phone LIKE
+                concat("%",#{likeStr},"%"))
+            </if>
+        </where>
+        order by capture_time desc
+    </select>
+    <!-- 获取未处理预警总数 -->
+    <select id="countPersonList" parameterType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAlarmPerson"
+            resultType="java.lang.Integer">
+        select
+        count(*)
+        from capture_alarm_person
+        <where>
+            <if test="groupCode != null and groupCode !=''">
+                AND group_code=#{groupCode}
+            </if>
+            <if test="detailLevel != null and detailLevel!='' ">
+                AND detail_level=#{detailLevel}
+            </if>
+            <if test="handelStatus != null ">
+                AND handel_status=#{handelStatus}
+            </if>
+            <if test="handelUserId != null and handelUserId != '' ">
+                AND handel_user_id=#{handelUserId}
+            </if>
+            <if test="userList!=null ">
+                and create_user_id in
+                <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                    #{item.userId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <!-- 警务通 获取人员预警集合 -->
+    <select id="selectAppPersonAlarmList" parameterType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAlarmPerson"
+            resultType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAlarmPerson">
+        select
+        a.id,
+        (case when a.cap_image is null or a.cap_image ='' then null else CONCAT_WS('',#{capImage},a.cap_image ) end )
+        capImage,
+        (case when a.cap_small_image is null or a.cap_small_image ='' then null else CONCAT_WS('',#{capImage},a.cap_small_image ) end )
+        capSmallImage,
+        (case when a.detail_image is null or a.detail_image ='' then null else CONCAT_WS('',#{capImage}, a.detail_image ) end )
+        detailImage,
+        date_format(a.capture_time,'%Y-%m-%d %H:%i:%s') captureTimesStr,
+        CONCAT_WS('',xq.name, a.device_name ) location,
+        a.device_name deviceName,
+        a.detail_level detailLevel,
+        CONCAT_WS(a.group_name,'发现','人员' )
+        eventName,
+        a.detail_level_name detailLevelName,
+        a.detail_reason detailReason,
+        a.detail_person_name detailPersonName,
+        a.detail_person_paper_num detailPersonPaperNum,
+        a.detail_person_phone detailPersonPhone,
+        a.group_name groupName,
+        a.contrast_value contrastValue,
+        a.handel_conn handelConn,
+        a.handel_user handelUser,
+        a.handel_status handelStatus,
+        date_format(a.handel_time,'%Y年%m月%d日') handelTimeStr
+        from capture_alarm_person a
+        left join base_community xq on a.community_code = xq.code
+        <where>
+            <if test="groupCode != null and groupCode !=''">
+                AND a.group_code=#{groupCode}
+            </if>
+            <if test="detailLevel != null and detailLevel!='' ">
+                AND a.detail_level=#{detailLevel}
+            </if>
+            <if test="handelStatus != null ">
+                AND a.handel_status=#{handelStatus}
+            </if>
+            <if test="handelUserId != null and handelUserId != '' ">
+                AND a.handel_user_id=#{handelUserId}
+            </if>
+            <if test="userList!=null ">
+                and a.create_user_id in
+                <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                    #{item.userId}
+                </foreach>
+            </if>
+            <if test="likeStr != null and likeStr!=''">
+                AND (detail_person_name LIKE concat("%",#{likeStr},"%") or detail_person_paper_num LIKE
+                concat("%",#{likeStr},"%") or xq.name LIKE concat("%",#{likeStr},"%") or detail_person_phone LIKE
+                concat("%",#{likeStr},"%"))
+            </if>
+        </where>
+        <if test=" orderByClause != null and orderByClause!=''">
+            order  by ${orderByClause}
+        </if>
+    </select>
+    <!-- 根据ID查询人员预警信息 by lxh -->
+    <select id="getPersonById" parameterType="Integer"
+            resultType="com.windaka.suizhi.webapi.model.CaptureAlarmPerson">
+        select
+      id,
+       handel_conn handelConn
+        from capture_alarm_person
+        where id = #{id}
+    </select>
+    <update id="updatePersonAlarmById" parameterType="com.windaka.suizhi.webapi.model.CaptureAlarmPerson" >
+        update capture_alarm_person
+        <set >
+            <if test="handelStatus != null" >
+                handel_status = #{handelStatus},
+            </if>
+            <if test="handelTime != null" >
+                handel_time = #{handelTime},
+            </if>
+            <if test="handelUser != null and handelUser !='' " >
+                handel_user = #{handelUser},
+            </if>
+            <if test="handelUserId != null and handelUserId !='' " >
+                handel_user_id = #{handelUserId},
+            </if>
+            <if test="handelConn != null and handelConn !=''" >
+                handel_conn = #{handelConn},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <!--   websocket 告警记录查询列表 ygy-->
+    <select id="queryAlarmPersonList" parameterType="Integer" resultType="Map">
+        select
+            alarm.id id,
+            cap_image capImage,
+            detail.person_image groupImage,
+            alarm.contrast_value contrastValue,
+            alarm.group_code groupCode,
+            alarm.group_name groupName,
+            detail_level groupLevel,
+            alarm.detail_person_code personCode,
+            alarm.detail_person_name personName,
+            device_code deviceCode,
+            device_name capAddress,
+            date_format(capture_time,'%Y-%m-%d %H:%i:%s') capTime,
+            alarm.community_code xqCode
+            from capture_alarm_person alarm
+            left join face_group_detail detail on detail.person_code=alarm.detail_person_code
+            where  alarm.id &gt; #{id}
+            order by alarm.id asc limit 200
+    </select>
+
+    <!--    告警人员记录表 插入-->
+    <insert id="insertAlarmPerson" parameterType="Map">
+        insert into capture_alarm_person (community_code,capture_time,device_code,device_name,device_type,device_type_name,device_location,
+        cap_image,cap_video,detail_id,detail_image,detail_level, detail_level_name,detail_reason,detail_person_code,
+        detail_person_name,detail_person_paper_num,detail_person_phone,group_code,group_name,
+        handel_status,handel_time,handel_user,handel_conn,contrast_value)
+        value
+        (#{communityCode},#{captureTime},#{deviceCode},#{deviceName},#{deviceType},#{deviceTypeName},#{deviceLocation},#{ capImage},
+        #{capVideo},#{detailId},#{detailImage},#{detailLevel},#{detailLevelName},#{detailReason},#{detailPersonCode},#{detailPersonName},#{detailPersonPaperNum},
+        #{detailPersonPhone},#{groupCode},#{groupName},#{handelStatus},now(),#{handelUser},#{handelConn},#{contrastValue})
+    </insert>
+    <!-- 获取首页预警信息-->
+    <select id="getHomeList" parameterType="com.windaka.suizhi.webapi.model.ext.ExtHomeAlarmModel"  resultType="com.windaka.suizhi.webapi.model.ext.ExtHomeAlarmModel">
+       SELECT
+       a.id,
+       a.type,
+       a.libraryImg,
+       a.img,
+       a.event,
+       a.personName,
+       a.groupName,
+        DATE_FORMAT( a.captureTime,'%m/%d %H:%i')  captureTime,
+         DATE_FORMAT( a.captureTime,'%Y-%m-%d %H:%i:%s')  captureTimeStr,
+        xq.`name` xqName,
+         CONCAT_WS('',xq.`name`,a.deviceName) as location,
+         a.carNum ,
+        a.alarmType  alarmType
+        FROM
+            (
+                    (SELECT
+                        id,
+                        '1' AS type,
+                        '' AS carNum,
+                        detail_person_name AS personName,
+                        (
+                            CASE
+                            WHEN detail_image IS NULL
+                            OR detail_image = '' THEN
+                                NULL
+                            ELSE
+                                CONCAT_WS('',  #{img}, detail_image)
+                            END
+                        ) libraryImg,
+                        (
+                            CASE
+                            WHEN cap_image IS NULL
+                            OR cap_image = '' THEN
+                                NULL
+                            ELSE
+                                CONCAT_WS('', #{img}, cap_image)
+                            END
+                        ) img,
+                        contrast_value AS similar,
+                        group_name AS groupName,
+                        '人员预警' AS alarmType,
+                        device_name AS deviceName,
+                        community_code xqCode,
+                        (
+                            CASE detail_level
+                            WHEN 1 THEN
+                                '8'
+                            WHEN 2 THEN
+                                '9'
+                            WHEN 3 THEN
+                                '10'
+                            ELSE
+                                '9'
+                            END
+                        ) EVENT,
+                        capture_time captureTime
+                    FROM
+                        capture_alarm_person
+                        where 1=1
+                        <if test="userList!=null ">
+                            and create_user_id in
+                            <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                                #{item.userId}
+                            </foreach>
+                        </if>
+                        order by capture_time desc limit 5)
+                UNION
+                        (SELECT
+                            id,
+                            '2' AS type,
+                            car_num AS carNum,
+                            '' AS personName,
+                            '' AS libraryImg,
+                            (
+                                CASE
+                                WHEN cap_image IS NULL
+                                OR cap_image = '' THEN
+                                    NULL
+                                ELSE
+                                    CONCAT_WS('', #{img}, cap_image)
+                                END
+                            ) img,
+                            '' AS similar,
+                            group_name AS groupName,
+                            '车辆预警' AS alarmType,
+                            device_name AS deviceName,
+                            community_code xqCode,
+                            (
+                                CASE detail_level
+                                WHEN 1 THEN
+                                    '5'
+                                WHEN 2 THEN
+                                    '6'
+                                WHEN 3 THEN
+                                    '7'
+                                ELSE
+                                    '6'
+                                END
+                            ) EVENT,
+                            capture_time captureTime
+                        FROM
+                            capture_alarm_car
+                            where 1=1
+                            <if test="userList!=null ">
+                                and create_user_id in
+                                <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                                    #{item.userId}
+                                </foreach>
+                            </if>
+                            order by  captureTime desc limit 5)
+                    UNION
+                            (SELECT
+                                    id,
+                                    '3' AS type,
+                                    '' AS carNum,
+                                    '' AS personName,
+                                    '' AS libraryImg,
+                                    (
+                                        CASE
+                                        WHEN cap_image IS NULL
+                                        OR cap_image = '' THEN
+                                            NULL
+                                        ELSE
+                                            CONCAT_WS('', #{img}, cap_image)
+                                        END
+                                    ) img,
+                                    '' AS similar,
+                                    event_name AS groupName,
+                                    '异常事件' AS alarmType,
+                                    device_name AS deviceName,
+                                    community_code xqCode,
+                                    EVENT,
+                                    capture_time captureTime
+                                FROM
+                                    capture_abnormal
+                                WHERE
+                                ( `event` = 4 OR `event` = 0)
+                                <if test="xqList!=null ">
+                                    and community_code in
+                                    <foreach collection="xqList" item="item" close=")" open="(" separator=",">
+                                        #{item.xqCode}
+                                    </foreach>
+                                </if>
+                                 order by  captureTime desc limit 5)
+                                 UNION
+                            (SELECT
+                                    id,
+                                    '4' AS type,
+                                    '' AS carNum,
+                                    name AS personName,
+                                    '' AS libraryImg,
+                                    (
+                                        CASE
+                                        WHEN pic_url IS NULL
+                                        OR pic_url = '' THEN
+                                            NULL
+                                        ELSE
+                                            CONCAT_WS('', #{img}, pic_url)
+                                        END
+                                    ) img,
+                                    '' AS similar,
+                                    attention_name AS groupName,
+                                    '重点关注' AS alarmType,
+                                    capture_device AS deviceName,
+                                    capture_location_code xqCode,
+                                     (
+                                CASE level
+                                WHEN 1 THEN
+                                    '11'
+                                WHEN 2 THEN
+                                    '12'
+                                WHEN 3 THEN
+                                    '13'
+                                ELSE
+                                    '12'
+                                END
+                            ) EVENT,
+                            create_time AS captureTime
+                                FROM
+                                    capture_alarm_attention
+                              where  1=1
+                                <if test="userList!=null ">
+                                    and create_user_id in
+                                    <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                                        #{item.userId}
+                                    </foreach>
+                                </if>
+                               order by  create_time desc
+                                limit 5)
+            ) a
+            LEFT JOIN base_community xq ON xq.`code` = a.xqCode
+            ORDER BY
+                a.captureTime DESC
+            limit 5
+    </select>
+
+</mapper>

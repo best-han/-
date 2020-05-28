@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.FaceCriminalInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.FaceCriminalInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="person_name" property="personName" jdbcType="VARCHAR" />
+    <result column="person_paper_num" property="personPaperNum" jdbcType="VARCHAR" />
+    <result column="person_image" property="personImage" jdbcType="VARCHAR" />
+    <result column="person_sex" property="personSex" jdbcType="VARCHAR" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="person_code" property="personCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.windaka.suizhi.manageport.model.FaceCriminalInfo" extends="BaseResultMap" >
+    <result column="person_face" property="personFace" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, person_name, person_paper_num, person_image, person_sex,community_code,person_code
+  </sql>
+  <sql id="Blob_Column_List" >
+    person_face
+  </sql>
+
+  <insert id="insert" parameterType="com.windaka.suizhi.manageport.model.FaceCriminalInfo" >
+    insert into face_criminal_info (id, person_name, person_paper_num, 
+      person_image, person_sex, person_face,community_code,person_code
+      )
+    values (#{id,jdbcType=INTEGER}, #{personName,jdbcType=VARCHAR}, #{personPaperNum,jdbcType=VARCHAR}, 
+      #{personImage,jdbcType=VARCHAR}, #{personSex,jdbcType=VARCHAR}, #{personFace,jdbcType=LONGVARCHAR},#{communityCode},#{personCode}
+      )
+  </insert>
+
+  <delete id="delete" parameterType="Map" >
+    delete from face_criminal_info
+    where person_code=#{personCode} and community_code=#{communityCode}
+  </delete>
+</mapper>

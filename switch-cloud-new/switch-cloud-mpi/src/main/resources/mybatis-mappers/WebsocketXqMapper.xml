@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.windaka.suizhi.mpi.dao.WebsocketXqDao">
+
+    <!--查询单个小区-->
+    <select id="queryByxqCode" parameterType="String" resultType="Map">
+        select t.code as xqCode,t.name as xqName
+                from base_community as t
+        where t.code = #{xqCode}
+        order by op_date desc limit 1
+    </select>
+    <select id="queryByxqCodeUserId" parameterType="String" resultType="Map">
+        select t.code as xqCode,t.name as xqName
+                from base_community as t
+                inner join (select uq.xq_code from ht_user_xq as uq where uq.user_id=#{userId}) as userXq on userXq.xq_code=t.code
+        where t.code = #{xqCode}
+        order by t.op_date desc limit 1
+    </select>
+
+
+    <sql id="where">
+        <where>
+            <if test="params.xqCode != null and params.xqCode != ''">
+                and a.code = #{params.xqCode}
+            </if>
+            <!--<if test="params.name != null and params.name != ''">-->
+                <!--and a.name = #{params.name}-->
+            <!--</if>-->
+            <if test="params.name != null and params.name != ''">
+                and a.name like concat('%',#{params.name},'%')
+            </if>
+            <if test="params.addr != null and params.addr != ''">
+                and a.addr = #{params.addr}
+            </if>
+            <if test="params.memo != null and params.memo != ''">
+                and a.memo = #{params.memo}
+            </if>
+            <if test="params.zdmj != null and params.zdmj != ''">
+                and a.zdmj = #{params.zdmj}
+            </if>
+            <if test="params.memo != null and params.memo != ''">
+                and a.memo = #{params.memo}
+            </if>
+            <if test="params.jzmj != null and params.jzmj != ''">
+                and a.jzmj = #{params.jzmj}
+            </if>
+            <if test="params.ldmj != null and params.ldmj != ''">
+                and a.ldmj = #{params.ldmj}
+            </if>
+            <if test="params.dlmj != null and params.dlmj != ''">
+                and a.dlmj = #{params.dlmj}
+            </if>
+            <if test="params.lysl != null and params.lysl != ''">
+                and a.lysl = #{params.lysl}
+            </if>
+            <if test="params.fzr != null and params.fzr != ''">
+                and a.fzr = #{params.fzr}
+            </if>
+            <if test="params.gsmc != null and params.gsmc != ''">
+                and a.gsmc = #{params.gsmc}
+            </if>
+            <if test="params.frdb != null and params.frdb != ''">
+                and a.frdb = #{params.frdb}
+            </if>
+            <if test="params.lxr != null and params.lxr != ''">
+                and a.lxr = #{params.lxr}
+            </if>
+            <if test="params.lxdh != null and params.lxdh != ''">
+                and a.lxdh = #{params.lxdh}
+            </if>
+            <if test="params.lxdz != null and params.lxdz != ''">
+                and a.lxdz = #{params.lxdz}
+            </if>
+            <if test="params.ssgs != null and params.ssgs != ''">
+                and a.ssgs = #{params.ssgs}
+            </if>
+            <if test="params.znj != null and params.znj != ''">
+                and a.znj = #{params.znj}
+            </if>
+            <if test="params.cqts != null and params.cqts != ''">
+                and a.cqts = #{params.cqts}
+            </if>
+            <if test="params.sfatsf != null and params.sfatsf != ''">
+                and a.sfatsf = #{params.sfatsf}
+            </if>
+            <if test="params.xqLxdh != null and params.xqLxdh != ''">
+                and a.xqLxdh = #{params.xqLxdh}
+            </if>
+            <if test="params.ssoRegionalcode != null and params.ssoRegionalcode != ''">
+                and a.sso_regionalcode = #{params.ssoRegionalcode}
+            </if>
+            <if test="params.ssoCode != null and params.ssoCode != ''">
+                and a.sso_code = #{params.ssoCode}
+            </if>
+            <if test="params.status != null and params.status != ''">
+                and a.status = #{params.status}
+            </if>
+            <if test="params.remarks != null and params.remarks != ''">
+                and a.remarks = #{params.remarks}
+            </if>
+            <if test="params.createDate != null and params.createDate != ''">
+                and a.create_date = #{params.createDate}
+            </if>
+            <if test="params.createBy != null and params.createBy != ''">
+                and a.create_by = #{params.createBy}
+            </if>
+            <if test="params.updateDate != null and params.updateDate != ''">
+                and a.update_date = #{params.updateDate}
+            </if>
+            <if test="params.updateBy != null and params.updateBy != ''">
+                and a.update_by = #{params.updateBy}
+            </if>
+        </where>
+    </sql>
+
+    <select id="queryListXqByAreaId" parameterType="java.util.Map" resultType="java.util.Map">
+        select a.code xqCode,a.name xqName
+        from base_community a
+        <!--inner join (select area_id from ht_area where parent_ids like concat('%',#{areaId},'%')) area on area.area_id=a.area -->
+        order by a.op_date desc
+    </select>
+    <select id="queryListXqByAreaIdUserId" parameterType="java.util.Map" resultType="java.util.Map">
+        select a.code xqCode,a.name xqName
+        from base_community a
+        <!--inner join (select area_id from ht_area where parent_ids like concat('%',#{areaId},'%')) area on area.area_id=a.area -->
+        inner join (select uq.xq_code from ht_user_xq as uq where uq.user_id=#{userId}) as userXq on userXq.xq_code=a.code
+        order by a.op_date desc
+    </select>
+
+    <select id="queryListXqByAreaUser" parameterType="java.util.Map" resultType="java.util.Map">
+        select a.code xqCode,a.name xqName
+        from base_community a
+        inner join ht_xq_subdistrict b on b.xq_code=a.code
+        inner join ht_subdistrict_info c on c.id=b.subdistrict_id
+        inner join ht_user_area area on area.area_id=c.area_id
+        where area.user_id=#{userId} and b.`status`='0'
+        order by a.op_date desc
+    </select>
+
+    <select id="queryListXqBySubdistrictUser" parameterType="java.util.Map" resultType="java.util.Map">
+        select a.code xqCode,a.name xqName
+        from base_community a
+        inner join ht_xq_subdistrict b on b.xq_code=a.code
+		inner join ht_user_subdistrict c on c.subdistrict_id=b.subdistrict_id
+        where c.user_id=#{userId} and b.`status`='0' and c.`status`='0'
+        order by a.op_date desc
+    </select>
+
+
+</mapper>

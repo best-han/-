@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.windaka.suizhi.webapi.dao.IdleRoomDao">
+    <select id="queryIdleRoomByWaterUse" parameterType="map" resultType="map">
+        SELECT
+            a.room_code roomCode,
+            (a.use_num +0) waterYield,
+            a.community_code communityCode,
+            b.community_name communityName,
+            CONCAT( b.building_name, b.unit_name, b.room_name ) houseInfo,
+            b.room_name roomName,
+            b.use_type useType,
+            b.use_type_name useTypeName,
+            c.name ownerName,
+            c.phone phone
+        FROM
+            j_water_use a
+            JOIN base_room b ON b.code = a.room_code and a.community_code=b.community_code
+            left join base_person c on c.room_code=b.code and c.community_code=b.community_code
+        WHERE 1=1
+            and b.use_type <![CDATA[ <> ]]> 4
+            and DATE_FORMAT(a.use_date,'%Y-%m') =#{useDate}
+            and (a.use_num +0) <![CDATA[ <= ]]> #{minimum}
+    </select>
+    <select id="queryIdleRoom" parameterType="map" resultType="map">
+        SELECT  room_code roomCode, community_code communityCode, community_name communityName,
+          idle_month idleMonth, water_yield waterYield, use_type useType, use_type_name useTypeName,
+          owner_name ownerName, phone, house_info houseInfo ,live_month liveMonth
+        FROM
+            j_idle_room
+        WHERE room_code=#{roomCode} and community_code=#{communityCode} and use_type=#{useType}
+    </select>
+
+    <insert id="addIdleRoom" parameterType="map" >
+        INSERT INTO j_idle_room ( room_code, community_code, community_name, idle_month, live_month, water_yield, use_type, use_type_name,
+          owner_name, phone, house_info, create_time )
+        VALUES
+	      ( #{roomCode}, #{communityCode},#{communityName},#{idleMonth},#{liveMonth},#{waterYield},#{useType},#{useTypeName},
+	      #{ownerName},#{phone},#{houseInfo}, now() );
+    </insert>
+    <update id="updateIdleRoomByRoomCode" parameterType="map" >
+        update j_idle_room set  community_name=#{communityName}, idle_month=#{idleMonth}, live_month=#{liveMonth}, water_yield=#{waterYield},
+          use_type=#{useType}, use_type_name=#{useTypeName},
+          owner_name=#{ownerName}, phone=#{phone}, house_info=#{houseInfo}, create_time=now()
+        where room_code=#{roomCode} and community_code=#{communityCode}
+    </update>
+
+    <select id="totalIdleRoom" parameterType="map" resultType="int">
+        SELECT  count(1)
+        FROM
+        j_idle_room
+        WHERE 1=1
+            and use_type <![CDATA[ <> ]]> 4
+        <if test="useType != null and useType != ''">
+            and use_type=#{useType}
+        </if>
+        <if test="xqCode!=null and xqCode!=''">
+            and community_code in (${xqCode})
+        </if>
+        <if test="idleMonth!=null and idleMonth!=''">
+            and idle_month <![CDATA[ >= ]]> #{idleMonth}
+        </if>
+    </select>
+    <select id="queryIdleRoomList" parameterType="map" resultType="map">
+        SELECT  room_code roomCode, community_code communityCode, community_name communityName,
+          idle_month idleMonth, water_yield waterYield, use_type useType, use_type_name useTypeName,
+          owner_name ownerName, phone, house_info houseInfo
+        FROM
+            j_idle_room
+        WHERE 1=1
+            and use_type <![CDATA[ <> ]]> 4
+        <if test="useType != null and useType != ''">
+            and use_type=#{useType}
+        </if>
+        <if test="xqCode!=null and xqCode!=''">
+            and community_code in (${xqCode})
+        </if>
+        <if test="idleMonth!=null and idleMonth!=''">
+            and idle_month <![CDATA[ >= ]]> #{idleMonth}
+        </if>
+        order by idleMonth desc,id
+        limit #{start},#{limit}
+    </select>
+
+    <select id="totalIdleRoomLived" parameterType="map" resultType="int">
+        SELECT  count(1)
+        FROM
+        j_idle_room
+        WHERE 1=1
+        and use_type = 4
+        <if test="xqCode!=null and xqCode!=''">
+            and community_code in (${xqCode})
+        </if>
+        <if test="liveMonth!=null and liveMonth!=''">
+            and live_month <![CDATA[ >= ]]> #{liveMonth}
+        </if>
+    </select>
+    <select id="queryIdleRoomLivedList" parameterType="map" resultType="map">
+        SELECT  room_code roomCode, community_code communityCode, community_name communityName,
+        live_month liveMonth, water_yield waterYield, use_type useType, use_type_name useTypeName,
+        owner_name ownerName, phone, house_info houseInfo
+        FROM
+        j_idle_room
+        WHERE 1=1
+        and use_type = 4
+        <if test="xqCode!=null and xqCode!=''">
+            and community_code in (${xqCode})
+        </if>
+        <if test="liveMonth!=null and liveMonth!=''">
+            and live_month <![CDATA[ >= ]]> #{liveMonth}
+        </if>
+        order by liveMonth desc,id
+        limit #{start},#{limit}
+    </select>
+
+    <select id="queryIdleRoomLivedByWaterUse" parameterType="map" resultType="map">
+        SELECT
+            a.room_code roomCode,
+            (a.use_num +0) waterYield,
+            a.community_code communityCode,
+            b.community_name communityName,
+            CONCAT( b.building_name, b.unit_name, b.room_name ) houseInfo,
+            b.room_name roomName,
+            b.use_type useType,
+            b.use_type_name useTypeName,
+            c.name ownerName,
+            c.phone phone
+        FROM
+            j_water_use a
+            JOIN base_room b ON b.code = a.room_code and a.community_code=b.community_code
+            left join base_person c on c.room_code=b.code and c.community_code=b.community_code
+        WHERE 1=1
+            and b.use_type=4
+            and DATE_FORMAT(a.use_date,'%Y-%m') =#{useDate}
+            and (a.use_num +0) <![CDATA[ > ]]> #{minimum}
+    </select>
+
+</mapper>

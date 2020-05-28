@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.mpi.dao.auto.CaptureAlarmCarMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.mpi.model.CaptureAlarmCar" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="capture_time" property="captureTime" jdbcType="TIMESTAMP" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="device_name" property="deviceName" jdbcType="VARCHAR" />
+    <result column="device_type" property="deviceType" jdbcType="SMALLINT" />
+    <result column="device_type_name" property="deviceTypeName" jdbcType="VARCHAR" />
+    <result column="device_location" property="deviceLocation" jdbcType="VARCHAR" />
+    <result column="cap_image" property="capImage" jdbcType="VARCHAR" />
+    <result column="cap_small_image" property="capSmallImage" jdbcType="VARCHAR" />
+    <result column="cap_video" property="capVideo" jdbcType="VARCHAR" />
+    <result column="car_num" property="carNum" jdbcType="VARCHAR" />
+    <result column="detail_id" property="detailId" jdbcType="VARCHAR" />
+    <result column="capture_id" property="captureId" jdbcType="INTEGER" />
+    <result column="detail_level" property="detailLevel" jdbcType="SMALLINT" />
+    <result column="detail_level_name" property="detailLevelName" jdbcType="VARCHAR" />
+    <result column="detail_reason" property="detailReason" jdbcType="VARCHAR" />
+    <result column="group_code" property="groupCode" jdbcType="VARCHAR" />
+    <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+    <result column="handel_status" property="handelStatus" jdbcType="TINYINT" />
+    <result column="handel_time" property="handelTime" jdbcType="TIMESTAMP" />
+    <result column="handel_user" property="handelUser" jdbcType="VARCHAR" />
+    <result column="handel_user_id" property="handelUserId" jdbcType="VARCHAR" />
+    <result column="handel_conn" property="handelConn" jdbcType="VARCHAR" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="create_user_id" property="createUserId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+    <result column="update_user_id" property="updateUserId" jdbcType="VARCHAR" />
+    <result column="updaet_time" property="updaetTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, community_code, capture_time, device_code, device_name, device_type, device_type_name, 
+    device_location, cap_image, cap_small_image, cap_video, car_num, detail_id, capture_id, 
+    detail_level, detail_level_name, detail_reason, group_code, group_name, handel_status, 
+    handel_time, handel_user, handel_user_id, handel_conn, create_user, create_user_id, 
+    create_time, update_user, update_user_id, updaet_time
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.windaka.suizhi.mpi.model.CaptureAlarmCarExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from capture_alarm_car
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from capture_alarm_car
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from capture_alarm_car
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.windaka.suizhi.mpi.model.CaptureAlarmCarExample" >
+    delete from capture_alarm_car
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.windaka.suizhi.mpi.model.CaptureAlarmCar" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into capture_alarm_car (community_code, capture_time, device_code, 
+      device_name, device_type, device_type_name, 
+      device_location, cap_image, cap_small_image, 
+      cap_video, car_num, detail_id, 
+      capture_id, detail_level, detail_level_name, 
+      detail_reason, group_code, group_name, 
+      handel_status, handel_time, handel_user, 
+      handel_user_id, handel_conn, create_user, 
+      create_user_id, create_time, update_user, 
+      update_user_id, updaet_time)
+    values (#{communityCode,jdbcType=VARCHAR}, #{captureTime,jdbcType=TIMESTAMP}, #{deviceCode,jdbcType=VARCHAR}, 
+      #{deviceName,jdbcType=VARCHAR}, #{deviceType,jdbcType=SMALLINT}, #{deviceTypeName,jdbcType=VARCHAR}, 
+      #{deviceLocation,jdbcType=VARCHAR}, #{capImage,jdbcType=VARCHAR}, #{capSmallImage,jdbcType=VARCHAR}, 
+      #{capVideo,jdbcType=VARCHAR}, #{carNum,jdbcType=VARCHAR}, #{detailId,jdbcType=VARCHAR}, 
+      #{captureId,jdbcType=INTEGER}, #{detailLevel,jdbcType=SMALLINT}, #{detailLevelName,jdbcType=VARCHAR}, 
+      #{detailReason,jdbcType=VARCHAR}, #{groupCode,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR}, 
+      #{handelStatus,jdbcType=TINYINT}, #{handelTime,jdbcType=TIMESTAMP}, #{handelUser,jdbcType=VARCHAR}, 
+      #{handelUserId,jdbcType=VARCHAR}, #{handelConn,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, 
+      #{createUserId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
+      #{updateUserId,jdbcType=VARCHAR}, #{updaetTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.windaka.suizhi.mpi.model.CaptureAlarmCar" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into capture_alarm_car
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="communityCode != null" >
+        community_code,
+      </if>
+      <if test="captureTime != null" >
+        capture_time,
+      </if>
+      <if test="deviceCode != null" >
+        device_code,
+      </if>
+      <if test="deviceName != null" >
+        device_name,
+      </if>
+      <if test="deviceType != null" >
+        device_type,
+      </if>
+      <if test="deviceTypeName != null" >
+        device_type_name,
+      </if>
+      <if test="deviceLocation != null" >
+        device_location,
+      </if>
+      <if test="capImage != null" >
+        cap_image,
+      </if>
+      <if test="capSmallImage != null" >
+        cap_small_image,
+      </if>
+      <if test="capVideo != null" >
+        cap_video,
+      </if>
+      <if test="carNum != null" >
+        car_num,
+      </if>
+      <if test="detailId != null" >
+        detail_id,
+      </if>
+      <if test="captureId != null" >
+        capture_id,
+      </if>
+      <if test="detailLevel != null" >
+        detail_level,
+      </if>
+      <if test="detailLevelName != null" >
+        detail_level_name,
+      </if>
+      <if test="detailReason != null" >
+        detail_reason,
+      </if>
+      <if test="groupCode != null" >
+        group_code,
+      </if>
+      <if test="groupName != null" >
+        group_name,
+      </if>
+      <if test="handelStatus != null" >
+        handel_status,
+      </if>
+      <if test="handelTime != null" >
+        handel_time,
+      </if>
+      <if test="handelUser != null" >
+        handel_user,
+      </if>
+      <if test="handelUserId != null" >
+        handel_user_id,
+      </if>
+      <if test="handelConn != null" >
+        handel_conn,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="createUserId != null" >
+        create_user_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+      <if test="updateUserId != null" >
+        update_user_id,
+      </if>
+      <if test="updaetTime != null" >
+        updaet_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="communityCode != null" >
+        #{communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="captureTime != null" >
+        #{captureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceCode != null" >
+        #{deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null" >
+        #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null" >
+        #{deviceType,jdbcType=SMALLINT},
+      </if>
+      <if test="deviceTypeName != null" >
+        #{deviceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceLocation != null" >
+        #{deviceLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="capImage != null" >
+        #{capImage,jdbcType=VARCHAR},
+      </if>
+      <if test="capSmallImage != null" >
+        #{capSmallImage,jdbcType=VARCHAR},
+      </if>
+      <if test="capVideo != null" >
+        #{capVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="carNum != null" >
+        #{carNum,jdbcType=VARCHAR},
+      </if>
+      <if test="detailId != null" >
+        #{detailId,jdbcType=VARCHAR},
+      </if>
+      <if test="captureId != null" >
+        #{captureId,jdbcType=INTEGER},
+      </if>
+      <if test="detailLevel != null" >
+        #{detailLevel,jdbcType=SMALLINT},
+      </if>
+      <if test="detailLevelName != null" >
+        #{detailLevelName,jdbcType=VARCHAR},
+      </if>
+      <if test="detailReason != null" >
+        #{detailReason,jdbcType=VARCHAR},
+      </if>
+      <if test="groupCode != null" >
+        #{groupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="groupName != null" >
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="handelStatus != null" >
+        #{handelStatus,jdbcType=TINYINT},
+      </if>
+      <if test="handelTime != null" >
+        #{handelTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handelUser != null" >
+        #{handelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="handelUserId != null" >
+        #{handelUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="handelConn != null" >
+        #{handelConn,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUserId != null" >
+        #{updateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="updaetTime != null" >
+        #{updaetTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.windaka.suizhi.mpi.model.CaptureAlarmCarExample" resultType="java.lang.Integer" >
+    select count(*) from capture_alarm_car
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update capture_alarm_car
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.communityCode != null" >
+        community_code = #{record.communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.captureTime != null" >
+        capture_time = #{record.captureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.deviceCode != null" >
+        device_code = #{record.deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceName != null" >
+        device_name = #{record.deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceType != null" >
+        device_type = #{record.deviceType,jdbcType=SMALLINT},
+      </if>
+      <if test="record.deviceTypeName != null" >
+        device_type_name = #{record.deviceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deviceLocation != null" >
+        device_location = #{record.deviceLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="record.capImage != null" >
+        cap_image = #{record.capImage,jdbcType=VARCHAR},
+      </if>
+      <if test="record.capSmallImage != null" >
+        cap_small_image = #{record.capSmallImage,jdbcType=VARCHAR},
+      </if>
+      <if test="record.capVideo != null" >
+        cap_video = #{record.capVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carNum != null" >
+        car_num = #{record.carNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.detailId != null" >
+        detail_id = #{record.detailId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.captureId != null" >
+        capture_id = #{record.captureId,jdbcType=INTEGER},
+      </if>
+      <if test="record.detailLevel != null" >
+        detail_level = #{record.detailLevel,jdbcType=SMALLINT},
+      </if>
+      <if test="record.detailLevelName != null" >
+        detail_level_name = #{record.detailLevelName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.detailReason != null" >
+        detail_reason = #{record.detailReason,jdbcType=VARCHAR},
+      </if>
+      <if test="record.groupCode != null" >
+        group_code = #{record.groupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.groupName != null" >
+        group_name = #{record.groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handelStatus != null" >
+        handel_status = #{record.handelStatus,jdbcType=TINYINT},
+      </if>
+      <if test="record.handelTime != null" >
+        handel_time = #{record.handelTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.handelUser != null" >
+        handel_user = #{record.handelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handelUserId != null" >
+        handel_user_id = #{record.handelUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handelConn != null" >
+        handel_conn = #{record.handelConn,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUser != null" >
+        create_user = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUserId != null" >
+        create_user_id = #{record.createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateUser != null" >
+        update_user = #{record.updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateUserId != null" >
+        update_user_id = #{record.updateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updaetTime != null" >
+        updaet_time = #{record.updaetTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update capture_alarm_car
+    set id = #{record.id,jdbcType=INTEGER},
+      community_code = #{record.communityCode,jdbcType=VARCHAR},
+      capture_time = #{record.captureTime,jdbcType=TIMESTAMP},
+      device_code = #{record.deviceCode,jdbcType=VARCHAR},
+      device_name = #{record.deviceName,jdbcType=VARCHAR},
+      device_type = #{record.deviceType,jdbcType=SMALLINT},
+      device_type_name = #{record.deviceTypeName,jdbcType=VARCHAR},
+      device_location = #{record.deviceLocation,jdbcType=VARCHAR},
+      cap_image = #{record.capImage,jdbcType=VARCHAR},
+      cap_small_image = #{record.capSmallImage,jdbcType=VARCHAR},
+      cap_video = #{record.capVideo,jdbcType=VARCHAR},
+      car_num = #{record.carNum,jdbcType=VARCHAR},
+      detail_id = #{record.detailId,jdbcType=VARCHAR},
+      capture_id = #{record.captureId,jdbcType=INTEGER},
+      detail_level = #{record.detailLevel,jdbcType=SMALLINT},
+      detail_level_name = #{record.detailLevelName,jdbcType=VARCHAR},
+      detail_reason = #{record.detailReason,jdbcType=VARCHAR},
+      group_code = #{record.groupCode,jdbcType=VARCHAR},
+      group_name = #{record.groupName,jdbcType=VARCHAR},
+      handel_status = #{record.handelStatus,jdbcType=TINYINT},
+      handel_time = #{record.handelTime,jdbcType=TIMESTAMP},
+      handel_user = #{record.handelUser,jdbcType=VARCHAR},
+      handel_user_id = #{record.handelUserId,jdbcType=VARCHAR},
+      handel_conn = #{record.handelConn,jdbcType=VARCHAR},
+      create_user = #{record.createUser,jdbcType=VARCHAR},
+      create_user_id = #{record.createUserId,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_user = #{record.updateUser,jdbcType=VARCHAR},
+      update_user_id = #{record.updateUserId,jdbcType=VARCHAR},
+      updaet_time = #{record.updaetTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.windaka.suizhi.mpi.model.CaptureAlarmCar" >
+    update capture_alarm_car
+    <set >
+      <if test="communityCode != null" >
+        community_code = #{communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="captureTime != null" >
+        capture_time = #{captureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceCode != null" >
+        device_code = #{deviceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null" >
+        device_name = #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null" >
+        device_type = #{deviceType,jdbcType=SMALLINT},
+      </if>
+      <if test="deviceTypeName != null" >
+        device_type_name = #{deviceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceLocation != null" >
+        device_location = #{deviceLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="capImage != null" >
+        cap_image = #{capImage,jdbcType=VARCHAR},
+      </if>
+      <if test="capSmallImage != null" >
+        cap_small_image = #{capSmallImage,jdbcType=VARCHAR},
+      </if>
+      <if test="capVideo != null" >
+        cap_video = #{capVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="carNum != null" >
+        car_num = #{carNum,jdbcType=VARCHAR},
+      </if>
+      <if test="detailId != null" >
+        detail_id = #{detailId,jdbcType=VARCHAR},
+      </if>
+      <if test="captureId != null" >
+        capture_id = #{captureId,jdbcType=INTEGER},
+      </if>
+      <if test="detailLevel != null" >
+        detail_level = #{detailLevel,jdbcType=SMALLINT},
+      </if>
+      <if test="detailLevelName != null" >
+        detail_level_name = #{detailLevelName,jdbcType=VARCHAR},
+      </if>
+      <if test="detailReason != null" >
+        detail_reason = #{detailReason,jdbcType=VARCHAR},
+      </if>
+      <if test="groupCode != null" >
+        group_code = #{groupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="groupName != null" >
+        group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="handelStatus != null" >
+        handel_status = #{handelStatus,jdbcType=TINYINT},
+      </if>
+      <if test="handelTime != null" >
+        handel_time = #{handelTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handelUser != null" >
+        handel_user = #{handelUser,jdbcType=VARCHAR},
+      </if>
+      <if test="handelUserId != null" >
+        handel_user_id = #{handelUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="handelConn != null" >
+        handel_conn = #{handelConn,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        create_user_id = #{createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUserId != null" >
+        update_user_id = #{updateUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="updaetTime != null" >
+        updaet_time = #{updaetTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.windaka.suizhi.mpi.model.CaptureAlarmCar" >
+    update capture_alarm_car
+    set community_code = #{communityCode,jdbcType=VARCHAR},
+      capture_time = #{captureTime,jdbcType=TIMESTAMP},
+      device_code = #{deviceCode,jdbcType=VARCHAR},
+      device_name = #{deviceName,jdbcType=VARCHAR},
+      device_type = #{deviceType,jdbcType=SMALLINT},
+      device_type_name = #{deviceTypeName,jdbcType=VARCHAR},
+      device_location = #{deviceLocation,jdbcType=VARCHAR},
+      cap_image = #{capImage,jdbcType=VARCHAR},
+      cap_small_image = #{capSmallImage,jdbcType=VARCHAR},
+      cap_video = #{capVideo,jdbcType=VARCHAR},
+      car_num = #{carNum,jdbcType=VARCHAR},
+      detail_id = #{detailId,jdbcType=VARCHAR},
+      capture_id = #{captureId,jdbcType=INTEGER},
+      detail_level = #{detailLevel,jdbcType=SMALLINT},
+      detail_level_name = #{detailLevelName,jdbcType=VARCHAR},
+      detail_reason = #{detailReason,jdbcType=VARCHAR},
+      group_code = #{groupCode,jdbcType=VARCHAR},
+      group_name = #{groupName,jdbcType=VARCHAR},
+      handel_status = #{handelStatus,jdbcType=TINYINT},
+      handel_time = #{handelTime,jdbcType=TIMESTAMP},
+      handel_user = #{handelUser,jdbcType=VARCHAR},
+      handel_user_id = #{handelUserId,jdbcType=VARCHAR},
+      handel_conn = #{handelConn,jdbcType=VARCHAR},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_user_id = #{createUserId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      update_user_id = #{updateUserId,jdbcType=VARCHAR},
+      updaet_time = #{updaetTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

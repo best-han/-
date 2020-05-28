@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.CaptureAbnormalMapper">
+    <!-- 查询人员预警信息 by lxh -->
+    <select id="selectAbnormalList" parameterType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAbnormal"
+            resultType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAbnormal">
+        select
+        a.id,
+        (case when a.cap_image is null or a.cap_image ='' then null else CONCAT_WS('',#{capImage},a.cap_image ) end )
+        capImage,
+        date_format(a.capture_time,'%Y-%m-%d %H:%i:%s') captureTimesStr,
+        CONCAT_WS('',xq.name, a.device_name ) location,
+        a.device_type_name deviceTypeName,
+        a.device_name deviceName,
+        a.event_name eventName,
+        a.handel_conn handelConn,
+        a.handel_status handelStatus,
+        a.handel_user handelUser,
+        m.level_name level,
+        date_format(a.handel_time,'%Y年%m月%d日') handelTimeStr
+        from capture_abnormal a
+        inner join event_level_mapping m on  m.event = a.event
+        left join base_community xq on a.community_code = xq.code
+        <where>
+            <if test="xqList!=null ">
+                and community_code in
+                <foreach collection="xqList" item="item" close=")" open="(" separator=",">
+                    #{item.xqCode}
+                </foreach>
+            </if>
+            <if test="event != null ">
+                AND a.event=#{event}
+            </if>
+            <if test="level != null and level != '' ">
+                AND m.level=#{level}
+            </if>
+            <if test="handelStatus != null ">
+                AND a.handel_status=#{handelStatus}
+            </if>
+            <if test="handelUserId != null and  handelUserId !=''">
+                AND a.handel_user_id=#{handelUserId}
+            </if>
+        </where>
+        order by capture_time desc
+    </select>
+    <!-- 获取异常行为总数 -->
+    <select id="countAbnormal" parameterType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAbnormal"
+            resultType="java.lang.Integer">
+        select
+        count(*)
+        from capture_abnormal
+        <where>
+         1=1
+            <if test="xqList!=null and xqList.size()>0">
+                and community_code in
+                <foreach collection="xqList" item="item" close=")" open="(" separator=",">
+                    #{item.xqCode}
+                </foreach>
+            </if>
+            <if test="event != null ">
+                AND event=#{event}
+            </if>
+            <if test="level != null and level != '' ">
+                AND level=#{level}
+            </if>
+            <if test="handelStatus != null ">
+                AND handel_status=#{handelStatus}
+            </if>
+            <if test="handelUserId != null and  handelUserId !=''">
+                AND a.handel_user_id=#{handelUserId}
+            </if>
+        </where>
+    </select>
+    <!-- 警务通 获取异常集合 -->
+    <select id="selectAppAbnormalList" parameterType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAbnormal"
+            resultType="com.windaka.suizhi.webapi.model.ext.ExtCaptureAbnormal">
+        select
+        a.id,
+        (case when a.cap_image is null or a.cap_image ='' then null else CONCAT_WS('',#{capImage},a.cap_image ) end )
+        capImage,
+        date_format(a.capture_time,'%Y-%m-%d %H:%i:%s') captureTimesStr,
+        CONCAT_WS('',xq.name, a.device_name ) location,
+        a.device_type_name deviceTypeName,
+        a.community_name communityName,
+        a.event_name eventName,
+        a.device_name deviceName ,
+        a.handel_conn handelConn,
+        a.handel_status handelStatus,
+        a.handel_user handelUser,
+        m.level_name level,
+        date_format(a.handel_time,'%Y年%m月%d日') handelTimeStr
+        from capture_abnormal a
+        inner join event_level_mapping m on  m.event = a.event
+        left join base_community xq on a.community_code = xq.code
+        <where>
+            <if test="xqList!=null ">
+                and community_code in
+                <foreach collection="xqList" item="item" close=")" open="(" separator=",">
+                    #{item.xqCode}
+                </foreach>
+            </if>
+            <if test="event != null ">
+                AND a.event=#{event}
+            </if>
+            <if test="likeStr != null and likeStr !=''  ">
+                AND a.community_name LIKE concat("%",#{likeStr},"%")
+            </if>
+            <if test="level != null and level != '' ">
+                AND m.level=#{level}
+            </if>
+            <if test="handelStatus != null ">
+                AND a.handel_status=#{handelStatus}
+            </if>
+            <if test="handelUserId != null and  handelUserId !=''">
+                AND a.handel_user_id=#{handelUserId}
+            </if>
+        </where>
+        <if test=" orderByClause != null and orderByClause!=''">
+            order  by ${orderByClause}
+        </if>
+    </select>
+    <!-- 根据ID查询异常信息 by lxh -->
+    <select id="getAbnormalById" parameterType="Integer"
+            resultType="com.windaka.suizhi.webapi.model.CaptureAbnormal">
+        select
+      id,
+       handel_conn handelConn
+        from capture_abnormal
+        where id = #{id}
+    </select>
+    <update id="updateAbnormalById" parameterType="com.windaka.suizhi.webapi.model.CaptureAbnormal" >
+        update capture_abnormal
+        <set >
+            <if test="handelStatus != null" >
+                handel_status = #{handelStatus},
+            </if>
+            <if test="handelTime != null" >
+                handel_time = #{handelTime},
+            </if>
+            <if test="handelUser != null and handelUser != ''" >
+                handel_user = #{handelUser},
+            </if>
+            <if test="handelUserId != null and handelUserId != ''" >
+                handel_user_id = #{handelUserId},
+            </if>
+            <if test="handelConn != null  and handelConn != ''" >
+                handel_conn = #{handelConn},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.CaptureAbnormalMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.CaptureAbnormal" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="capture_time" property="captureTime" jdbcType="TIMESTAMP" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="device_name" property="deviceName" jdbcType="VARCHAR" />
+    <result column="device_type" property="deviceType" jdbcType="VARCHAR" />
+    <result column="device_type_name" property="deviceTypeName" jdbcType="VARCHAR" />
+    <result column="device_location" property="deviceLocation" jdbcType="VARCHAR" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="community_name" property="communityName" jdbcType="VARCHAR" />
+    <result column="event" property="event" jdbcType="SMALLINT" />
+    <result column="event_name" property="eventName" jdbcType="VARCHAR" />
+    <result column="begin_time" property="beginTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="cap_image" property="capImage" jdbcType="VARCHAR" />
+    <result column="cap_video" property="capVideo" jdbcType="VARCHAR" />
+    <result column="handel_status" property="handelStatus" jdbcType="TINYINT" />
+    <result column="handel_time" property="handelTime" jdbcType="TIMESTAMP" />
+    <result column="handel_user" property="handelUser" jdbcType="VARCHAR" />
+    <result column="handel_conn" property="handelConn" jdbcType="VARCHAR" />
+    <result column="handel_advise" property="handelAdvise" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, capture_time, device_code, device_name, device_type, device_type_name, device_location, 
+    community_code, community_name, event, event_name, begin_time, end_time, cap_image, 
+    cap_video, handel_status, handel_time, handel_user, handel_conn,handel_advise,code
+  </sql>
+
+
+<!--  异常行为插入 ygy-->
+  <insert id="insertCaptureAbnormal" parameterType="com.windaka.suizhi.manageport.model.CaptureAbnormal" >
+    insert into capture_abnormal (id, capture_time, device_code,
+      device_name, device_type, device_type_name,
+      device_location, community_code, community_name,
+      event, event_name, begin_time,
+      end_time, cap_image, cap_video,
+      handel_status, handel_time, handel_user,
+      handel_conn,handel_advise,code)
+    values (#{id,jdbcType=INTEGER}, #{captureTime,jdbcType=TIMESTAMP}, #{deviceCode,jdbcType=VARCHAR},
+      #{deviceName,jdbcType=VARCHAR}, #{deviceType,jdbcType=SMALLINT}, #{deviceTypeName,jdbcType=VARCHAR},
+      #{deviceLocation,jdbcType=VARCHAR}, #{communityCode,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR},
+      #{event,jdbcType=SMALLINT}, #{eventName,jdbcType=VARCHAR}, #{beginTime,jdbcType=TIMESTAMP},
+      #{endTime,jdbcType=TIMESTAMP}, #{capImage,jdbcType=VARCHAR}, #{capVideo,jdbcType=VARCHAR},
+      1,now(), #{handelUser,jdbcType=VARCHAR},
+      #{handelConn,jdbcType=VARCHAR},#{handelAdvise,jdbcType=VARCHAR},#{code})
+  </insert>
+
+<!--  异常行为删除 ygy-->
+  <delete id="deleteById" parameterType="String" >
+    delete from capture_abnormal
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+<!--  异常行为 更新 ygy-->
+  <update id="updateById" parameterType="com.windaka.suizhi.manageport.model.CaptureAbnormal" >
+    update capture_abnormal
+    set
+      handel_status = #{handelStatus,jdbcType=TINYINT},
+      handel_time =now(),
+      handel_user = #{handelUser,jdbcType=VARCHAR},
+      handel_advise=#{handelAdvise,jdbcType=VARCHAR}
+    where id = #{id}
+  </update>
+
+<!--  异常行为 列表查询 ygy-->
+  <select id="selectCaptureAbnormalList" resultMap="BaseResultMap" parameterType="Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from capture_abnormal
+    where 1=1
+    <if test="deviceCode!=null and deviceCode!=''">
+        and device_code=#{deviceCode}
+    </if>
+    <if test="event!=null and event!=''">
+        and event=#{event}
+    </if>
+    <if test="id!=null and id!=''">
+      and id=#{id}
+    </if>
+  </select>
+
+</mapper>

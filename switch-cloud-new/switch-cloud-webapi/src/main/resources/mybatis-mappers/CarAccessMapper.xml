@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.CarAccessMapper" >
+
+<!--    今日车辆出入数量-->
+    <select id="selectCarAccessNum" parameterType="Map" resultType="int">
+        select count(*) from car_access access
+        where date(access.capture_time)=date(now())
+        <if test="xqCode.size()>0 ">
+            and access.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+</mapper>

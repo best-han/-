@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.ext.ExtFaceGroupDetailMapper" >
+    <resultMap id="BaseResultMap" type="com.windaka.suizhi.webapi.model.ext.ExtFaceGroupDetail" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+        <result column="group_code" property="groupCode" jdbcType="VARCHAR" />
+        <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+        <result column="group_level" property="groupLevel" jdbcType="SMALLINT" />
+        <result column="person_code" property="personCode" jdbcType="VARCHAR" />
+        <result column="person_name" property="personName" jdbcType="VARCHAR" />
+        <result column="person_phone" property="personPhone" jdbcType="VARCHAR" />
+        <result column="person_paper_number" property="personPaperNumber" jdbcType="VARCHAR" />
+        <result column="level" property="level" jdbcType="SMALLINT" />
+        <result column="level_name" property="levelName" jdbcType="VARCHAR" />
+        <result column="reason" property="reason" jdbcType="VARCHAR" />
+        <result column="person_image" property="personImage" jdbcType="VARCHAR" />
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+        <result column="withdraw_time" property="withdrawTime" jdbcType="TIMESTAMP" />
+        <result column="status" property="status" jdbcType="BIT" />
+        <result column="source" property="source" jdbcType="BIT" />
+        <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="create_user_id" property="createUserId" jdbcType="VARCHAR" />
+        <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+        <result column="update_user_id" property="updateUserId" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.windaka.suizhi.webapi.model.FaceGroupDetail" extends="BaseResultMap" >
+        <result column="person_face" property="personFace" jdbcType="LONGVARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+    id, community_code, group_code, group_name, group_level, person_code, person_name,
+    person_phone, person_paper_number, level, level_name, reason, person_image, start_time,
+    end_time, withdraw_time, status, source, remarks, create_time, create_user_id, create_user,
+    update_time, update_user, update_user_id
+  </sql>
+    <sql id="Blob_Column_List" >
+    person_face
+  </sql>
+    <select id="selectList" resultType="com.windaka.suizhi.webapi.model.ext.ExtFaceGroupDetail"
+            parameterType="java.lang.Integer" >
+        select
+        id, community_code, group_code, group_name, group_level, person_code, person_name,
+        person_phone, person_paper_number, level, level_name, reason,
+        CONCAT_WS('',#{personImage},person_image)  person_image, start_time,
+        end_time, withdraw_time, status, source, remarks, create_time, create_user_id, create_user,
+        update_time, update_user, update_user_id,
+        CONCAT_WS('-',date_format(start_time,'%Y/%m/%d'),date_format(end_time,'%Y/%m/%d')) controlPeriods,
+        date_format(withdraw_time,'%Y/%m/%d') withdrawTimeStr,
+        date_format(start_time,'%Y-%m-%d %H:%i:%s') startTimeStr,
+        date_format(end_time,'%Y-%m-%d %H:%i:%s') endTimeStr
+        from face_group_detail
+        where 1=1
+        <!-- 根据搜索主键查询条件 -->
+        <if test="startTime != null ">
+            AND end_time <![CDATA[>]]> #{startTime}
+        </if>
+        <if test="endTime != null ">
+            AND start_time <![CDATA[<]]> #{endTime}
+        </if>
+        <if test="withdrawStart != null ">
+            AND withdraw_time <![CDATA[>=]]> #{withdrawStart}
+        </if>
+        <if test="withdrawEnd != null ">
+            AND withdraw_time <![CDATA[<=]]> #{withdrawEnd}
+        </if>
+        <if test="level != null ">
+            AND level = #{level}
+        </if>
+        <if test="groupCode != null and groupCode !='' ">
+            AND group_code = #{groupCode}
+        </if>
+        <if test="status != null ">
+            AND status = #{status}
+        </if>
+        <if test="createUserId != null  and createUserId !='' ">
+            AND create_user_id = #{createUserId}
+        </if>
+        <if test="userList!=null ">
+            and create_user_id in
+            <foreach collection="userList" item="item" close=")" open="(" separator=",">
+                #{item.userId}
+            </foreach>
+        </if>
+        <if test="likeStr != null and likeStr!=''">
+            AND (person_name LIKE concat("%",#{likeStr},"%") or person_phone LIKE concat("%",#{likeStr},"%") or person_paper_number LIKE
+            concat("%",#{likeStr},"%"))
+        </if>
+        order by create_time desc
+    </select>
+    <!--    根据布控明细id 查询对应布控库等级-->
+    <select id="selectGroupLevel" parameterType="String" resultType="String">
+        select detail.level level from face_group_detail  detail
+        where detail.id=#{id}
+    </select>
+
+<!--    根据personCode 查列表-->
+    <select id="selectListByCode" resultType="Map" parameterType="Map">
+        select * from face_group_detail
+        where 1=1
+        <if test="personId!=null and personId!=''">
+            and person_code=#{personId}
+        </if>
+        group by group_code
+    </select>
+
+</mapper>

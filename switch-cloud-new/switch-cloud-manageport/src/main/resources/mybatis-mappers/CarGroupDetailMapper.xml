@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.CarGroupDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.CarGroupDetail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="group_code" property="groupCode" jdbcType="VARCHAR" />
+    <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+    <result column="group_level" property="groupLevel" jdbcType="SMALLINT" />
+    <result column="car_num" property="carNum" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="SMALLINT" />
+    <result column="level_name" property="levelName" jdbcType="VARCHAR" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="car_image" property="carImage" jdbcType="VARCHAR" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, community_code, group_code, group_name, group_level, car_num, level, level_name, 
+    reason, car_image, remarks, create_time, create_user, update_time, update_user
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from car_group_detail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectCarGroupDetailList" resultMap="BaseResultMap" parameterType="Map" >
+    select
+    <include refid="Base_Column_List" />
+    from car_group_detail
+    where 1=1
+    <if test="id != null" >
+      and id = #{id,jdbcType=INTEGER}
+    </if>
+    <if test="communityCode != null" >
+      and community_code = #{communityCode,jdbcType=VARCHAR}
+    </if>
+    <if test="groupCode != null" >
+      and group_code = #{groupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="groupName != null" >
+      and group_name = #{groupName,jdbcType=VARCHAR}
+    </if>
+    <if test="groupLevel != null" >
+      and group_level = #{groupLevel,jdbcType=SMALLINT}
+    </if>
+    <if test="carNum != null" >
+      and car_num = #{carNum,jdbcType=VARCHAR}
+    </if>
+    <if test="level != null" >
+      and level = #{level,jdbcType=SMALLINT}
+    </if>
+    <if test="levelName != null" >
+      and level_name = #{levelName,jdbcType=VARCHAR}
+    </if>
+    <if test="reason != null" >
+      and reason = #{reason,jdbcType=VARCHAR}
+    </if>
+    <if test="carImage != null" >
+      and car_image = #{carImage,jdbcType=VARCHAR}
+    </if>
+    <if test="remarks != null" >
+      and remarks = #{remarks,jdbcType=VARCHAR}
+    </if>
+    <if test="createTime != null" >
+      and create_time = #{createTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createUser != null" >
+      and create_user = #{createUser,jdbcType=VARCHAR}
+    </if>
+    <if test="updateTime != null" >
+      and update_time = #{updateTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="updateUser != null" >
+      and update_user = #{updateUser,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from car_group_detail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.windaka.suizhi.manageport.model.CarGroupDetail" >
+    insert into car_group_detail (id, community_code, group_code, 
+      group_name, group_level, car_num, 
+      level, level_name, reason, 
+      car_image, remarks, create_time, 
+      create_user, update_time, update_user
+      )
+    values (#{id,jdbcType=INTEGER}, #{communityCode,jdbcType=VARCHAR}, #{groupCode,jdbcType=VARCHAR}, 
+      #{groupName,jdbcType=VARCHAR}, #{groupLevel,jdbcType=SMALLINT}, #{carNum,jdbcType=VARCHAR}, 
+      #{level,jdbcType=SMALLINT}, #{levelName,jdbcType=VARCHAR}, #{reason,jdbcType=VARCHAR}, 
+      #{carImage,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, now(),
+      #{createUser,jdbcType=VARCHAR}, now(), #{updateUser,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.windaka.suizhi.manageport.model.CarGroupDetail" >
+    insert into car_group_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="communityCode != null" >
+        community_code,
+      </if>
+      <if test="groupCode != null" >
+        group_code,
+      </if>
+      <if test="groupName != null" >
+        group_name,
+      </if>
+      <if test="groupLevel != null" >
+        group_level,
+      </if>
+      <if test="carNum != null" >
+        car_num,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="levelName != null" >
+        level_name,
+      </if>
+      <if test="reason != null" >
+        reason,
+      </if>
+      <if test="carImage != null" >
+        car_image,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="communityCode != null" >
+        #{communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="groupCode != null" >
+        #{groupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="groupName != null" >
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="groupLevel != null" >
+        #{groupLevel,jdbcType=SMALLINT},
+      </if>
+      <if test="carNum != null" >
+        #{carNum,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=SMALLINT},
+      </if>
+      <if test="levelName != null" >
+        #{levelName,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="carImage != null" >
+        #{carImage,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.windaka.suizhi.manageport.model.CarGroupDetail" >
+    update car_group_detail
+    <set >
+      <if test="communityCode != null" >
+        community_code = #{communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="groupCode != null" >
+        group_code = #{groupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="groupName != null" >
+        group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="groupLevel != null" >
+        group_level = #{groupLevel,jdbcType=SMALLINT},
+      </if>
+      <if test="carNum != null" >
+        car_num = #{carNum,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=SMALLINT},
+      </if>
+      <if test="levelName != null" >
+        level_name = #{levelName,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null" >
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="carImage != null" >
+        car_image = #{carImage,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.windaka.suizhi.manageport.model.CarGroupDetail" >
+    update car_group_detail
+    set community_code = #{communityCode,jdbcType=VARCHAR},
+      group_code = #{groupCode,jdbcType=VARCHAR},
+      group_name = #{groupName,jdbcType=VARCHAR},
+      group_level = #{groupLevel,jdbcType=SMALLINT},
+      car_num = #{carNum,jdbcType=VARCHAR},
+      level = #{level,jdbcType=SMALLINT},
+      level_name = #{levelName,jdbcType=VARCHAR},
+      reason = #{reason,jdbcType=VARCHAR},
+      car_image = #{carImage,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      update_time = now(),
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

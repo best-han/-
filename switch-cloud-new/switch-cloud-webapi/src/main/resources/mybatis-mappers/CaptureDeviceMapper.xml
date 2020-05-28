@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.CaptureDeviceDao">
+
+    <select id="queryCaptureDeviceList" parameterType="Map" resultType="Map">
+        select c.id as captureId,c.name as deviceName,c.location as deviceLocation,c.community_code as communityCode,
+        c.community_name as communityName,date_format(c.op_date,'%Y-%m-%d %H:%i:%s') as opDate,c.type,c.type_name as typeName,
+        c.gb_code gbCode,c.gb_codeseq gbCodeseq
+        from capture_device c
+        WHERE 1=1
+        <if test="xqCode != null and xqCode != ''">
+            and c.community_code in (${xqCode})
+        </if>
+        <if test="deviceType != null and deviceType != ''">
+            and c.type = #{deviceType}
+        </if>
+        order by c.community_code,c.id
+    </select>
+
+</mapper>

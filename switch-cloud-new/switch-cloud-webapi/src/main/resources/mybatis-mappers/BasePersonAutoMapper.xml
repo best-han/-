@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.auto.BasePersonAutoMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.webapi.model.BasePerson" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="community_name" property="communityName" jdbcType="VARCHAR" />
+    <result column="room_code" property="roomCode" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="SMALLINT" />
+    <result column="type_name" property="typeName" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="sex_name" property="sexName" jdbcType="VARCHAR" />
+    <result column="birthday" property="birthday" jdbcType="TIMESTAMP" />
+    <result column="country" property="country" jdbcType="SMALLINT" />
+    <result column="country_name" property="countryName" jdbcType="VARCHAR" />
+    <result column="nationality" property="nationality" jdbcType="SMALLINT" />
+    <result column="nationality_name" property="nationalityName" jdbcType="VARCHAR" />
+    <result column="paper_type" property="paperType" jdbcType="SMALLINT" />
+    <result column="paper_type_name" property="paperTypeName" jdbcType="VARCHAR" />
+    <result column="paper_number" property="paperNumber" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="marriage" property="marriage" jdbcType="SMALLINT" />
+    <result column="marriage_name" property="marriageName" jdbcType="VARCHAR" />
+    <result column="political" property="political" jdbcType="SMALLINT" />
+    <result column="political_name" property="politicalName" jdbcType="VARCHAR" />
+    <result column="education" property="education" jdbcType="SMALLINT" />
+    <result column="education_name" property="educationName" jdbcType="VARCHAR" />
+    <result column="occupation" property="occupation" jdbcType="VARCHAR" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="checkin_time" property="checkinTime" jdbcType="TIMESTAMP" />
+    <result column="residence_permit" property="residencePermit" jdbcType="TINYINT" />
+    <result column="relation" property="relation" jdbcType="SMALLINT" />
+    <result column="relation_name" property="relationName" jdbcType="VARCHAR" />
+    <result column="face_group_detail_id" property="faceGroupDetailId" jdbcType="VARCHAR" />
+    <result column="op_date" property="opDate" jdbcType="TIMESTAMP" />
+    <result column="group_type" property="groupType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, code, community_code, community_name, room_code, name, type, type_name, phone, 
+    sex, sex_name, birthday, country, country_name, nationality, nationality_name, paper_type, 
+    paper_type_name, paper_number, address, marriage, marriage_name, political, political_name, 
+    education, education_name, occupation, image, checkin_time, residence_permit, relation, 
+    relation_name, face_group_detail_id, op_date, group_type
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.windaka.suizhi.webapi.model.BasePersonExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from base_person
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_person
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from base_person
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.windaka.suizhi.webapi.model.BasePersonExample" >
+    delete from base_person
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.windaka.suizhi.webapi.model.BasePerson" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into base_person (code, community_code, community_name, 
+      room_code, name, type, 
+      type_name, phone, sex, 
+      sex_name, birthday, country, 
+      country_name, nationality, nationality_name, 
+      paper_type, paper_type_name, paper_number, 
+      address, marriage, marriage_name, 
+      political, political_name, education, 
+      education_name, occupation, image, 
+      checkin_time, residence_permit, relation, 
+      relation_name, face_group_detail_id, op_date, 
+      group_type)
+    values (#{code,jdbcType=VARCHAR}, #{communityCode,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR}, 
+      #{roomCode,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=SMALLINT}, 
+      #{typeName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, 
+      #{sexName,jdbcType=VARCHAR}, #{birthday,jdbcType=TIMESTAMP}, #{country,jdbcType=SMALLINT}, 
+      #{countryName,jdbcType=VARCHAR}, #{nationality,jdbcType=SMALLINT}, #{nationalityName,jdbcType=VARCHAR}, 
+      #{paperType,jdbcType=SMALLINT}, #{paperTypeName,jdbcType=VARCHAR}, #{paperNumber,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{marriage,jdbcType=SMALLINT}, #{marriageName,jdbcType=VARCHAR}, 
+      #{political,jdbcType=SMALLINT}, #{politicalName,jdbcType=VARCHAR}, #{education,jdbcType=SMALLINT}, 
+      #{educationName,jdbcType=VARCHAR}, #{occupation,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR}, 
+      #{checkinTime,jdbcType=TIMESTAMP}, #{residencePermit,jdbcType=TINYINT}, #{relation,jdbcType=SMALLINT}, 
+      #{relationName,jdbcType=VARCHAR}, #{faceGroupDetailId,jdbcType=VARCHAR}, #{opDate,jdbcType=TIMESTAMP}, 
+      #{groupType,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.windaka.suizhi.webapi.model.BasePerson" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into base_person
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="communityCode != null" >
+        community_code,
+      </if>
+      <if test="communityName != null" >
+        community_name,
+      </if>
+      <if test="roomCode != null" >
+        room_code,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="typeName != null" >
+        type_name,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="sex != null" >
+        sex,
+      </if>
+      <if test="sexName != null" >
+        sex_name,
+      </if>
+      <if test="birthday != null" >
+        birthday,
+      </if>
+      <if test="country != null" >
+        country,
+      </if>
+      <if test="countryName != null" >
+        country_name,
+      </if>
+      <if test="nationality != null" >
+        nationality,
+      </if>
+      <if test="nationalityName != null" >
+        nationality_name,
+      </if>
+      <if test="paperType != null" >
+        paper_type,
+      </if>
+      <if test="paperTypeName != null" >
+        paper_type_name,
+      </if>
+      <if test="paperNumber != null" >
+        paper_number,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="marriage != null" >
+        marriage,
+      </if>
+      <if test="marriageName != null" >
+        marriage_name,
+      </if>
+      <if test="political != null" >
+        political,
+      </if>
+      <if test="politicalName != null" >
+        political_name,
+      </if>
+      <if test="education != null" >
+        education,
+      </if>
+      <if test="educationName != null" >
+        education_name,
+      </if>
+      <if test="occupation != null" >
+        occupation,
+      </if>
+      <if test="image != null" >
+        image,
+      </if>
+      <if test="checkinTime != null" >
+        checkin_time,
+      </if>
+      <if test="residencePermit != null" >
+        residence_permit,
+      </if>
+      <if test="relation != null" >
+        relation,
+      </if>
+      <if test="relationName != null" >
+        relation_name,
+      </if>
+      <if test="faceGroupDetailId != null" >
+        face_group_detail_id,
+      </if>
+      <if test="opDate != null" >
+        op_date,
+      </if>
+      <if test="groupType != null" >
+        group_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="communityCode != null" >
+        #{communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="communityName != null" >
+        #{communityName,jdbcType=VARCHAR},
+      </if>
+      <if test="roomCode != null" >
+        #{roomCode,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=SMALLINT},
+      </if>
+      <if test="typeName != null" >
+        #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="sexName != null" >
+        #{sexName,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="country != null" >
+        #{country,jdbcType=SMALLINT},
+      </if>
+      <if test="countryName != null" >
+        #{countryName,jdbcType=VARCHAR},
+      </if>
+      <if test="nationality != null" >
+        #{nationality,jdbcType=SMALLINT},
+      </if>
+      <if test="nationalityName != null" >
+        #{nationalityName,jdbcType=VARCHAR},
+      </if>
+      <if test="paperType != null" >
+        #{paperType,jdbcType=SMALLINT},
+      </if>
+      <if test="paperTypeName != null" >
+        #{paperTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="paperNumber != null" >
+        #{paperNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="marriage != null" >
+        #{marriage,jdbcType=SMALLINT},
+      </if>
+      <if test="marriageName != null" >
+        #{marriageName,jdbcType=VARCHAR},
+      </if>
+      <if test="political != null" >
+        #{political,jdbcType=SMALLINT},
+      </if>
+      <if test="politicalName != null" >
+        #{politicalName,jdbcType=VARCHAR},
+      </if>
+      <if test="education != null" >
+        #{education,jdbcType=SMALLINT},
+      </if>
+      <if test="educationName != null" >
+        #{educationName,jdbcType=VARCHAR},
+      </if>
+      <if test="occupation != null" >
+        #{occupation,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="checkinTime != null" >
+        #{checkinTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="residencePermit != null" >
+        #{residencePermit,jdbcType=TINYINT},
+      </if>
+      <if test="relation != null" >
+        #{relation,jdbcType=SMALLINT},
+      </if>
+      <if test="relationName != null" >
+        #{relationName,jdbcType=VARCHAR},
+      </if>
+      <if test="faceGroupDetailId != null" >
+        #{faceGroupDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="opDate != null" >
+        #{opDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="groupType != null" >
+        #{groupType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.windaka.suizhi.webapi.model.BasePersonExample" resultType="java.lang.Integer" >
+    select count(*) from base_person
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update base_person
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.code != null" >
+        code = #{record.code,jdbcType=VARCHAR},
+      </if>
+      <if test="record.communityCode != null" >
+        community_code = #{record.communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.communityName != null" >
+        community_name = #{record.communityName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.roomCode != null" >
+        room_code = #{record.roomCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=SMALLINT},
+      </if>
+      <if test="record.typeName != null" >
+        type_name = #{record.typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone != null" >
+        phone = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sex != null" >
+        sex = #{record.sex,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sexName != null" >
+        sex_name = #{record.sexName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.birthday != null" >
+        birthday = #{record.birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.country != null" >
+        country = #{record.country,jdbcType=SMALLINT},
+      </if>
+      <if test="record.countryName != null" >
+        country_name = #{record.countryName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nationality != null" >
+        nationality = #{record.nationality,jdbcType=SMALLINT},
+      </if>
+      <if test="record.nationalityName != null" >
+        nationality_name = #{record.nationalityName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.paperType != null" >
+        paper_type = #{record.paperType,jdbcType=SMALLINT},
+      </if>
+      <if test="record.paperTypeName != null" >
+        paper_type_name = #{record.paperTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.paperNumber != null" >
+        paper_number = #{record.paperNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.address != null" >
+        address = #{record.address,jdbcType=VARCHAR},
+      </if>
+      <if test="record.marriage != null" >
+        marriage = #{record.marriage,jdbcType=SMALLINT},
+      </if>
+      <if test="record.marriageName != null" >
+        marriage_name = #{record.marriageName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.political != null" >
+        political = #{record.political,jdbcType=SMALLINT},
+      </if>
+      <if test="record.politicalName != null" >
+        political_name = #{record.politicalName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.education != null" >
+        education = #{record.education,jdbcType=SMALLINT},
+      </if>
+      <if test="record.educationName != null" >
+        education_name = #{record.educationName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.occupation != null" >
+        occupation = #{record.occupation,jdbcType=VARCHAR},
+      </if>
+      <if test="record.image != null" >
+        image = #{record.image,jdbcType=VARCHAR},
+      </if>
+      <if test="record.checkinTime != null" >
+        checkin_time = #{record.checkinTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.residencePermit != null" >
+        residence_permit = #{record.residencePermit,jdbcType=TINYINT},
+      </if>
+      <if test="record.relation != null" >
+        relation = #{record.relation,jdbcType=SMALLINT},
+      </if>
+      <if test="record.relationName != null" >
+        relation_name = #{record.relationName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.faceGroupDetailId != null" >
+        face_group_detail_id = #{record.faceGroupDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.opDate != null" >
+        op_date = #{record.opDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.groupType != null" >
+        group_type = #{record.groupType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update base_person
+    set id = #{record.id,jdbcType=INTEGER},
+      code = #{record.code,jdbcType=VARCHAR},
+      community_code = #{record.communityCode,jdbcType=VARCHAR},
+      community_name = #{record.communityName,jdbcType=VARCHAR},
+      room_code = #{record.roomCode,jdbcType=VARCHAR},
+      name = #{record.name,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=SMALLINT},
+      type_name = #{record.typeName,jdbcType=VARCHAR},
+      phone = #{record.phone,jdbcType=VARCHAR},
+      sex = #{record.sex,jdbcType=VARCHAR},
+      sex_name = #{record.sexName,jdbcType=VARCHAR},
+      birthday = #{record.birthday,jdbcType=TIMESTAMP},
+      country = #{record.country,jdbcType=SMALLINT},
+      country_name = #{record.countryName,jdbcType=VARCHAR},
+      nationality = #{record.nationality,jdbcType=SMALLINT},
+      nationality_name = #{record.nationalityName,jdbcType=VARCHAR},
+      paper_type = #{record.paperType,jdbcType=SMALLINT},
+      paper_type_name = #{record.paperTypeName,jdbcType=VARCHAR},
+      paper_number = #{record.paperNumber,jdbcType=VARCHAR},
+      address = #{record.address,jdbcType=VARCHAR},
+      marriage = #{record.marriage,jdbcType=SMALLINT},
+      marriage_name = #{record.marriageName,jdbcType=VARCHAR},
+      political = #{record.political,jdbcType=SMALLINT},
+      political_name = #{record.politicalName,jdbcType=VARCHAR},
+      education = #{record.education,jdbcType=SMALLINT},
+      education_name = #{record.educationName,jdbcType=VARCHAR},
+      occupation = #{record.occupation,jdbcType=VARCHAR},
+      image = #{record.image,jdbcType=VARCHAR},
+      checkin_time = #{record.checkinTime,jdbcType=TIMESTAMP},
+      residence_permit = #{record.residencePermit,jdbcType=TINYINT},
+      relation = #{record.relation,jdbcType=SMALLINT},
+      relation_name = #{record.relationName,jdbcType=VARCHAR},
+      face_group_detail_id = #{record.faceGroupDetailId,jdbcType=VARCHAR},
+      op_date = #{record.opDate,jdbcType=TIMESTAMP},
+      group_type = #{record.groupType,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.windaka.suizhi.webapi.model.BasePerson" >
+    update base_person
+    <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="communityCode != null" >
+        community_code = #{communityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="communityName != null" >
+        community_name = #{communityName,jdbcType=VARCHAR},
+      </if>
+      <if test="roomCode != null" >
+        room_code = #{roomCode,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=SMALLINT},
+      </if>
+      <if test="typeName != null" >
+        type_name = #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="sexName != null" >
+        sex_name = #{sexName,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        birthday = #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="country != null" >
+        country = #{country,jdbcType=SMALLINT},
+      </if>
+      <if test="countryName != null" >
+        country_name = #{countryName,jdbcType=VARCHAR},
+      </if>
+      <if test="nationality != null" >
+        nationality = #{nationality,jdbcType=SMALLINT},
+      </if>
+      <if test="nationalityName != null" >
+        nationality_name = #{nationalityName,jdbcType=VARCHAR},
+      </if>
+      <if test="paperType != null" >
+        paper_type = #{paperType,jdbcType=SMALLINT},
+      </if>
+      <if test="paperTypeName != null" >
+        paper_type_name = #{paperTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="paperNumber != null" >
+        paper_number = #{paperNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="marriage != null" >
+        marriage = #{marriage,jdbcType=SMALLINT},
+      </if>
+      <if test="marriageName != null" >
+        marriage_name = #{marriageName,jdbcType=VARCHAR},
+      </if>
+      <if test="political != null" >
+        political = #{political,jdbcType=SMALLINT},
+      </if>
+      <if test="politicalName != null" >
+        political_name = #{politicalName,jdbcType=VARCHAR},
+      </if>
+      <if test="education != null" >
+        education = #{education,jdbcType=SMALLINT},
+      </if>
+      <if test="educationName != null" >
+        education_name = #{educationName,jdbcType=VARCHAR},
+      </if>
+      <if test="occupation != null" >
+        occupation = #{occupation,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        image = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="checkinTime != null" >
+        checkin_time = #{checkinTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="residencePermit != null" >
+        residence_permit = #{residencePermit,jdbcType=TINYINT},
+      </if>
+      <if test="relation != null" >
+        relation = #{relation,jdbcType=SMALLINT},
+      </if>
+      <if test="relationName != null" >
+        relation_name = #{relationName,jdbcType=VARCHAR},
+      </if>
+      <if test="faceGroupDetailId != null" >
+        face_group_detail_id = #{faceGroupDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="opDate != null" >
+        op_date = #{opDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="groupType != null" >
+        group_type = #{groupType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.windaka.suizhi.webapi.model.BasePerson" >
+    update base_person
+    set code = #{code,jdbcType=VARCHAR},
+      community_code = #{communityCode,jdbcType=VARCHAR},
+      community_name = #{communityName,jdbcType=VARCHAR},
+      room_code = #{roomCode,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      type = #{type,jdbcType=SMALLINT},
+      type_name = #{typeName,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      sex_name = #{sexName,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=TIMESTAMP},
+      country = #{country,jdbcType=SMALLINT},
+      country_name = #{countryName,jdbcType=VARCHAR},
+      nationality = #{nationality,jdbcType=SMALLINT},
+      nationality_name = #{nationalityName,jdbcType=VARCHAR},
+      paper_type = #{paperType,jdbcType=SMALLINT},
+      paper_type_name = #{paperTypeName,jdbcType=VARCHAR},
+      paper_number = #{paperNumber,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      marriage = #{marriage,jdbcType=SMALLINT},
+      marriage_name = #{marriageName,jdbcType=VARCHAR},
+      political = #{political,jdbcType=SMALLINT},
+      political_name = #{politicalName,jdbcType=VARCHAR},
+      education = #{education,jdbcType=SMALLINT},
+      education_name = #{educationName,jdbcType=VARCHAR},
+      occupation = #{occupation,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      checkin_time = #{checkinTime,jdbcType=TIMESTAMP},
+      residence_permit = #{residencePermit,jdbcType=TINYINT},
+      relation = #{relation,jdbcType=SMALLINT},
+      relation_name = #{relationName,jdbcType=VARCHAR},
+      face_group_detail_id = #{faceGroupDetailId,jdbcType=VARCHAR},
+      op_date = #{opDate,jdbcType=TIMESTAMP},
+      group_type = #{groupType,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

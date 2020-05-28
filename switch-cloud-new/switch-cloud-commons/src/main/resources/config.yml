@@ -1,0 +1,51 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    #url: jdbc:mysql://10.10.6.54:3306/switch_cloud_new?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&zeroDateTimeBehavior=convertToNull #备用
+    url: jdbc:mysql://172.16.1.152:3306/switch_cloud_new?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&zeroDateTimeBehavior=convertToNull #公安端测试
+    #url: jdbc:mysql://localhost:3306/switch_cloud_new?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&zeroDateTimeBehavior=convertToNull   #正式
+    username: root
+    #password: root
+    password: Hello@Suizhi@2019
+    hikari:
+      minimum-idle: 10
+      maximum-pool-size: 60
+      idle-timeout: 30000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+  redis:
+    #host: 10.10.6.54
+    host: 172.16.1.150
+    #host: localhost
+    port: 6379
+    #password:
+    password: suizhi@123
+    timeout: 10s
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+
+eureka:
+  client:
+    serviceUrl:
+      #defaultZone: http://10.10.6.54:8761/eureka/   #测试
+      defaultZone: http://172.16.1.150:8761/eureka/   #公安测试
+      #defaultZone: http://localhost:8761/eureka/
+    registry-fetch-interval-seconds: 5
+  instance:
+    lease-expiration-duration-in-seconds: 15
+    lease-renewal-interval-in-seconds: 5
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${random.int}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

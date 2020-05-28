@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.user.dao.auto.BaseCommunityMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.user.model.BaseCommunity" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="address_code" property="addressCode" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="floor_area" property="floorArea" jdbcType="DECIMAL" />
+    <result column="building_area" property="buildingArea" jdbcType="DECIMAL" />
+    <result column="pm_company_code" property="pmCompanyCode" jdbcType="VARCHAR" />
+    <result column="pm_company_name" property="pmCompanyName" jdbcType="VARCHAR" />
+    <result column="pm_company_person" property="pmCompanyPerson" jdbcType="VARCHAR" />
+    <result column="pm_company_phone" property="pmCompanyPhone" jdbcType="VARCHAR" />
+    <result column="estate_developer_name" property="estateDeveloperName" jdbcType="VARCHAR" />
+    <result column="estate_developer_person" property="estateDeveloperPerson" jdbcType="VARCHAR" />
+    <result column="estate_developer_phone" property="estateDeveloperPhone" jdbcType="VARCHAR" />
+    <result column="op_date" property="opDate" jdbcType="TIMESTAMP" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="area_name" property="areaName" jdbcType="VARCHAR" />
+    <result column="location" property="location" jdbcType="VARCHAR" />
+    <result column="location_area" property="locationArea" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, code, name, address_code, address, floor_area, building_area, pm_company_code, 
+    pm_company_name, pm_company_person, pm_company_phone, estate_developer_name, estate_developer_person, 
+    estate_developer_phone, op_date, area, area_name, location, location_area
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.windaka.suizhi.user.model.BaseCommunityExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from base_community
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_community
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from base_community
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.windaka.suizhi.user.model.BaseCommunityExample" >
+    delete from base_community
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.windaka.suizhi.user.model.BaseCommunity" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into base_community (code, name, address_code, 
+      address, floor_area, building_area, 
+      pm_company_code, pm_company_name, pm_company_person, 
+      pm_company_phone, estate_developer_name, estate_developer_person, 
+      estate_developer_phone, op_date, area, 
+      area_name, location, location_area
+      )
+    values (#{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{addressCode,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{floorArea,jdbcType=DECIMAL}, #{buildingArea,jdbcType=DECIMAL}, 
+      #{pmCompanyCode,jdbcType=VARCHAR}, #{pmCompanyName,jdbcType=VARCHAR}, #{pmCompanyPerson,jdbcType=VARCHAR}, 
+      #{pmCompanyPhone,jdbcType=VARCHAR}, #{estateDeveloperName,jdbcType=VARCHAR}, #{estateDeveloperPerson,jdbcType=VARCHAR}, 
+      #{estateDeveloperPhone,jdbcType=VARCHAR}, #{opDate,jdbcType=TIMESTAMP}, #{area,jdbcType=VARCHAR}, 
+      #{areaName,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{locationArea,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.windaka.suizhi.user.model.BaseCommunity" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into base_community
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="addressCode != null" >
+        address_code,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="floorArea != null" >
+        floor_area,
+      </if>
+      <if test="buildingArea != null" >
+        building_area,
+      </if>
+      <if test="pmCompanyCode != null" >
+        pm_company_code,
+      </if>
+      <if test="pmCompanyName != null" >
+        pm_company_name,
+      </if>
+      <if test="pmCompanyPerson != null" >
+        pm_company_person,
+      </if>
+      <if test="pmCompanyPhone != null" >
+        pm_company_phone,
+      </if>
+      <if test="estateDeveloperName != null" >
+        estate_developer_name,
+      </if>
+      <if test="estateDeveloperPerson != null" >
+        estate_developer_person,
+      </if>
+      <if test="estateDeveloperPhone != null" >
+        estate_developer_phone,
+      </if>
+      <if test="opDate != null" >
+        op_date,
+      </if>
+      <if test="area != null" >
+        area,
+      </if>
+      <if test="areaName != null" >
+        area_name,
+      </if>
+      <if test="location != null" >
+        location,
+      </if>
+      <if test="locationArea != null" >
+        location_area,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="addressCode != null" >
+        #{addressCode,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="floorArea != null" >
+        #{floorArea,jdbcType=DECIMAL},
+      </if>
+      <if test="buildingArea != null" >
+        #{buildingArea,jdbcType=DECIMAL},
+      </if>
+      <if test="pmCompanyCode != null" >
+        #{pmCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="pmCompanyName != null" >
+        #{pmCompanyName,jdbcType=VARCHAR},
+      </if>
+      <if test="pmCompanyPerson != null" >
+        #{pmCompanyPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="pmCompanyPhone != null" >
+        #{pmCompanyPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="estateDeveloperName != null" >
+        #{estateDeveloperName,jdbcType=VARCHAR},
+      </if>
+      <if test="estateDeveloperPerson != null" >
+        #{estateDeveloperPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="estateDeveloperPhone != null" >
+        #{estateDeveloperPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="opDate != null" >
+        #{opDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="area != null" >
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="areaName != null" >
+        #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null" >
+        #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="locationArea != null" >
+        #{locationArea,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.windaka.suizhi.user.model.BaseCommunityExample" resultType="java.lang.Integer" >
+    select count(*) from base_community
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update base_community
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.code != null" >
+        code = #{record.code,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.addressCode != null" >
+        address_code = #{record.addressCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.address != null" >
+        address = #{record.address,jdbcType=VARCHAR},
+      </if>
+      <if test="record.floorArea != null" >
+        floor_area = #{record.floorArea,jdbcType=DECIMAL},
+      </if>
+      <if test="record.buildingArea != null" >
+        building_area = #{record.buildingArea,jdbcType=DECIMAL},
+      </if>
+      <if test="record.pmCompanyCode != null" >
+        pm_company_code = #{record.pmCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pmCompanyName != null" >
+        pm_company_name = #{record.pmCompanyName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pmCompanyPerson != null" >
+        pm_company_person = #{record.pmCompanyPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pmCompanyPhone != null" >
+        pm_company_phone = #{record.pmCompanyPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.estateDeveloperName != null" >
+        estate_developer_name = #{record.estateDeveloperName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.estateDeveloperPerson != null" >
+        estate_developer_person = #{record.estateDeveloperPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="record.estateDeveloperPhone != null" >
+        estate_developer_phone = #{record.estateDeveloperPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.opDate != null" >
+        op_date = #{record.opDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.area != null" >
+        area = #{record.area,jdbcType=VARCHAR},
+      </if>
+      <if test="record.areaName != null" >
+        area_name = #{record.areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.location != null" >
+        location = #{record.location,jdbcType=VARCHAR},
+      </if>
+      <if test="record.locationArea != null" >
+        location_area = #{record.locationArea,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update base_community
+    set id = #{record.id,jdbcType=INTEGER},
+      code = #{record.code,jdbcType=VARCHAR},
+      name = #{record.name,jdbcType=VARCHAR},
+      address_code = #{record.addressCode,jdbcType=VARCHAR},
+      address = #{record.address,jdbcType=VARCHAR},
+      floor_area = #{record.floorArea,jdbcType=DECIMAL},
+      building_area = #{record.buildingArea,jdbcType=DECIMAL},
+      pm_company_code = #{record.pmCompanyCode,jdbcType=VARCHAR},
+      pm_company_name = #{record.pmCompanyName,jdbcType=VARCHAR},
+      pm_company_person = #{record.pmCompanyPerson,jdbcType=VARCHAR},
+      pm_company_phone = #{record.pmCompanyPhone,jdbcType=VARCHAR},
+      estate_developer_name = #{record.estateDeveloperName,jdbcType=VARCHAR},
+      estate_developer_person = #{record.estateDeveloperPerson,jdbcType=VARCHAR},
+      estate_developer_phone = #{record.estateDeveloperPhone,jdbcType=VARCHAR},
+      op_date = #{record.opDate,jdbcType=TIMESTAMP},
+      area = #{record.area,jdbcType=VARCHAR},
+      area_name = #{record.areaName,jdbcType=VARCHAR},
+      location = #{record.location,jdbcType=VARCHAR},
+      location_area = #{record.locationArea,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.windaka.suizhi.user.model.BaseCommunity" >
+    update base_community
+    <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="addressCode != null" >
+        address_code = #{addressCode,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="floorArea != null" >
+        floor_area = #{floorArea,jdbcType=DECIMAL},
+      </if>
+      <if test="buildingArea != null" >
+        building_area = #{buildingArea,jdbcType=DECIMAL},
+      </if>
+      <if test="pmCompanyCode != null" >
+        pm_company_code = #{pmCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="pmCompanyName != null" >
+        pm_company_name = #{pmCompanyName,jdbcType=VARCHAR},
+      </if>
+      <if test="pmCompanyPerson != null" >
+        pm_company_person = #{pmCompanyPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="pmCompanyPhone != null" >
+        pm_company_phone = #{pmCompanyPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="estateDeveloperName != null" >
+        estate_developer_name = #{estateDeveloperName,jdbcType=VARCHAR},
+      </if>
+      <if test="estateDeveloperPerson != null" >
+        estate_developer_person = #{estateDeveloperPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="estateDeveloperPhone != null" >
+        estate_developer_phone = #{estateDeveloperPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="opDate != null" >
+        op_date = #{opDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="area != null" >
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="areaName != null" >
+        area_name = #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null" >
+        location = #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="locationArea != null" >
+        location_area = #{locationArea,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.windaka.suizhi.user.model.BaseCommunity" >
+    update base_community
+    set code = #{code,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      address_code = #{addressCode,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      floor_area = #{floorArea,jdbcType=DECIMAL},
+      building_area = #{buildingArea,jdbcType=DECIMAL},
+      pm_company_code = #{pmCompanyCode,jdbcType=VARCHAR},
+      pm_company_name = #{pmCompanyName,jdbcType=VARCHAR},
+      pm_company_person = #{pmCompanyPerson,jdbcType=VARCHAR},
+      pm_company_phone = #{pmCompanyPhone,jdbcType=VARCHAR},
+      estate_developer_name = #{estateDeveloperName,jdbcType=VARCHAR},
+      estate_developer_person = #{estateDeveloperPerson,jdbcType=VARCHAR},
+      estate_developer_phone = #{estateDeveloperPhone,jdbcType=VARCHAR},
+      op_date = #{opDate,jdbcType=TIMESTAMP},
+      area = #{area,jdbcType=VARCHAR},
+      area_name = #{areaName,jdbcType=VARCHAR},
+      location = #{location,jdbcType=VARCHAR},
+      location_area = #{locationArea,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

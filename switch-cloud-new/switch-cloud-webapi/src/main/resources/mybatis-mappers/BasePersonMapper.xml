@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.webapi.dao.BasePersonMapper">
+
+    <!--    人口数量-->
+    <select id="queryPersonNum" parameterType="Map" resultType="int">
+        select count(DISTINCT person.code) count from base_person person
+        where 1=1
+        <if test="xqCode.size()>0 ">
+            and person.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        -- 常住人口数量
+        <if test="liveType=='permanent'">
+            and person.type in (1,2)
+        </if>
+        -- 流动人口数量（租户）
+        <if test="liveType=='float'">
+            and person.type in (3)
+        </if>
+        -- 外籍人员数量
+        <if test="foreigner=='true'">
+            and person.country !='1' and person.country is not null and person.country!=''
+        </if>
+        -- 本月新增人口数量
+        <if test="timeType == 'month'">
+            and DATE_FORMAT(person.checkin_time,"%Y-%m")=DATE_FORMAT(CURDATE(),"%Y-%m")
+        </if>
+    </select>
+
+    <!--    现有人员列表查询-->
+    <select id="personList" resultType="Map" parameterType="Map">
+        select person.community_code xqCode,person.community_name xqName,person.code ownerId,
+        person.name,person.phone phone, date_format(person.checkin_time,'%Y-%m-%d %H:%i:%s')
+        checkinDate,person.room_code roomCode,person.type,person.type_name liveTypeName,
+        person.country_name countryName,person.paper_number paperNumber,person.residence_permit
+        residence,person.image,person.face_group_detail_id faceGroupDetailId
+        from base_person person
+        left join face_group_detail detail on detail.id=person.face_group_detail_id
+        where 1=1
+        <if test="xqCode.size()>0 ">
+            and person.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        /*-- 筛选国别*/
+        <if test="country!=null and country!=''">
+            <if test="country=='1'.toString">
+                and (person.country ='1' or person.country is null or person.country='' or person.country='0')
+            </if>
+            <if test="country=='2'.toString">
+                and (person.country !='1' and person.country is not null and person.country!='' and person.country!='0')
+            </if>
+        </if>
+        /*-- 筛选居住类型 liveType=1 常住 liveType=2 流动*/
+        <if test="liveType!=null and liveType!=''">
+            <if test="liveType=='1'.toString">
+                and person.address_type in (1)
+            </if>
+            <if test="liveType=='2'.toString">
+                and person.address_type in (2)
+            </if>
+            <if test="liveType=='3'.toString">
+                and (person.country !='1' and person.country is not null and person.country!='' and person.country!='0')
+            </if>
+        </if>
+        <if test="ownerType!=null and ownerType!=''">
+            <if test="ownerType=='1'.toString">
+                and person.type in (1)
+            </if>
+            <if test="ownerType=='2'.toString">
+                and person.type in (2)
+            </if>
+            <if test="ownerType=='3'.toString">
+                and person.type in (3)
+            </if>
+        </if>
+        /*-- 筛选入住时间*/
+        <if test="checkinDateStart!=null and checkinDateStart!=''">
+            and UNIX_TIMESTAMP(person.checkin_time) >= UNIX_TIMESTAMP(#{checkinDateStart})
+        </if>
+        <if test="checkinDateEnd!=null and checkinDateEnd!=''">
+            and UNIX_TIMESTAMP(#{checkinDateEnd}) >= UNIX_TIMESTAMP(person.checkin_time)
+        </if>
+        /*-- 筛选是否申请居住证*/
+        <if test="residence!=null and residence!=''">
+            <if test="residence=='1'.toString">
+                and person.residence_permit='1'
+            </if>
+            <if test="residence=='0'.toString">
+                and person.residence_permit='0'
+            </if>
+        </if>
+        /*-- 筛选有犯罪等级人员*/
+        <if test="color!=null and color!=''">
+            <if test="color=='green'.toString">
+                and person.face_group_detail_id is null or  person.face_group_detail_id =''
+            </if>
+            <if test="level!=null and level!=''">
+                <if test="level=='1'.toString">
+                    and detail.level in (1)
+                </if>
+                <if test="level=='2'.toString or level=='3'.toString " >
+                    and detail.level in (2,3)
+                </if>
+            </if>
+        </if>
+        /*-- 模糊查询*/
+        <if test="likeStr!=null and likeStr!=''">
+            and
+            CONCAT_WS('',person.name,person.phone,person.paper_number)
+            like concat('%',#{likeStr},'%')
+        </if>
+    </select>
+    <!--   根据personId和xqCode查询人员-->
+    <select id="querySinglePerson2" resultType="Map" parameterType="Map">
+        select
+        base_person.id personId,
+        base_person.community_code xqCode,
+        base_person.code personCode,
+        base_person.name name,
+        base_person.sex_name sex,
+        date_format(base_person.birthday,'%Y-%m-%d') birthday,
+        base_person.type type,
+        base_person.paper_type_name paperType,
+        base_person.paper_number paperNumber,
+        base_person.nationality_name nation,
+        base_person.address orgionPlace,
+        base_person.marriage_name marriageStatus,
+        base_person.education_name education,
+        base_person.political_name politicalStatus,
+        base_person.phone phone,
+        base_person.type_name personIdentityName,
+        base_person.type personIdentityId,
+        base_person.relation_name relation,
+        base_person.occupation occupation,
+        base_person.country_name nationalityName,
+        base_person.room_code roomCode,
+        base_person.checkin_time checkinTime,
+        base_person.type_name typeName,
+        base_person.image image,
+        base_person.residence_permit  residence,
+        base_person.live_place address
+        from
+        base_person
+        where 1=1
+        <if test="personId!=null and personId!=''">
+            and base_person.code=#{personId}
+        </if>
+        <if test="xqCode!=null and xqCode.length>0">
+            and base_person.community_code in (${xqCode})
+        </if>
+        <if test="type!=null and type!=''">
+            and base_person.type=#{type}
+        </if>
+        <if test="roomCode!=null and roomCode!=''">
+            and base_person.room_code=#{roomCode}
+        </if>
+    </select>
+
+    <select id="querySinglePerson" resultType="Map" parameterType="Map">
+        select
+        criteria_base_person.*,
+        concat(m_base_room.community_name,m_base_room.building_name,m_base_room.unit_name,m_base_room.room_name) address
+        from (select
+        base_person.community_code xqCode,
+        base_person.code personCode,
+        base_person.name name,
+        base_person.sex_name sex,
+        base_person.birthday birthday,
+        base_person.type type,
+        base_person.paper_type_name paperType,
+        base_person.paper_number paperNumber,
+        base_person.nationality_name nation,
+        base_person.address orgionPlace,
+        base_person.marriage_name marriageStatus,
+        base_person.education_name education,
+        base_person.political_name politicalStatus,
+        base_person.phone phone,
+        base_person.type_name personIdentityName,
+        base_person.type personIdentityId,
+        base_person.relation_name relation,
+        base_person.occupation occupation,
+        base_person.country_name nationalityName,
+        base_person.room_code roomCode,
+        base_person.checkin_time checkinTime,
+        base_person.type_name typeName,
+        base_person.image image,
+        base_person.residence_permit  residence
+        from
+        base_person
+        where 1=1
+        <if test="personId!=null and personId!=''">
+            and base_person.code=#{personId}
+        </if>
+        <if test="xqCode!=null and xqCode.length>0">
+            and base_person.community_code in (${xqCode})
+        </if>
+        <if test="type!=null and type!=''">
+            and base_person.type=#{type}
+        </if>
+        <if test="roomCode!=null and roomCode!=''">
+            and base_person.room_code=#{roomCode}
+        </if>
+        )
+        criteria_base_person
+        left join (
+        select
+        base_room.code,base_room.community_name,base_room.building_name,base_room.unit_name,base_room.room_name
+        from base_room
+        where base_room.code is not null and base_room.code!='')
+        m_base_room on m_base_room.code=criteria_base_person.roomCode
+    </select>
+
+    <!--    根据personId查询人脸模板标签/类型-->
+    <select id="queryFaceGroupLabel" resultType="Map" parameterType="Map">
+        select
+        m_face_group.type_name faceTypeName
+        from(select
+        face_group_detail.group_code
+        from
+        face_group_detail
+        where 1=1
+        <if test="personId!=null and personId!=''">
+            and face_group_detail.person_code=#{personId}
+        </if>
+        <if test="xqCode!=null and xqCode.length>0">
+            and face_group_detail.community_code in (${xqCode})
+        </if>
+        )
+        criteria_face_group_detail
+        inner join (
+        select
+        code,type_name
+        from
+        face_group
+        )
+        m_face_group on m_face_group.code=criteria_face_group_detail.group_code
+    </select>
+
+    <!--    根据personId查询异常事件标签-->
+    <select id="queryAbnormalLabel" resultType="Map" parameterType="Map">
+        select
+        capture_abnormal.event_name abnormalTypeName
+        from
+        capture_abnormal
+        where 1=1
+        <if test="personId!=null and personId!=''">
+            and capture_abnormal.code=#{personId}
+        </if>
+        <if test="xqCode!=null and xqCode.length>0">
+            and capture_abnormal.community_code in (${xqCode})
+        </if>
+    </select>
+
+    <!--    根据perosonId查询一天内此人的抓拍次数-->
+    <select id="queryCaptureTimesInOneDayByPersonCode" resultType="Integer" parameterType="Map">
+        select
+        count(*)
+        from
+        capture_person
+        where
+        capture_person.person_code=#{personId}
+        and
+        date_format(capture_person.capture_time,'%Y-%m-%d')=#{monthDay}
+        <if test="xqCode!=null and xqCode.length>0">
+            and capture_person.community_code in (${xqCode})
+        </if>
+    </select>
+
+    <!--    现有人员国家列表-->
+    <select id="countryList" parameterType="Map" resultType="Map">
+        select person.country_name name,person.country_name value from base_person person
+        where person.country is not null and person.country !=''
+        <if test="xqCode.size()>0 ">
+            and person.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY person.country
+    </select>
+
+    <select id="queryCarListByPersonCode" resultType="Map" parameterType="Map">
+        select distinct
+        base_car.num carNum,
+        base_car.type_name carType,
+        base_car.community_code xqCode
+        from
+        base_car
+        where 1=1
+        <if test="personId!=null and personId!=''">
+            and base_car.person_code=#{personId}
+        </if>
+        <if test="xqCode!=null and xqCode.length>0">
+            and base_car.community_code in (${xqCode})
+        </if>
+    </select>
+
+<!--    实有人口数量-->
+    <select id="selectPersonNum" parameterType="Map" resultType="int">
+        select count(*) from base_person person
+        where 1=1
+        <if test="xqCode.size()>0 ">
+            and person.community_code in
+            <foreach collection="xqCode" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.CarAccessMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.CarAccess" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="community_name" property="communityName" jdbcType="VARCHAR" />
+    <result column="car_num" property="carNum" jdbcType="VARCHAR" />
+    <result column="capture_time" property="captureTime" jdbcType="TIMESTAMP" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="device_name" property="deviceName" jdbcType="VARCHAR" />
+    <result column="device_type" property="deviceType" jdbcType="VARCHAR" />
+    <result column="device_type_name" property="deviceTypeName" jdbcType="VARCHAR" />
+    <result column="device_location" property="deviceLocation" jdbcType="VARCHAR" />
+    <result column="car_direct" property="carDirect" jdbcType="TINYINT" />
+    <result column="dev_chn_id" property="devChnId" jdbcType="VARCHAR" />
+    <result column="dev_chn_name" property="devChnName" jdbcType="VARCHAR" />
+    <result column="dev_chn_num" property="devChnNum" jdbcType="VARCHAR" />
+    <result column="parking_name" property="parkingName" jdbcType="VARCHAR" />
+    <result column="person_code" property="personCode" jdbcType="VARCHAR" />
+    <result column="person_name" property="personName" jdbcType="VARCHAR" />
+    <result column="cap_image" property="capImage" jdbcType="VARCHAR" />
+    <result column="cap_video" property="capVideo" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, community_code, community_name, car_num, capture_time, device_code, device_name, 
+    device_type, device_type_name, device_location, car_direct, dev_chn_id, dev_chn_name, 
+    dev_chn_num, parking_name, person_code, person_name, cap_image, cap_video,type
+  </sql>
+
+<!--  抓拍车辆出入 新增 ygy-->
+  <insert id="insertCarAccess" parameterType="com.windaka.suizhi.manageport.model.CarAccess" >
+    insert into car_access (id, community_code, community_name,
+      car_num, capture_time, device_code,
+      device_name, device_type, device_type_name,
+      device_location, car_direct, dev_chn_id,
+      dev_chn_name, dev_chn_num, parking_name,
+      person_code, person_name, cap_image,
+      cap_video,type)
+    values (#{id,jdbcType=INTEGER}, #{communityCode,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR},
+      #{carNum,jdbcType=VARCHAR}, #{captureTime,jdbcType=TIMESTAMP}, #{deviceCode,jdbcType=VARCHAR},
+      #{deviceName,jdbcType=VARCHAR}, #{deviceType}, #{deviceTypeName,jdbcType=VARCHAR},
+      #{deviceLocation,jdbcType=VARCHAR}, #{carDirect,jdbcType=TINYINT}, #{devChnId,jdbcType=VARCHAR},
+      #{devChnName,jdbcType=VARCHAR}, #{devChnNum,jdbcType=VARCHAR}, #{parkingName,jdbcType=VARCHAR},
+      #{personCode,jdbcType=VARCHAR}, #{personName,jdbcType=VARCHAR}, #{capImage,jdbcType=VARCHAR},
+      #{capVideo,jdbcType=VARCHAR},#{type})
+  </insert>
+
+<!--  抓拍车辆出入 删除 ygy-->
+  <delete id="deleteById" parameterType="String" >
+    delete from car_access
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+<!--  抓拍车辆出入  查询列表 ygy-->
+  <select id="selectCarAccessList" resultMap="BaseResultMap" parameterType="Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from car_access
+    where 1=1
+    <if test="carNum!=null and carNum!=''">
+        and car_num=#{carNum}
+    </if>
+    <if test="communityCode!=null and communityCode!=''">
+      and community_code=#{communityCode}
+    </if>
+    <if test="communityCode!=null and communityCode!=''">
+      and community_code=#{communityCode}
+    </if>
+  </select>
+
+</mapper>

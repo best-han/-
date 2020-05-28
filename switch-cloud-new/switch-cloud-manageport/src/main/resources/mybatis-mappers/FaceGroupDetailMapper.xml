@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.FaceGroupDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.FaceGroupDetail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="group_code" property="groupCode" jdbcType="VARCHAR" />
+    <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+    <result column="group_level" property="groupLevel" jdbcType="SMALLINT" />
+    <result column="person_code" property="personCode" jdbcType="VARCHAR" />
+    <result column="person_name" property="personName" jdbcType="VARCHAR" />
+    <result column="person_phone" property="personPhone" jdbcType="VARCHAR" />
+    <result column="person_paper_number" property="personPaperNumber" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="SMALLINT" />
+    <result column="level_name" property="levelName" jdbcType="VARCHAR" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="person_image" property="personImage" jdbcType="VARCHAR" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, community_code, group_code, group_name, group_level, person_code, person_name,
+    person_phone, person_paper_number, level, level_name, reason, person_image, remarks, 
+    create_time, create_user, update_time, update_user
+  </sql>
+
+<!--布控人员明细 新增   ygy-->
+  <insert id="insertFaceGroupDetail" parameterType="com.windaka.suizhi.manageport.model.FaceGroupDetail" >
+    insert into face_group_detail (id, community_code, group_code,
+      group_name, group_level, person_code,
+      person_name, person_phone, person_paper_number,
+      level, level_name, reason,
+      person_image, remarks, create_time,
+      create_user, update_time, update_user
+      )
+    values (#{id,jdbcType=INTEGER}, #{communityCode,jdbcType=VARCHAR}, #{groupCode,jdbcType=VARCHAR},
+      #{groupName,jdbcType=VARCHAR}, #{groupLevel,jdbcType=SMALLINT}, #{personCode,jdbcType=VARCHAR},
+      #{personName,jdbcType=VARCHAR}, #{personPhone,jdbcType=VARCHAR}, #{personPaperNumber,jdbcType=VARCHAR},
+      #{level,jdbcType=SMALLINT}, #{levelName,jdbcType=VARCHAR}, #{reason,jdbcType=VARCHAR},
+      #{personImage,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, now(),
+      #{createUser,jdbcType=VARCHAR}, now(), #{updateUser,jdbcType=VARCHAR}
+      )
+  </insert>
+
+<!--  布控人员明细 删除 ygy-->
+  <delete id="deleteById" parameterType="String" >
+    delete from face_group_detail
+    where id = #{id}
+  </delete>
+
+<!--  布控人员明细  更新 ygy-->
+  <update id="updateById" parameterType="com.windaka.suizhi.manageport.model.FaceGroupDetail" >
+    update face_group_detail
+    set community_code = #{communityCode,jdbcType=VARCHAR},
+      group_code = #{groupCode,jdbcType=VARCHAR},
+      group_name = #{groupName,jdbcType=VARCHAR},
+      group_level = #{groupLevel,jdbcType=SMALLINT},
+      person_code = #{personCode,jdbcType=VARCHAR},
+      person_name = #{personName,jdbcType=VARCHAR},
+      person_phone = #{personPhone,jdbcType=VARCHAR},
+      person_paper_number = #{personPaperNumber,jdbcType=VARCHAR},
+      level = #{level,jdbcType=SMALLINT},
+      level_name = #{levelName,jdbcType=VARCHAR},
+      reason = #{reason,jdbcType=VARCHAR},
+      person_image = #{personImage,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      update_time =now(),
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where id = #{id}
+  </update>
+
+<!--  布控人员明细 列表查询 ygy-->
+  <select id="selectFaceGroupDetailList" resultMap="BaseResultMap" parameterType="Map" >
+    select
+    <include refid="Base_Column_List" />
+    from face_group_detail
+    where 1=1
+    <if test="communityCode!=null and communityCode!=''">
+        and community_code=#{communityCode}
+    </if>
+    <if test="groupCode!=null and groupCode!=''">
+        and group_code=#{groupCode}
+    </if>
+    <if test="personCode!=null and personCode!=''">
+      and person_code=#{personCode}
+    </if>
+    <if test="id!=null and id!=''">
+      and id=#{id}
+    </if>
+  </select>
+
+</mapper>

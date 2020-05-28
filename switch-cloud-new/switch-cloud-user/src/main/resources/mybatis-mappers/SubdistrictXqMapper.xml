@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.windaka.suizhi.user.dao.SubdistrictXqDao">
+
+    <select id="queryXqBySubdistrictId" parameterType="String" resultType="Map">
+        select a.name xqName,a.code xqCode from base_community a
+	    inner join ht_xq_subdistrict b on b.xq_code=a.code
+	    where b.subdistrict_id=#{subdistrictId} and b.`status`='0'
+    </select>
+
+
+</mapper>

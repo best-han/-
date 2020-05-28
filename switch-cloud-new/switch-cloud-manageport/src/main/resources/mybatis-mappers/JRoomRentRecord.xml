@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.JRoomRentRecordMapper">
+    <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.JRoomRentRecord">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="room_code" property="roomCode" jdbcType="VARCHAR"/>
+        <result column="community_name" property="communityName" jdbcType="VARCHAR"/>
+        <result column="community_code" property="communityCode" jdbcType="VARCHAR"/>
+        <result column="use_type" property="useType" jdbcType="SMALLINT"/>
+        <result column="use_type_name" property="useTypeName" jdbcType="VARCHAR"/>
+        <result column="owner_name" property="ownerName" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="house_info" property="houseInfo" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id,room_code,community_code,community_name,use_type,use_type_name,owner_name,phone,house_info,create_time)
+  </sql>
+    <!--  日租短租 记录表 插入-->
+    <insert id="insertRoomRentRecord" parameterType="Map">
+    insert into j_room_rent_record (id,room_code,community_code,community_name,use_type,use_type_name,owner_name,phone,house_info,create_time)
+    values (#{id},#{roomCode},#{communityCode},#{communityName},#{useType},#{useTypeName},#{ownerName},#{phone},#{houseInfo},now())
+  </insert>
+</mapper>

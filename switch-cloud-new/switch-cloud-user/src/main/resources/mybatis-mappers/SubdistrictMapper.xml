@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.windaka.suizhi.user.dao.SubdistrictDao">
+
+    <select id="querySubdistrictByUserId" parameterType="String" resultType="Map">
+        select s.id as subdistrictId,s.name as subdistrictName
+                from ht_subdistrict_info as s
+                inner join ht_user_subdistrict as us on us.subdistrict_id=s.id
+        where us.user_id = #{userId} and us.status='0'
+    </select>
+
+    <insert id="saveUserSubdistrict">
+        INSERT INTO ht_user_subdistrict(user_id, subdistrict_id) VALUES
+        <foreach collection="subdistrictIds" index="index" item="subdistrictId" open="" separator="," close="">
+            (#{userId}, #{subdistrictId})
+        </foreach>
+    </insert>
+    <delete id="deleteUserSubdistrict" parameterType="string">
+        delete from ht_user_subdistrict where user_id=#{userId}
+    </delete>
+    <select id="querySubdistrictByAreaId" parameterType="String" resultType="Map">
+        select s.id as subdistrictId,s.name as subdistrictName
+                from ht_subdistrict_info as s
+        where s.area_id = #{areaId}
+    </select>
+    <select id="queryAllAreaBySubdistrictInfo" resultType="Map">
+        select b.area_id areaId,b.area_name areaName
+                from ht_subdistrict_info as s
+                inner join ht_area b on b.area_id=s.area_id
+        group by b.area_id,b.area_name
+    </select>
+
+    <select id="queryUserAreaBySubdistrict" parameterType="String" resultType="Map">
+        select b.area_id areaId,b.area_name areaName
+        from ht_subdistrict_info as s
+        inner join ht_user_subdistrict a on a.subdistrict_id=s.id
+        inner join ht_area b on b.area_id=s.area_id
+        where a.user_id = #{userId}
+        group by b.area_id,b.area_name
+    </select>
+
+    <select id="queryXqBySubdistrictId" parameterType="String" resultType="Map">
+        select b.code communityCode ,b.name communityName
+        from ht_xq_subdistrict a
+        join base_community b on b.code=a.xq_code
+        where a.subdistrict_id=#{subdistrictId}
+    </select>
+
+
+</mapper>

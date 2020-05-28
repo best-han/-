@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.mpi.dao.CaptureCarMapper">
+    <!--    socket查询抓拍车辆列表推送-->
+    <select id="queryCapCarList" parameterType="Integer" resultType="Map">
+        select
+        car.id  id,
+        device_name capAddress,
+        date_format(capture_time,'%Y-%m-%d %H:%i:%s') capTime,
+        cap_image capImage,
+        full_image fullImage,
+        car.community_code xqCode,
+        car.community_name xqName,
+        car.car_num carNum
+        from capture_car car
+         where  car.id &gt; #{id}
+            order by car.id asc limit 200
+    </select>
+    <select id="queryCarForAlarm" parameterType="int" resultType="com.windaka.suizhi.mpi.model.ext.ExtCaptureCar">
+    SELECT
+    c.id id,
+    c.community_code communityCode,
+    c.community_name communityName,
+    c.device_code deviceCode,
+    c.device_name deviceName,
+    c.device_type deviceType,
+    c.device_type_name deviceTypeName,
+    c.device_location deviceLocation,
+    c.car_num carNum,
+    c.capture_time captureTime,
+    c.full_image fullImage,
+    c.cap_image capImage,
+    c.cap_video capVideo,
+    g.id detailId,
+    g.create_user_id createUserId,
+    g.create_user createUser,
+    g.level detailLevel,
+    g.level_name detailLevelName,
+    g.reason detailReason,
+    g.group_code groupCode,
+    g.group_name groupName
+    FROM
+    capture_car c
+    inner  join  car_group_detail g on c.car_num = g.car_num
+      where c.id <![CDATA[ > ]]> #{id} and g.car_num is not null and g.car_num!=""
+      group  by  c.car_num
+    </select>
+</mapper>

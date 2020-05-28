@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.CaptureDeviceMapper">
+    <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.CaptureDevice">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="type_name" property="typeName" jdbcType="VARCHAR"/>
+        <result column="location" property="location" jdbcType="VARCHAR"/>
+        <result column="community_code" property="communityCode" jdbcType="VARCHAR"/>
+        <result column="community_name" property="communityName" jdbcType="VARCHAR"/>
+        <result column="gb_code" property="gbCode" jdbcType="VARCHAR"/>
+        <result column="gb_codeseq" property="gbCodeSeq" jdbcType="VARCHAR"/>
+        <result column="op_date" property="opDate" jdbcType="TIMESTAMP"/>
+        <result column="dchnl_rtsp" property="dchnlRtsp" jdbcType="VARCHAR"/>
+
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, code, name, type, type_name, location, community_code, community_name, op_date,gb_code,gb_codeseq,dchnl_rtsp
+  </sql>
+
+    <!--  添加设备 ygy-->
+    <insert id="insertDevice" parameterType="com.windaka.suizhi.manageport.model.CaptureDevice">
+    insert into capture_device (id, code, name,
+      type, type_name, location,
+      community_code, community_name, op_date,gb_code,gb_codeseq,dchnl_rtsp
+      )
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+      #{type,jdbcType=VARCHAR}, #{typeName,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR},
+      #{communityCode,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR}, now(),
+      #{gbCode,jdbcType=VARCHAR},#{gbCodeSeq,jdbcType=VARCHAR},#{dchnlRtsp}
+      )
+  </insert>
+
+    <!--  删除设备 ygy-->
+    <delete id="deleteByCode" parameterType="String">
+    delete from capture_device
+    where code = #{code}
+  </delete>
+
+    <!--  更新设备 ygy-->
+    <update id="updateByCode" parameterType="com.windaka.suizhi.manageport.model.CaptureDevice">
+    update capture_device
+    set code = #{code,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      type_name = #{typeName,jdbcType=VARCHAR},
+      location = #{location,jdbcType=VARCHAR},
+      community_code = #{communityCode,jdbcType=VARCHAR},
+      community_name = #{communityName,jdbcType=VARCHAR},
+      op_date = now(),
+      gb_code=#{gbCode,jdbcType=VARCHAR},
+      gb_codeseq=#{gbCodeSeq,jdbcType=VARCHAR},
+      dchnl_rtsp= #{dchnlRtsp}
+    where code=#{code}
+  </update>
+
+    <!--  查询设备列表 ygy-->
+    <select id="selectDeviceList" resultMap="BaseResultMap" parameterType="Map">
+        select
+        <include refid="Base_Column_List"/>
+        from capture_device
+        where 1=1
+        <if test="code!=null and code!=''">
+            and code=#{code}
+        </if>
+        <if test="communityCode!=null and communityCode!=''">
+            and community_code=#{communityCode}
+        </if>
+
+    </select>
+
+    <update id="updateDeviceByCommunityCode" parameterType="Map">
+    update capture_device
+    set
+     community_name=#{communityName}
+    where community_code=#{communityCode}
+  </update>
+
+</mapper>

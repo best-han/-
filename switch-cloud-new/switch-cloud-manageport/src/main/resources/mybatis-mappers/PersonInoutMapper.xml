@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.PersonInoutMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.PersonInout" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="community_name" property="communityName" jdbcType="VARCHAR" />
+    <result column="capture_time" property="captureTime" jdbcType="TIMESTAMP" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="device_name" property="deviceName" jdbcType="VARCHAR" />
+    <result column="device_type" property="deviceType" jdbcType="VARCHAR" />
+    <result column="device_type_name" property="deviceTypeName" jdbcType="VARCHAR" />
+    <result column="device_location" property="deviceLocation" jdbcType="VARCHAR" />
+    <result column="person_code" property="personCode" jdbcType="VARCHAR" />
+    <result column="person_name" property="personName" jdbcType="VARCHAR" />
+    <result column="open_result" property="openResult" jdbcType="SMALLINT" />
+    <result column="open_result_name" property="openResultName" jdbcType="VARCHAR" />
+    <result column="open_type" property="openType" jdbcType="SMALLINT" />
+    <result column="open_type_name" property="openTypeName" jdbcType="VARCHAR" />
+    <result column="channel_name" property="channelName" jdbcType="VARCHAR" />
+    <result column="channel_seq" property="channelSeq" jdbcType="SMALLINT" />
+    <result column="cap_image" property="capImage" jdbcType="VARCHAR" />
+    <result column="cap_video" property="capVideo" jdbcType="VARCHAR" />
+    <result column="cap_type" property="capType" jdbcType="VARCHAR" />
+    <result column="cap_type_name" property="capTypeName" jdbcType="VARCHAR" />
+    <result column="access" property="access" jdbcType="SMALLINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, community_code, community_name, capture_time, device_code, device_name, device_type, 
+    device_type_name, device_location, person_code, person_name, open_result, open_result_name, 
+    open_type, open_type_name, channel_name, channel_seq, cap_image, cap_video, cap_type, 
+    cap_type_name,access
+  </sql>
+  <select id="selectPersonInoutList" resultMap="BaseResultMap" parameterType="Map">
+    select
+    <include refid="Base_Column_List" />
+    from person_inout
+    where 1=1
+    <if test="id != null" >
+      and id = #{id,jdbcType=INTEGER}
+    </if>
+    <if test="communityCode != null" >
+      and community_code = #{communityCode,jdbcType=VARCHAR}
+    </if>
+    <if test="communityName != null" >
+      and community_name = #{communityName,jdbcType=VARCHAR}
+    </if>
+    <if test="captureTime != null" >
+      and capture_time = #{captureTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="deviceCode != null" >
+      and device_code = #{deviceCode,jdbcType=VARCHAR}
+    </if>
+    <if test="deviceName != null" >
+      and device_name = #{deviceName,jdbcType=VARCHAR}
+    </if>
+    <if test="deviceType != null" >
+      and device_type = #{deviceType,jdbcType=VARCHAR}
+    </if>
+    <if test="deviceTypeName != null" >
+      and device_type_name = #{deviceTypeName,jdbcType=VARCHAR}
+    </if>
+    <if test="deviceLocation != null" >
+      and device_location = #{deviceLocation,jdbcType=VARCHAR}
+    </if>
+    <if test="personCode != null" >
+      and person_code = #{personCode,jdbcType=VARCHAR}
+    </if>
+    <if test="personName != null" >
+      and person_name = #{personName,jdbcType=VARCHAR}
+    </if>
+    <if test="openResult != null" >
+      and open_result = #{openResult,jdbcType=SMALLINT}
+    </if>
+    <if test="openResultName != null" >
+      and open_result_name = #{openResultName,jdbcType=VARCHAR}
+    </if>
+    <if test="openType != null" >
+      and open_type = #{openType,jdbcType=SMALLINT}
+    </if>
+    <if test="openTypeName != null" >
+      and open_type_name = #{openTypeName,jdbcType=VARCHAR}
+    </if>
+    <if test="channelName != null" >
+      and channel_name = #{channelName,jdbcType=VARCHAR}
+    </if>
+    <if test="channelSeq != null" >
+      and channel_seq = #{channelSeq,jdbcType=SMALLINT}
+    </if>
+    <if test="capImage != null" >
+      and cap_image = #{capImage,jdbcType=VARCHAR}
+    </if>
+    <if test="capVideo != null" >
+      and cap_video = #{capVideo,jdbcType=VARCHAR}
+    </if>
+    <if test="capType != null" >
+      and cap_type = #{capType,jdbcType=VARCHAR}
+    </if>
+    <if test="capTypeName != null" >
+      and cap_type_name = #{capTypeName,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from person_inout
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.windaka.suizhi.manageport.model.PersonInout" >
+    insert into person_inout (id, community_code, community_name, 
+      capture_time, device_code, device_name, 
+      device_type, device_type_name, device_location, 
+      person_code, person_name, open_result, 
+      open_result_name, open_type, open_type_name, 
+      channel_name, channel_seq, cap_image, 
+      cap_video, cap_type, cap_type_name,access
+      )
+    values (#{id,jdbcType=INTEGER}, #{communityCode,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR}, 
+      #{captureTime,jdbcType=TIMESTAMP}, #{deviceCode,jdbcType=VARCHAR}, #{deviceName,jdbcType=VARCHAR}, 
+      #{deviceType,jdbcType=VARCHAR}, #{deviceTypeName,jdbcType=VARCHAR}, #{deviceLocation,jdbcType=VARCHAR},
+      #{personCode,jdbcType=VARCHAR}, #{personName,jdbcType=VARCHAR}, #{openResult,jdbcType=SMALLINT}, 
+      #{openResultName,jdbcType=VARCHAR}, #{openType,jdbcType=SMALLINT}, #{openTypeName,jdbcType=VARCHAR}, 
+      #{channelName,jdbcType=VARCHAR}, #{channelSeq,jdbcType=SMALLINT}, #{capImage,jdbcType=VARCHAR}, 
+      #{capVideo,jdbcType=VARCHAR}, #{capType,jdbcType=VARCHAR}, #{capTypeName,jdbcType=VARCHAR},#{access}
+      )
+  </insert>
+</mapper>

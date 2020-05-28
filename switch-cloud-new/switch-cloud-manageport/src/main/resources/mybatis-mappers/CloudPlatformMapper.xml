@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.CloudPlatformMapper">
+
+<!--    获取新插入一条的id ygy-->
+    <select id="getNextId" resultType="int" parameterType="String">
+       select auto_increment from information_schema.`TABLES`
+        WHERE TABLE_SCHEMA="switch_cloud_new"
+        AND TABLE_NAME=#{tableName}
+    </select>
+
+    <insert id="insertRecord" parameterType="com.windaka.suizhi.manageport.model.OperateRecord">
+        insert into operate_record
+        (id,op_table,op_table_code,op_table_id,op_name,op_user_id,op_time)
+        values (#{id},#{opTable},#{opTableCode},#{opTableId},#{opName},#{opUserId},now())
+    </insert>
+</mapper>

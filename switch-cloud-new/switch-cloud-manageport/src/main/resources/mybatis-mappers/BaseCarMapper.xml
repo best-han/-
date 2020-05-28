@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.windaka.suizhi.manageport.dao.BaseCarMapper" >
+  <resultMap id="BaseResultMap" type="com.windaka.suizhi.manageport.model.BaseCar" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="num" property="num" jdbcType="VARCHAR" />
+    <result column="num_color" property="numColor" jdbcType="SMALLINT" />
+    <result column="num_color_name" property="numColorName" jdbcType="VARCHAR" />
+    <result column="color" property="color" jdbcType="SMALLINT" />
+    <result column="color_name" property="colorName" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="SMALLINT" />
+    <result column="type_name" property="typeName" jdbcType="VARCHAR" />
+    <result column="brand" property="brand" jdbcType="SMALLINT" />
+    <result column="brand_name" property="brandName" jdbcType="VARCHAR" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="person_code" property="personCode" jdbcType="VARCHAR" />
+    <result column="community_code" property="communityCode" jdbcType="VARCHAR" />
+    <result column="community_name" property="communityName" jdbcType="VARCHAR" />
+    <result column="car_group_detail_id" property="carGroupDetailId" jdbcType="VARCHAR" />
+    <result column="op_time" property="opTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, num, num_color, num_color_name, color, color_name, type, type_name, brand, brand_name, 
+    image, person_code, community_code, community_name, car_group_detail_id, op_time
+  </sql>
+
+<!--  车辆新增 ygy-->
+  <insert id="insertCar" parameterType="com.windaka.suizhi.manageport.model.BaseCar" >
+    insert into base_car (id, num, num_color,
+      num_color_name, color, color_name,
+      type, type_name, brand,
+      brand_name, image, person_code,
+      community_code, community_name, car_group_detail_id,
+      op_time)
+    values (#{id,jdbcType=INTEGER}, #{num,jdbcType=VARCHAR}, #{numColor,jdbcType=SMALLINT},
+      #{numColorName,jdbcType=VARCHAR}, #{color,jdbcType=SMALLINT}, #{colorName,jdbcType=VARCHAR},
+      #{type,jdbcType=SMALLINT}, #{typeName,jdbcType=VARCHAR}, #{brand,jdbcType=SMALLINT},
+      #{brandName,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR}, #{personCode,jdbcType=VARCHAR},
+      #{communityCode,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR}, #{carGroupDetailId,jdbcType=VARCHAR},
+      now())
+  </insert>
+
+<!--  车辆删除 ygy-->
+  <delete id="deleteByNum" parameterType="String" >
+    delete from base_car
+    where num = #{num}
+  </delete>
+
+<!--  车辆更新 ygy-->
+  <update id="updateByNum" parameterType="com.windaka.suizhi.manageport.model.BaseCar" >
+    update base_car
+    set num = #{num,jdbcType=VARCHAR},
+      num_color = #{numColor,jdbcType=SMALLINT},
+      num_color_name = #{numColorName,jdbcType=VARCHAR},
+      color = #{color,jdbcType=SMALLINT},
+      color_name = #{colorName,jdbcType=VARCHAR},
+      type = #{type,jdbcType=SMALLINT},
+      type_name = #{typeName,jdbcType=VARCHAR},
+      brand = #{brand,jdbcType=SMALLINT},
+      brand_name = #{brandName,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      person_code = #{personCode,jdbcType=VARCHAR},
+      community_code = #{communityCode,jdbcType=VARCHAR},
+      community_name = #{communityName,jdbcType=VARCHAR},
+      car_group_detail_id = #{carGroupDetailId,jdbcType=VARCHAR},
+      op_time = now()
+    where num = #{num}
+  </update>
+
+<!--  车辆查询 ygy-->
+  <select id="selectCarList" resultMap="BaseResultMap" parameterType="Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from base_car
+    where 1=1
+    <if test="num!=null and num!=''">
+      and num=#{num}
+    </if>
+    <if test="numColor!=null and numColor!=''">
+        and num_color=#{numColor}
+    </if>
+    <if test="color!=null and color!=''">
+      and color=#{color}
+    </if>
+    <if test="personCode!=null and personCode!=''">
+      and person_code=#{personCode}
+    </if>
+    <if test="communityCode!=null and communityCode!=''">
+      and community_code=#{communityCode}
+    </if>
+  </select>
+
+  <update id="updateCarByCommunityCode" parameterType="Map">
+    update base_car
+    set
+     community_name=#{communityName}
+    where community_code=#{communityCode}
+  </update>
+
+</mapper>
